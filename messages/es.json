@@ -1,0 +1,100 @@
+{
+  "common": {
+    "appName": "LocalFlavors",
+    "tagline": "Descubre Lugares Locales Auténticos",
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Intentar de nuevo",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sortBy": "Ordenar por"
+  },
+  "nav": {
+    "home": "Inicio",
+    "explore": "Explorar",
+    "addPlace": "Añadir Lugar",
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": {
+      "title": "Descubre Gemas Ocultas",
+      "subtitle": "Encuentra los mejores restaurantes locales, cafeterías y lugares auténticos recomendados por la comunidad",
+      "cta": "Comenzar a Explorar"
+    },
+    "popularCities": "Ciudades Populares",
+    "topPlaces": "Lugares Mejor Valorados",
+    "howItWorks": "Cómo Funciona"
+  },
+  "places": {
+    "topPlaces": "Los 20 Mejores Lugares",
+    "vote": "Votar",
+    "upvote": "Me Gusta",
+    "downvote": "No Me Gusta",
+    "votes": "votos",
+    "addPlace": "Sugerir un Lugar",
+    "viewDetails": "Ver Detalles",
+    "getDirections": "Obtener Direcciones",
+    "visitWebsite": "Visitar Sitio Web",
+    "callPhone": "Llamar",
+    "report": "Reportar",
+    "noPlaces": "No se encontraron lugares",
+    "pendingApproval": "Pendiente de Aprobación"
+  },
+  "categories": {
+    "all": "Todas las Categorías",
+    "restaurants": "Restaurantes",
+    "cafes": "Cafeterías",
+    "bars": "Bares",
+    "desserts": "Postres",
+    "streetFood": "Comida Callejera",
+    "bakery": "Panadería"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "username": "Nombre de Usuario",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes una cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "verifyEmail": "Por favor verifica tu correo",
+    "emailSent": "Correo de verificación enviado"
+  },
+  "forms": {
+    "placeName": "Nombre del Lugar",
+    "description": "Descripción",
+    "address": "Dirección",
+    "phone": "Número de Teléfono",
+    "website": "Sitio Web",
+    "category": "Categoría",
+    "location": "Ubicación",
+    "selectCategory": "Selecciona una categoría",
+    "selectLocation": "Selecciona una ubicación",
+    "uploadImages": "Subir Imágenes",
+    "required": "Este campo es obligatorio"
+  },
+  "errors": {
+    "generic": "Algo salió mal. Por favor intenta de nuevo.",
+    "unauthorized": "Debes iniciar sesión para hacer esto",
+    "forbidden": "No tienes permiso para hacer esto",
+    "notFound": "Página no encontrada",
+    "rateLimit": "Estás haciendo eso muy seguido. Por favor espera.",
+    "emailNotVerified": "Por favor verifica tu correo primero"
+  },
+  "success": {
+    "voteCast": "Tu voto ha sido registrado",
+    "placeSubmitted": "Lugar enviado para revisión",
+    "reportSent": "Reporte enviado exitosamente"
+  }
+}

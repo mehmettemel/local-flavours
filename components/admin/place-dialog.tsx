@@ -1,0 +1,357 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { createClient } from '@/lib/supabase/client';
+
+interface PlaceDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  place?: any;
+}
+
+export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
+  const queryClient = useQueryClient();
+  const supabase = createClient();
+  const isEditMode = !!place;
+
+  const [formData, setFormData] = useState({
+    slug: '',
+    nameEn: '',
+    nameTr: '',
+    nameEs: '',
+    descriptionEn: '',
+    descriptionTr: '',
+    descriptionEs: '',
+    address: '',
+    locationId: '',
+    categoryId: '',
+    status: 'pending' as 'pending' | 'approved' | 'rejected',
+    imageUrl: '',
+  });
+
+  // Fetch locations
+  const { data: locations } = useQuery({
+    queryKey: ['admin-locations'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('locations')
+        .select('*')
+        .order('type', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch categories
+  const { data: categories } = useQuery({
+    queryKey: ['admin-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('display_order', { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    if (place) {
+      const names = place.names as any;
+      const descriptions = place.descriptions as any;
+      setFormData({
+        slug: place.slug || '',
+        nameEn: names?.en || '',
+        nameTr: names?.tr || '',
+        nameEs: names?.es || '',
+        descriptionEn: descriptions?.en || '',
+        descriptionTr: descriptions?.tr || '',
+        descriptionEs: descriptions?.es || '',
+        address: place.address || '',
+        locationId: place.location_id || '',
+        categoryId: place.category_id || '',
+        status: place.status || 'pending',
+        imageUrl: place.images?.[0] || '',
+      });
+    } else {
+      setFormData({
+        slug: '',
+        nameEn: '',
+        nameTr: '',
+        nameEs: '',
+        descriptionEn: '',
+        descriptionTr: '',
+        descriptionEs: '',
+        address: '',
+        locationId: '',
+        categoryId: '',
+        status: 'pending',
+        imageUrl: '',
+      });
+    }
+  }, [place]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const placeData = {
+        slug: data.slug,
+        names: {
+          en: data.nameEn,
+          tr: data.nameTr,
+          es: data.nameEs,
+        },
+        descriptions: {
+          en: data.descriptionEn,
+          tr: data.descriptionTr,
+          es: data.descriptionEs,
+        },
+        address: data.address,
+        location_id: data.locationId,
+        category_id: data.categoryId,
+        status: data.status,
+        images: data.imageUrl ? [data.imageUrl] : [],
+      };
+
+      if (isEditMode) {
+        const { error } = await supabase
+          .from('places')
+          .update(placeData)
+          .eq('id', place.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('places').insert([placeData]);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-places'] });
+      onClose();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveMutation.mutate(formData);
+  };
+
+  const handleChange = (
+    field: keyof typeof formData,
+    value: string
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>
+            {isEditMode ? 'Edit Place' : 'Create New Place'}
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Slug */}
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug *</Label>
+            <Input
+              id="slug"
+              value={formData.slug}
+              onChange={(e) => handleChange('slug', e.target.value)}
+              placeholder="karakoy-lokantasi"
+              required
+            />
+          </div>
+
+          {/* Names */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold">Names</h3>
+            <div className="space-y-2">
+              <Label htmlFor="nameEn">English Name *</Label>
+              <Input
+                id="nameEn"
+                value={formData.nameEn}
+                onChange={(e) => handleChange('nameEn', e.target.value)}
+                placeholder="Karaköy Lokantası"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nameTr">Turkish Name</Label>
+              <Input
+                id="nameTr"
+                value={formData.nameTr}
+                onChange={(e) => handleChange('nameTr', e.target.value)}
+                placeholder="Karaköy Lokantası"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nameEs">Spanish Name</Label>
+              <Input
+                id="nameEs"
+                value={formData.nameEs}
+                onChange={(e) => handleChange('nameEs', e.target.value)}
+                placeholder="Karaköy Lokantası"
+              />
+            </div>
+          </div>
+
+          {/* Descriptions */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold">Descriptions</h3>
+            <div className="space-y-2">
+              <Label htmlFor="descriptionEn">English Description *</Label>
+              <Textarea
+                id="descriptionEn"
+                value={formData.descriptionEn}
+                onChange={(e) => handleChange('descriptionEn', e.target.value)}
+                placeholder="Traditional Turkish restaurant..."
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="descriptionTr">Turkish Description</Label>
+              <Textarea
+                id="descriptionTr"
+                value={formData.descriptionTr}
+                onChange={(e) => handleChange('descriptionTr', e.target.value)}
+                placeholder="Geleneksel Türk restoranı..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="descriptionEs">Spanish Description</Label>
+              <Textarea
+                id="descriptionEs"
+                value={formData.descriptionEs}
+                onChange={(e) => handleChange('descriptionEs', e.target.value)}
+                placeholder="Restaurante turco tradicional..."
+              />
+            </div>
+          </div>
+
+          {/* Address */}
+          <div className="space-y-2">
+            <Label htmlFor="address">Address *</Label>
+            <Input
+              id="address"
+              value={formData.address}
+              onChange={(e) => handleChange('address', e.target.value)}
+              placeholder="Kemankeş Karamustafa Paşa, Karaköy"
+              required
+            />
+          </div>
+
+          {/* Location */}
+          <div className="space-y-2">
+            <Label htmlFor="location">Location *</Label>
+            <Select
+              value={formData.locationId}
+              onValueChange={(value) => handleChange('locationId', value)}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locations?.map((location) => {
+                  const names = location.names as any;
+                  return (
+                    <SelectItem key={location.id} value={location.id}>
+                      {names?.en || location.slug} ({location.type})
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Category */}
+          <div className="space-y-2">
+            <Label htmlFor="category">Category *</Label>
+            <Select
+              value={formData.categoryId}
+              onValueChange={(value) => handleChange('categoryId', value)}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories?.map((category) => {
+                  const names = category.names as any;
+                  return (
+                    <SelectItem key={category.id} value={category.id}>
+                      {names?.en || category.slug}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Status */}
+          <div className="space-y-2">
+            <Label htmlFor="status">Status *</Label>
+            <Select
+              value={formData.status}
+              onValueChange={(value: any) => handleChange('status', value)}
+              required
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Image URL */}
+          <div className="space-y-2">
+            <Label htmlFor="imageUrl">Image URL</Label>
+            <Input
+              id="imageUrl"
+              value={formData.imageUrl}
+              onChange={(e) => handleChange('imageUrl', e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+            />
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saveMutation.isPending}>
+              {saveMutation.isPending
+                ? 'Saving...'
+                : isEditMode
+                  ? 'Update Place'
+                  : 'Create Place'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

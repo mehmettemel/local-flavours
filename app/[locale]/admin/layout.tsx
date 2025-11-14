@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Store, LayoutDashboard, FolderTree } from 'lucide-react';
+import { MapPin, Store, LayoutDashboard, FolderTree, BookMarked } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
 export default async function AdminLayout({
@@ -51,6 +51,14 @@ export default async function AdminLayout({
           >
             <FolderTree className="h-5 w-5" />
             <span className="font-medium">Categories</span>
+          </Link>
+
+          <Link
+            href={`/${locale}/admin/collections`}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+          >
+            <BookMarked className="h-5 w-5" />
+            <span className="font-medium">Collections</span>
           </Link>
         </nav>
 

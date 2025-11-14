@@ -1,213 +1,264 @@
-# LocalFlavors 🍽️
+# 🍊 LocalFlavors - Community-Driven Local Recommendations
 
-A scalable web platform for discovering authentic restaurants, cafes, and hidden gems in cities worldwide, starting with Turkey.
+Discover authentic restaurants, cafes, and hidden gems through community-curated collections and democratic voting.
 
-## Features
-
-- 🌍 **Hierarchical Location System**: Country → City → District (for big cities)
-- 🗳️ **Community Voting**: Upvote/downvote places with weighted votes based on account age
-- 🏆 **Top 20 Rankings**: See the best-ranked places per location and category
-- 🌐 **Multi-language Support**: Turkish, English, and Spanish
-- 🔐 **Secure**: Email verification, rate limiting, and spam prevention
-- 📱 **Responsive**: Works on all devices
-- ⚡ **Fast**: Built with Next.js 14 App Router and SSR
-
-## Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Backend**: Supabase (PostgreSQL, Auth, Storage)
-- **Internationalization**: next-intl
-- **State Management**: Zustand
-- **Data Fetching**: React Query (TanStack Query)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- Supabase account
-
-### 1. Clone the repository
+## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/mehmettemel/local-flavours.git
-cd local-flavours
-```
-
-### 2. Install dependencies
-
-```bash
+# 1. Install dependencies
 npm install
-```
 
-### 3. Set up Supabase
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to Project Settings → API to get your credentials
-3. Copy `.env.example` to `.env.local`:
-
-```bash
+# 2. Setup environment
 cp .env.example .env.local
-```
+# Edit .env.local with your Supabase credentials
 
-4. Update `.env.local` with your Supabase credentials:
+# 3. Run migrations (see MIGRATION_GUIDE.md)
+# Use Supabase Dashboard → SQL Editor
+# Run: scripts/minimal-auth-setup.sql
+# Run: supabase/migrations/003_collections_schema.sql
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
-
-### 4. Run database migrations
-
-In your Supabase project dashboard:
-
-1. Go to **SQL Editor**
-2. Create a new query
-3. Copy and paste the contents of `supabase/migrations/001_initial_schema.sql`
-4. Run the query
-5. Repeat for `supabase/migrations/002_seed_data.sql`
-
-Alternatively, if you have Supabase CLI installed:
-
-```bash
-# Install Supabase CLI
-npm install -g supabase
-
-# Link to your project
-supabase link --project-ref your-project-ref
-
-# Run migrations
-supabase db push
-```
-
-### 5. Run the development server
-
-```bash
+# 4. Start development server
 npm run dev
+
+# 5. Open browser
+open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+## 📚 Documentation
 
-## Project Structure
+| Document | Purpose |
+|----------|---------|
+| **[QUICK_START.md](./QUICK_START.md)** | 5-minute setup guide |
+| **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** | Database setup instructions |
+| **[AUTH_SETUP.md](./AUTH_SETUP.md)** | Authentication system details |
+| **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** | Comprehensive testing scenarios |
+| **[docs/project-overview.md](./docs/project-overview.md)** | Full project documentation |
+| **[docs/tech-stack.md](./docs/tech-stack.md)** | Technical architecture |
+
+## ✨ Features
+
+### ✅ Completed
+- **Authentication System**
+  - Email/password signup & signin
+  - Email verification
+  - Password reset
+  - Protected routes
+  - Role-based access (user/moderator/admin)
+
+- **User Features**
+  - User profiles
+  - Settings page
+  - Notification preferences
+  - Account stats
+
+- **Admin Dashboard**
+  - Real-time stats
+  - Places CRUD
+  - Locations CRUD
+  - Categories CRUD
+  - Collections CRUD
+  - Featured collections toggle
+
+- **Core System**
+  - Multi-language support (EN/TR)
+  - Dark mode
+  - Responsive design
+  - Location hierarchy
+  - Category system
+  - Collections database & triggers
+
+### 🔄 In Progress
+- Public collection browsing UI
+- Collection creation (user-facing)
+- Voting interface
+- Search & filters
+
+### 📋 Planned
+- User profile pages
+- Following system UI
+- Collection discovery
+- Mobile app
+- Real-time notifications
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Database:** Supabase (PostgreSQL)
+- **Auth:** Supabase Auth
+- **Styling:** Tailwind CSS 4
+- **UI Components:** shadcn/ui
+- **State Management:** React Query + Zustand
+- **i18n:** next-intl
+
+## 📂 Project Structure
 
 ```
 local-flavours/
 ├── app/
-│   ├── [locale]/          # Internationalized routes
-│   │   ├── layout.tsx     # Locale-specific layout
-│   │   └── page.tsx       # Home page
-│   ├── layout.tsx         # Root layout
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   └── ui/               # shadcn/ui components
-├── i18n/                 # Internationalization config
-│   ├── config.ts
-│   └── request.ts
-├── lib/                  # Utilities
-│   ├── supabase/         # Supabase client utilities
-│   └── utils.ts          # Helper functions
-├── messages/             # Translation files
-│   ├── en.json
-│   ├── tr.json
-│   └── es.json
-├── supabase/
-│   └── migrations/       # Database migrations
-├── types/                # TypeScript types
-│   └── database.ts       # Database types
-└── middleware.ts         # Next.js middleware
+│   └── [locale]/              # Locale-based routing
+│       ├── admin/             # Admin dashboard
+│       ├── settings/          # User settings
+│       └── auth/              # Auth routes
+├── components/
+│   ├── auth/                  # Auth components
+│   ├── admin/                 # Admin components
+│   └── ui/                    # shadcn/ui components
+├── lib/
+│   ├── api/                   # API functions
+│   ├── contexts/              # React contexts
+│   └── supabase/              # Supabase clients
+├── supabase/migrations/       # Database migrations
+└── scripts/                   # Utility scripts
 ```
 
-## Database Schema
+## 🧪 Testing
 
-### Main Tables
+See **[TESTING_GUIDE.md](./TESTING_GUIDE.md)** for comprehensive testing scenarios.
 
-- **users**: User profiles with trust scores and roles
-- **locations**: Hierarchical location structure (countries, cities, districts)
-- **categories**: Place categories (restaurants, cafes, etc.)
-- **places**: The actual places with multilingual content
-- **votes**: User votes with weighted scoring
-- **reports**: Community reporting system
+**Quick Test:**
+```bash
+# 1. Start server
+npm run dev
 
-### Key Features
+# 2. Sign up
+http://localhost:3000 → Sign Up
 
-- **Materialized Path**: For efficient hierarchical queries
-- **Vote Weighting**: Based on account age (new accounts have lower weight)
-- **Automatic Ranking**: Triggers update place rankings based on votes
-- **Row Level Security**: Supabase RLS policies for data access control
+# 3. Verify email
+Check inbox → Click verification link
 
-## URL Structure
-
-```
-/                           # Home page
-/:locale                    # Localized home
-/:locale/:country           # Country page
-/:locale/:country/:city     # City page or districts list
-/:locale/:country/:city/:district         # District places
-/:locale/:country/:city/:district/:category # Filtered by category
-/:locale/:country/:city/place/:slug       # Place detail page
+# 4. Access admin (after setting role)
+http://localhost:3000/admin
 ```
 
-## MVP Scope (Phase 1)
+## 🔐 Admin Access
 
-- ✅ Turkey only (10 cities)
-- ✅ Istanbul with 7 districts
-- ✅ Basic voting system with rate limiting
-- ✅ Turkish and English languages
-- 🚧 Manual admin approval workflow (pending)
-- 🚧 Responsive UI with place cards (pending)
-- 🚧 Authentication with email verification (pending)
+```sql
+-- Grant admin role to your user
+UPDATE users
+SET role = 'admin'
+WHERE email = 'your@email.com';
+```
 
-## Roadmap
+Then logout and login again.
 
-### Phase 1: Turkey Launch (Months 1-3)
-- Complete MVP features
-- Add place submission form
-- Build admin dashboard
-- Implement image upload
-- Launch marketing campaign
+## 🗄️ Database Setup
 
-### Phase 2: Expansion (Months 4-6)
-- Add 2-3 more countries
-- Advanced filtering
-- User profiles and history
-- Place comments/reviews
+### Option 1: Supabase Dashboard (Easy)
+1. Go to Supabase Dashboard → SQL Editor
+2. Run `scripts/minimal-auth-setup.sql`
+3. Run `supabase/migrations/003_collections_schema.sql`
 
-### Phase 3: Global (Months 6+)
-- Global expansion
-- Mobile app (React Native)
-- API for third-party integrations
-- Premium features
+### Option 2: Supabase CLI
+```bash
+supabase db push
+```
 
-## Contributing
+See **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** for detailed instructions.
 
-Contributions are welcome! Please follow these steps:
+## 🔧 Environment Variables
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+## 📦 NPM Scripts
+
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run format       # Format code with Prettier
+```
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+
+```bash
+# 1. Install Vercel CLI
+npm i -g vercel
+
+# 2. Deploy
+vercel
+
+# 3. Set environment variables
+vercel env add NEXT_PUBLIC_SUPABASE_URL
+vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+# ... etc
+```
+
+### Supabase Configuration
+1. Update Site URL to production domain
+2. Add production URLs to Redirect URLs
+3. Enable email confirmation
+4. Customize email templates
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch (`git checkout -b feature/amazing`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing`)
+5. Open Pull Request
 
-## Security
+## 📝 License
 
-- Email verification required for voting
-- Rate limiting on votes (3/day for new accounts)
-- Vote weight increases with account age
-- Manual admin approval for new places
-- Community reporting system
-- Row-level security on all tables
+MIT License - see LICENSE file for details
 
-## License
+## 🆘 Support
 
-This project is private and proprietary.
+- **Issues:** GitHub Issues
+- **Docs:** See `/docs` folder
+- **Discord:** (Coming soon)
 
-## Support
+## 🎯 Roadmap
 
-For issues and questions, please open an issue on GitHub.
+### Phase 1 - MVP (Current)
+- [x] Core platform architecture
+- [x] Authentication system
+- [x] Admin dashboard
+- [x] Collections database
+- [ ] Public collection browsing
+- [ ] Voting system
+
+### Phase 2 - Community Features
+- [ ] User profiles
+- [ ] Following system
+- [ ] Collection discovery
+- [ ] Social sharing
+- [ ] Notifications
+
+### Phase 3 - Advanced Features
+- [ ] Flavor pairing system
+- [ ] Comparative battles
+- [ ] Mobile apps
+- [ ] Real-time updates
+- [ ] AI recommendations
+
+## 📊 Stats
+
+- **Collections:** User-curated place lists
+- **Voting:** Community-driven rankings
+- **Multi-language:** Full EN/TR support
+- **Scalable:** Built for global expansion
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- Supabase for the backend infrastructure
+- shadcn for the beautiful UI components
+- Vercel for hosting
 
 ---
 
-Built with ❤️ using Next.js and Supabase
+**LocalFlavors** - Where personal curation meets community wisdom.
+
+Built with ❤️ using Next.js, TypeScript, and Supabase.

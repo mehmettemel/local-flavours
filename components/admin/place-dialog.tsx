@@ -37,10 +37,8 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
     slug: '',
     nameEn: '',
     nameTr: '',
-    nameEs: '',
     descriptionEn: '',
     descriptionTr: '',
-    descriptionEs: '',
     address: '',
     locationId: '',
     categoryId: '',
@@ -82,10 +80,8 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         slug: place.slug || '',
         nameEn: names?.en || '',
         nameTr: names?.tr || '',
-        nameEs: names?.es || '',
         descriptionEn: descriptions?.en || '',
         descriptionTr: descriptions?.tr || '',
-        descriptionEs: descriptions?.es || '',
         address: place.address || '',
         locationId: place.location_id || '',
         categoryId: place.category_id || '',
@@ -97,10 +93,8 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         slug: '',
         nameEn: '',
         nameTr: '',
-        nameEs: '',
         descriptionEn: '',
         descriptionTr: '',
-        descriptionEs: '',
         address: '',
         locationId: '',
         categoryId: '',
@@ -117,12 +111,10 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         names: {
           en: data.nameEn,
           tr: data.nameTr,
-          es: data.nameEs,
         },
         descriptions: {
           en: data.descriptionEn,
           tr: data.descriptionTr,
-          es: data.descriptionEs,
         },
         address: data.address,
         location_id: data.locationId,
@@ -204,15 +196,6 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
                 placeholder="Karaköy Lokantası"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="nameEs">Spanish Name</Label>
-              <Input
-                id="nameEs"
-                value={formData.nameEs}
-                onChange={(e) => handleChange('nameEs', e.target.value)}
-                placeholder="Karaköy Lokantası"
-              />
-            </div>
           </div>
 
           {/* Descriptions */}
@@ -235,15 +218,6 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
                 value={formData.descriptionTr}
                 onChange={(e) => handleChange('descriptionTr', e.target.value)}
                 placeholder="Geleneksel Türk restoranı..."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="descriptionEs">Spanish Description</Label>
-              <Textarea
-                id="descriptionEs"
-                value={formData.descriptionEs}
-                onChange={(e) => handleChange('descriptionEs', e.target.value)}
-                placeholder="Restaurante turco tradicional..."
               />
             </div>
           </div>

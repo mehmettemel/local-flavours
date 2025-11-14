@@ -3,9 +3,10 @@ import { Database } from '@/types/database';
 
 export type Place = Database['public']['Tables']['places']['Row'];
 
-export async function getPlacesByLocation(locationId: string, limit = 20) {
+export async function getPlacesByLocation(locationId: string, limit = 20, categorySlug?: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+
+  let query = supabase
     .from('places')
     .select(`
       *,
@@ -13,7 +14,22 @@ export async function getPlacesByLocation(locationId: string, limit = 20) {
       location:locations(*)
     `)
     .eq('location_id', locationId)
-    .eq('status', 'approved')
+    .eq('status', 'approved');
+
+  // If category filter is provided, join with categories and filter
+  if (categorySlug) {
+    const { data: category } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', categorySlug)
+      .single();
+
+    if (category) {
+      query = query.eq('category_id', category.id);
+    }
+  }
+
+  const { data, error } = await query
     .order('vote_score', { ascending: false })
     .limit(limit);
 
@@ -71,6 +87,36 @@ export async function getAllPlaces(limit = 100, offset = 0) {
     `)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getTopPlacesByCity(citySlug: string, limit = 5) {
+  const supabase = await createClient();
+
+  // First get the city
+  const { data: city } = await supabase
+    .from('locations')
+    .select('id')
+    .eq('slug', citySlug)
+    .eq('type', 'city')
+    .single();
+
+  if (!city) return [];
+
+  // Then get top places
+  const { data, error } = await supabase
+    .from('places')
+    .select(`
+      *,
+      category:categories(*),
+      location:locations(*)
+    `)
+    .eq('location_id', city.id)
+    .eq('status', 'approved')
+    .order('vote_score', { ascending: false })
+    .limit(limit);
 
   if (error) throw error;
   return data;

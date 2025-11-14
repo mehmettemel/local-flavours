@@ -36,7 +36,6 @@ export function LocationDialog({ isOpen, onClose, location }: LocationDialogProp
     slug: '',
     nameEn: '',
     nameTr: '',
-    nameEs: '',
     type: 'city' as 'country' | 'city' | 'district',
     parentId: '',
     hasDistricts: false,
@@ -64,7 +63,6 @@ export function LocationDialog({ isOpen, onClose, location }: LocationDialogProp
         slug: location.slug || '',
         nameEn: names?.en || '',
         nameTr: names?.tr || '',
-        nameEs: names?.es || '',
         type: location.type || 'city',
         parentId: location.parent_id || '',
         hasDistricts: location.has_districts || false,
@@ -76,7 +74,6 @@ export function LocationDialog({ isOpen, onClose, location }: LocationDialogProp
         slug: '',
         nameEn: '',
         nameTr: '',
-        nameEs: '',
         type: 'city',
         parentId: '',
         hasDistricts: false,
@@ -93,7 +90,6 @@ export function LocationDialog({ isOpen, onClose, location }: LocationDialogProp
         names: {
           en: data.nameEn,
           tr: data.nameTr,
-          es: data.nameEs,
         },
         type: data.type,
         parent_id: data.parentId || null,
@@ -222,15 +218,6 @@ export function LocationDialog({ isOpen, onClose, location }: LocationDialogProp
                 value={formData.nameTr}
                 onChange={(e) => handleChange('nameTr', e.target.value)}
                 placeholder="İstanbul"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="nameEs">Spanish Name</Label>
-              <Input
-                id="nameEs"
-                value={formData.nameEs}
-                onChange={(e) => handleChange('nameEs', e.target.value)}
-                placeholder="Estambul"
               />
             </div>
           </div>

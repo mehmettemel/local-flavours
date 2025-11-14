@@ -29,7 +29,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
     slug: '',
     nameEn: '',
     nameTr: '',
-    nameEs: '',
     icon: '',
     displayOrder: '',
   });
@@ -41,7 +40,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
         slug: category.slug || '',
         nameEn: names?.en || '',
         nameTr: names?.tr || '',
-        nameEs: names?.es || '',
         icon: category.icon || '',
         displayOrder: category.display_order?.toString() || '',
       });
@@ -50,7 +48,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
         slug: '',
         nameEn: '',
         nameTr: '',
-        nameEs: '',
         icon: '',
         displayOrder: '',
       });
@@ -64,7 +61,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
         names: {
           en: data.nameEn,
           tr: data.nameTr,
-          es: data.nameEs,
         },
         icon: data.icon,
         display_order: data.displayOrder ? parseInt(data.displayOrder) : 0,
@@ -138,15 +134,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
                 value={formData.nameTr}
                 onChange={(e) => handleChange('nameTr', e.target.value)}
                 placeholder="Restoranlar"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="nameEs">Spanish Name</Label>
-              <Input
-                id="nameEs"
-                value={formData.nameEs}
-                onChange={(e) => handleChange('nameEs', e.target.value)}
-                placeholder="Restaurantes"
               />
             </div>
           </div>

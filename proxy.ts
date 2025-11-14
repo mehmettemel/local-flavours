@@ -9,7 +9,20 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'as-needed',
 });
 
-export async function middleware(request: NextRequest) {
+// Protected routes that require authentication
+const protectedRoutes = [
+  '/my-collections',
+  '/favorites',
+  '/settings',
+  '/profile/edit',
+];
+
+// Admin-only routes
+const adminRoutes = ['/admin'];
+
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
   // Handle internationalization first
   let response = intlMiddleware(request);
 
@@ -38,7 +51,36 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refresh session if expired
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // Check if route is protected and user is not authenticated
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.includes(route)
+  );
+  const isAdminRoute = adminRoutes.some((route) => pathname.includes(route));
+
+  if ((isProtectedRoute || isAdminRoute) && !user) {
+    // Redirect to home with auth modal flag
+    const redirectUrl = new URL('/', request.url);
+    redirectUrl.searchParams.set('auth', 'login');
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Check admin access
+  if (isAdminRoute && user) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile || (profile.role !== 'admin' && profile.role !== 'moderator')) {
+      // Redirect non-admin users
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
 
   return response;
 }
@@ -50,7 +92,7 @@ export const config = {
 
     // Set a cookie to remember the previous locale for
     // all requests that have a locale prefix
-    '/(tr|en|es)/:path*',
+    '/(tr|en)/:path*',
 
     // Enable redirects that add missing locales
     // (e.g. `/pathnames` -> `/en/pathnames`)

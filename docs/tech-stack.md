@@ -183,7 +183,7 @@ CREATE TABLE locations (
   parent_id UUID REFERENCES locations(id),
   type location_type NOT NULL,
   slug VARCHAR(100) NOT NULL,
-  names JSONB NOT NULL,  -- {"en": "Istanbul", "tr": "İstanbul", "es": "Estambul"}
+  names JSONB NOT NULL,  -- {"en": "Istanbul", "tr": "İstanbul"}
   path TEXT,             -- Materialized path: /turkey/istanbul
   has_districts BOOLEAN DEFAULT FALSE,
   latitude DECIMAL(10, 8),
@@ -388,18 +388,17 @@ USING (
 **Supported Locales:**
 - `en` - English (primary)
 - `tr` - Turkish
-- `es` - Spanish
 
 ### Implementation
 
 **Config** (`i18n/config.ts`):
 ```typescript
-export const locales = ['en', 'tr', 'es'] as const;
+export const locales = ['en', 'tr'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'en';
 ```
 
-**Middleware** (`middleware.ts`):
+**Proxy** (`proxy.ts`):
 ```typescript
 import createMiddleware from 'next-intl/middleware';
 import { locales, defaultLocale } from './i18n/config';
@@ -410,7 +409,7 @@ const intlMiddleware = createMiddleware({
   localePrefix: 'as-needed', // Don't show /en in URL
 });
 
-export default async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Handle i18n
   const response = intlMiddleware(request);
 
@@ -425,8 +424,7 @@ export default async function middleware(request: NextRequest) {
 ```
 messages/
 ├── en.json
-├── tr.json
-└── es.json
+└── tr.json
 ```
 
 Example (`messages/en.json`):
@@ -472,7 +470,7 @@ export function Component() {
 import { useLocale } from 'next-intl';
 
 export function Component() {
-  const locale = useLocale(); // 'en' | 'tr' | 'es'
+  const locale = useLocale(); // 'en' | 'tr'
   return <div>Current locale: {locale}</div>;
 }
 ```
@@ -486,13 +484,11 @@ All user-facing content stored as JSONB:
 {
   names: {
     en: "Karaköy Lokantası",
-    tr: "Karaköy Lokantası",
-    es: "Karaköy Lokantası"
+    tr: "Karaköy Lokantası"
   },
   descriptions: {
     en: "Traditional Turkish restaurant with amazing mezes",
-    tr: "Muhteşem mezeleri olan geleneksel Türk restoranı",
-    es: "Restaurante turco tradicional con mezes increíbles"
+    tr: "Muhteşem mezeleri olan geleneksel Türk restoranı"
   }
 }
 ```
@@ -817,7 +813,8 @@ local-flavours/
 │   │   │   ├── page.tsx            # Dashboard overview
 │   │   │   ├── places/             # Places CRUD
 │   │   │   ├── locations/          # Locations CRUD
-│   │   │   └── categories/         # Categories CRUD
+│   │   │   ├── categories/         # Categories CRUD
+│   │   │   └── collections/        # Collections CRUD
 │   │   └── turkey/
 │   │       └── [city]/
 │   │           └── [district]/
@@ -832,7 +829,8 @@ local-flavours/
 │   ├── admin/                      # Admin-specific components
 │   │   ├── place-dialog.tsx        # Place CRUD modal
 │   │   ├── location-dialog.tsx     # Location CRUD modal
-│   │   └── category-dialog.tsx     # Category CRUD modal
+│   │   ├── category-dialog.tsx     # Category CRUD modal
+│   │   └── collection-dialog.tsx   # Collection CRUD modal
 │   ├── locations/
 │   │   └── city-card.tsx           # City display card
 │   ├── providers/
@@ -844,7 +842,8 @@ local-flavours/
 ├── lib/
 │   ├── api/                        # API functions (server-side only)
 │   │   ├── locations.ts
-│   │   └── places.ts
+│   │   ├── places.ts
+│   │   └── collections.ts          # Collection CRUD operations
 │   ├── supabase/                   # Supabase clients
 │   │   ├── client.ts               # Browser client
 │   │   ├── server.ts               # Server client
@@ -860,13 +859,13 @@ local-flavours/
 │
 ├── messages/                       # Translation files
 │   ├── en.json
-│   ├── tr.json
-│   └── es.json
+│   └── tr.json
 │
 ├── supabase/
 │   └── migrations/
 │       ├── 001_initial_schema.sql  # Database schema
-│       └── 002_seed_data.sql       # Initial seed data
+│       ├── 002_seed_data.sql       # Initial seed data
+│       └── 003_collections_schema.sql # Collections system
 │
 ├── scripts/
 │   └── seed-supabase.ts            # Seeding script
@@ -878,7 +877,7 @@ local-flavours/
 ├── .env.local                      # Environment variables (gitignored)
 ├── .env.example                    # Example env file
 ├── components.json                 # shadcn/ui config
-├── middleware.ts                   # Next.js middleware
+├── proxy.ts                        # Next.js proxy (middleware)
 ├── next.config.ts                  # Next.js configuration
 ├── tailwind.config.ts              # Tailwind CSS config
 ├── tsconfig.json                   # TypeScript config

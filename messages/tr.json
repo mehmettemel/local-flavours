@@ -48,6 +48,12 @@
     "noPlaces": "Mekan bulunamadı",
     "pendingApproval": "Onay Bekliyor"
   },
+  "city": {
+    "subtitle": "{count} üst düzey mekanı keşfedin",
+    "districts": "İlçelere Göre Gözat",
+    "topPlaces": "En İyi Mekanlar",
+    "noPlaces": "Bu şehirde henüz mekan bulunmuyor. İlk öneren siz olun!"
+  },
   "categories": {
     "all": "Tüm Kategoriler",
     "restaurants": "Restoranlar",

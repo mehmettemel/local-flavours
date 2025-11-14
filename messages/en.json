@@ -48,6 +48,12 @@
     "noPlaces": "No places found",
     "pendingApproval": "Pending Approval"
   },
+  "city": {
+    "subtitle": "Discover {count} top-rated places",
+    "districts": "Browse by District",
+    "topPlaces": "Top Rated Places",
+    "noPlaces": "No places found in this city yet. Be the first to suggest one!"
+  },
   "categories": {
     "all": "All Categories",
     "restaurants": "Restaurants",

@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { locales } from '@/i18n/config';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
+import { AuthProvider } from '@/lib/contexts/auth-context';
 import '../globals.css';
 
 const geistSans = Geist({
@@ -46,9 +47,11 @@ export default async function LocaleLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <NextIntlClientProvider messages={messages}>
-              {children}
-            </NextIntlClientProvider>
+            <AuthProvider>
+              <NextIntlClientProvider messages={messages}>
+                {children}
+              </NextIntlClientProvider>
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

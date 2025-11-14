@@ -2,124 +2,232 @@
 
 ## What is LocalFlavors?
 
-LocalFlavors is a community-driven platform designed to help people discover authentic restaurants, cafes, and hidden gems in cities around the world. Unlike traditional review platforms, LocalFlavors focuses on building a trusted community where users can share their genuine experiences and vote for their favorite places.
+LocalFlavors is a community-driven platform designed to help people discover authentic restaurants, cafes, and hidden gems in cities around the world. Unlike traditional review platforms, LocalFlavors uses a unique collection-based voting system where users create curated lists of their favorite places, and the community votes on these collections to determine the true top 20 places in each location.
 
 ## Core Mission
 
-Our mission is to create a reliable, community-powered platform that helps travelers and locals discover the best dining experiences in any city, starting with Turkey. We believe in the power of collective wisdom and aim to surface truly exceptional places through a democratic voting system and trust-based community engagement.
+Our mission is to create a reliable, community-powered platform that helps travelers and locals discover the best dining experiences in any city, starting with Turkey. We believe in the power of collective curation and democratic voting - where individual taste meets community wisdom to surface truly exceptional places.
 
 ## Key Features
 
 ### 1. **Hierarchical Location System**
+
 - **Country Level**: Starting with Turkey, expandable to other countries
-- **City Level**: Major cities like Istanbul, Ankara, Izmir, Antalya, etc.
+- **City Level**: Major cities like Istanbul, Ankara, Izmir, Adana, etc.
 - **District Level**: Detailed district-level browsing for large cities (e.g., Kadıköy, Beşiktaş in Istanbul)
 
 This hierarchical structure allows users to browse from broad to specific locations, making discovery intuitive and organized.
 
-### 2. **Community Voting & Trust Score**
-- **Democratic Voting**: Users can vote for places they recommend
-- **Weighted Votes**: Vote weight increases with account age to prevent manipulation
+### 2. **Collection-Based Curation System** 🆕
+
+**How It Works:**
+
+- **Users Create Collections**: Registered users create curated collections for specific locations and categories (e.g., "Mehmet's Top 10 Kebab Places in Adana")
+- **Community Votes on Collections**: Other users vote on entire collections, indicating trust in that curator's taste
+- **Places Accumulate Votes**: Each place in a collection receives votes when the collection is voted on
+- **Top 20 Emerges**: The platform aggregates all votes across all collections to determine the definitive Top 20 for each location/category
+
+**Example Flow:**
+
+1. User A creates "Best Breakfast Spots in Kadıköy" (10 places)
+2. User B creates "Hidden Breakfast Gems in Kadıköy" (8 places)
+3. Community members vote on these collections
+4. Places that appear in multiple highly-voted collections rise to the top
+5. Final Top 20 reflects collective wisdom from multiple curators
+
+**Why This Is Unique:**
+
+- Personal curation meets democratic validation
+- Prevents single-point-of-failure bias (no one person controls rankings)
+- Rewards good curators with visibility
+- Creates engaging content through diverse perspectives
+- Natural quality filter (bad collections get fewer votes)
+
+### 3. **Weighted Voting System**
+
+- **Collection-Level Voting**: Users vote on entire collections
+- **Vote Weight by Account Age**: Prevents manipulation
   - Accounts < 30 days: 0.5x weight
   - Accounts 30-90 days: 0.75x weight
   - Accounts 90-180 days: 1.0x weight
   - Accounts > 180 days: 1.2x weight
-- **Trust Score**: Calculated based on vote_score, total votes, and vote_percentage
-- **Top 20 Focus**: Each location showcases the top 20 places based on community votes
+- **Trust Score**: Collections and places earn trust scores based on vote patterns
+- **Top 20 Calculation**: Aggregated from all collection votes
 
-### 3. **Multi-Language Support**
+### 4. **Multi-Language Support**
+
 LocalFlavors is built with internationalization at its core:
+
 - **Turkish (TR)**: Primary language for Turkish users
 - **English (EN)**: International audience
-- **Spanish (ES)**: Expanding to Spanish-speaking markets
 
-All content (place names, descriptions, categories, locations) is stored in multiple languages, ensuring a native experience for all users.
+All content (place names, descriptions, categories, locations, collection names) is stored in multiple languages, ensuring a native experience for all users.
 
-### 4. **Category-Based Discovery**
-Places are organized into intuitive categories:
-- **Restaurants**: Traditional and modern dining experiences
-- **Cafes**: Coffee shops and casual dining
-- **Bars & Pubs**: Nightlife and social venues
-- (More categories can be added as the platform grows)
+### 5. **Hierarchical Category-Based Discovery**
 
-### 5. **Admin Dashboard**
+Places are organized into intuitive main categories with detailed subcategories:
+
+**Main Categories:**
+
+- **🍽️ Yemek (Food)**: Restaurants and food establishments
+- **☕ Kafe (Cafe)**: Coffee shops and casual dining
+- **💎 Hidden Gem**: Unique, lesser-known local favorites
+- **🍺 Bar & Pub**: Nightlife and social venues
+
+**Food Subcategories** (for detailed browsing):
+
+- 🍕 Pideci (Pide restaurants)
+- 🥙 Kebapçı (Kebab restaurants)
+- 🍔 Hamburgerci (Burger joints)
+- 🌯 Dürümcü (Wrap restaurants)
+- 🍰 Tatlıcı (Dessert shops)
+- 🍜 Çorbacı (Soup restaurants)
+- 🥘 Ev Yemekleri (Home-style cooking)
+- 🐟 Balık & Deniz Ürünleri (Fish & Seafood)
+- 🍕 Pizza
+- 🍝 İtalyan (Italian cuisine)
+- 🌮 Uluslararası Mutfak (International cuisine)
+
+Collections can be created for any location + category combination, allowing for highly specific curation.
+
+### 6. **Admin Dashboard**
+
 A comprehensive admin panel for content management:
+
 - **Places Management**: Create, edit, and moderate place listings
+- **Collections Management**: Monitor and moderate user-created collections
 - **Locations Management**: Manage countries, cities, and districts
-- **Categories Management**: Organize and maintain place categories
-- **Approval System**: Review and approve community-submitted places
+- **Categories Management**: Organize and maintain main categories and subcategories
+- **Approval System**: Review and approve community-submitted places and collections
+- **Analytics**: View collection engagement, voting patterns, and trending places
 
-### 6. **Place Submission & Moderation**
-- **Community Submissions**: Users can suggest new places
-- **Approval Workflow**: Submitted places go through a moderation process (pending → approved/rejected)
-- **Quality Control**: Ensures only genuine, quality establishments are featured
+### 7. **Collection Creation & Management**
 
-### 7. **Rate Limiting & Anti-Spam**
-- **Vote Rate Limiting**: Users limited to 10 votes per hour
-- **Submission Rate Limiting**: Users can submit 5 places per day
+- **Easy Collection Builder**: Users can search and add places to their collections
+- **Collection Themes**: Collections can have specific themes (e.g., "Budget-Friendly", "Romantic Dates", "Late Night Eats")
+- **Collaborative Collections**: (Future) Multiple users can contribute to a single collection
+- **Collection Updates**: Creators can update their collections, maintaining freshness
+- **Collection Discovery**: Browse popular collections, follow favorite curators
+
+### 8. **Rate Limiting & Anti-Spam**
+
+- **Collection Creation Limiting**: Users can create 3 collections per week
+- **Vote Rate Limiting**: Users limited to 20 collection votes per day
+- **Quality Control**: Collections with no votes for 90 days may be archived
 - **IP-based & User-based Tracking**: Prevents abuse from both authenticated and anonymous users
 
 ## Target Audience
 
 ### Primary Users
-1. **Travelers**: People visiting Turkey looking for authentic local experiences
-2. **Locals**: Residents discovering new places in their own cities
-3. **Expats**: International residents navigating local dining scenes
-4. **Food Enthusiasts**: People passionate about culinary experiences
+
+1. **Travelers**: People visiting Turkey looking for authentic local experiences through trusted collections
+2. **Locals**: Residents sharing their insider knowledge through curated collections
+3. **Expats**: International residents creating guides for their adopted cities
+4. **Food Enthusiasts**: People passionate about culinary experiences who want to share their discoveries
+5. **Curators**: Users who love organizing and sharing recommendations
 
 ### Use Cases
-- Planning a trip to Istanbul and looking for top-rated restaurants in Kadıköy
-- A local wanting to discover hidden gems in their neighborhood
-- An expat looking for authentic Turkish cuisine recommendations
-- A food blogger researching the best cafes in a new city
+
+- A local creating "My Favorite Hidden Breakfast Spots in Kadıköy" collection
+- A traveler finding "Best First-Time Visitor Restaurants in Istanbul" curated by locals
+- An expat building "Vegetarian-Friendly Adana" collection
+- A food blogger creating themed collections for different occasions
+- Community members voting on collections that match their taste
 
 ## How It Works
 
 ### For Visitors (Unauthenticated Users)
-1. Browse locations hierarchically (Turkey → Istanbul → Kadıköy)
-2. View the top 20 places in any location
-3. Filter by category (restaurants, cafes, bars)
-4. See detailed information about each place (description, address, images)
-5. View vote counts and trust scores
 
-### For Registered Users (Future Feature)
+1. Browse locations hierarchically (Turkey → Istanbul → Kadıköy)
+2. View the top 20 places in any location (aggregated from all collections)
+3. Filter by main category (Yemek, Kafe, Bar, Hidden Gem)
+4. Drill down to subcategories (e.g., Yemek → Pideci)
+5. Browse popular collections for that location
+6. See which collections feature each place
+7. View collection details and vote counts
+
+### For Registered Users
+
 1. All visitor features, plus:
-2. Vote for favorite places
-3. Submit new place suggestions
-4. Build reputation with account age
-5. Create personal lists and favorites
-6. Leave detailed reviews and photos
+2. **Create Collections**: Build curated lists for specific locations/categories
+3. **Vote on Collections**: Support collections that match your taste
+4. **Follow Curators**: Keep track of users whose taste you trust
+5. **Build Reputation**: Gain followers as your collections earn votes
+6. **Track Collection Performance**: See how your collections are performing
+7. **Suggest New Places**: Add places not yet in the system
+8. **Comment on Collections**: Engage with curators (Future feature)
 
 ### For Administrators
+
 1. Access admin dashboard at `/admin`
 2. Review and approve submitted places
-3. Manage locations (add new cities/districts)
-4. Organize categories
-5. Moderate content
-6. View analytics and statistics
+3. Moderate collections (remove spam/inappropriate content)
+4. Manage locations (add new cities/districts)
+5. Organize main categories and subcategories
+6. View analytics on collection engagement
+7. Featured collections curation
 
 ## Content Structure
 
+### Collections (New Core Entity)
+
+Each collection contains:
+
+- **Multi-language Title**: "Mehmet's Adana Kebab Guide" (en, tr)
+- **Multi-language Description**: What makes this collection special
+- **Creator**: User who created the collection
+- **Location**: Associated city or district
+- **Category**: Main category (Yemek, Kafe, etc.)
+- **Subcategory**: Optional specific type (Kebapçı, Pideci, etc.)
+- **Places List**: Array of places in the collection (ordered by creator)
+- **Vote Count**: Total votes received
+- **Vote Score**: Weighted vote total
+- **Status**: active, archived, or flagged
+- **Timestamps**: created_at, updated_at
+- **Metadata**: tags, themes, occasion suggestions
+
 ### Places
+
 Each place contains:
-- **Multi-language Names**: en, tr, es
+
+- **Multi-language Names**: en, tr
 - **Multi-language Descriptions**: Detailed information in each language
-- **Category**: Restaurant, cafe, bar, etc.
+- **Main Category**: Yemek, Kafe, Bar & Pub, or Hidden Gem
+- **Subcategory**: Specific type (e.g., Pideci, Kebapçı) - only for Yemek category
 - **Location**: Associated city or district
 - **Address**: Physical location
 - **Images**: Photo gallery (stored as URLs)
 - **Status**: pending, approved, or rejected
-- **Voting Stats**: vote_score, total_votes, vote_percentage
+- **Collection Appearances**: Count of how many collections feature this place
+- **Aggregated Vote Score**: Total votes from all collections featuring this place
 - **Trust Score**: Calculated quality metric
 - **Timestamps**: created_at, updated_at
 
-### Locations
+### Categories
+
 Hierarchical structure:
+
+- **Main Categories**: Yemek, Kafe, Bar & Pub, Hidden Gem
+- **Subcategories**: Pideci, Kebapçı, Hamburgerci, etc. (only under Yemek)
+
+Each category has:
+
+- **Slug**: URL-friendly identifier (pideci, kebapci, hamburgerci)
+- **Multi-language Names**
+- **Parent Category**: Reference to main category (null for main categories)
+- **Icon**: Emoji or icon identifier
+- **Display Order**: For sorting in UI
+
+### Locations
+
+Hierarchical structure:
+
 - **Countries**: e.g., Turkey
 - **Cities**: e.g., Istanbul, Ankara (parent: country)
 - **Districts**: e.g., Kadıköy, Beşiktaş (parent: city)
 
 Each location has:
+
 - **Type**: country, city, or district
 - **Slug**: URL-friendly identifier
 - **Multi-language Names**
@@ -127,99 +235,174 @@ Each location has:
 - **Coordinates**: latitude, longitude
 - **has_districts**: Flag indicating if it has sub-locations
 
+### Users (Enhanced for Collections)
+
+- **Profile**: username, bio, profile picture
+- **Collections**: List of created collections
+- **Followers**: Users who follow this curator
+- **Following**: Curators this user follows
+- **Reputation Score**: Based on collection votes and engagement
+- **Account Age**: For vote weighting
+- **Activity Stats**: collections created, votes given, places added
+
+## URL Structure Examples
+
+```
+/turkiye/adana                                    → Top 20 all categories in Adana
+/turkiye/adana/collections                        → Browse collections for Adana
+/turkiye/adana/yemek                              → Top 20 all food places in Adana
+/turkiye/adana/yemek/collections                  → Food-specific collections
+/turkiye/adana/yemek/pideci                       → Top 20 pide restaurants in Adana
+/turkiye/adana/yemek/kebapci/collections          → Kebab-specific collections
+/turkiye/istanbul/kadikoy                         → Top 20 all categories in Kadıköy
+/collection/mehmet-adana-kebap-rehberi           → Individual collection page
+/user/mehmet/collections                          → User's collection profile
+```
+
 ## Future Roadmap
 
-### Phase 1 (Current)
+### Phase 1 (Current - MVP)
+
 - ✅ Core platform architecture
 - ✅ Location hierarchy system
-- ✅ Basic place listings
-- ✅ Admin dashboard
+- ✅ Hierarchical category system (main + subcategories)
+- ✅ Collection database schema and tables
+- ✅ Collection creation and management system (Admin CRUD)
+- ✅ Collection-based voting mechanism (Database triggers)
+- ✅ Admin dashboard with collection moderation
 - ✅ Multi-language support
+- 🔄 User authentication (Supabase Auth)
+- 🔄 Basic user profiles
+- 🔄 Top 20 calculation from aggregated collection votes
+- 🔄 Public collection browsing interface
 
 ### Phase 2 (Upcoming)
-- 🔄 User authentication (Supabase Auth)
-- 🔄 Voting system implementation
-- 🔄 Place submission by users
-- 🔄 User profiles
 
-### Phase 3 (Future)
-- 📋 Reviews and comments
-- 📋 Photo uploads
-- 📋 Personal lists and favorites
-- 📋 Social features (follow users, share lists)
+- 📋 Collection discovery and browsing
+- 📋 User following system
+- 📋 Curator reputation system
+- 📋 Collection search and filtering
+- 📋 Place suggestions by users
+- 📋 Collection sharing on social media
+- 📋 Email notifications for collection votes
+
+### Phase 3 (Future - Enhanced Features)
+
+- 📋 **Flavor Pairing System**: Community-curated menu combinations for each place
+  - Users suggest dish combinations (e.g., "Adana + Ayran + Közlenmiş Biber")
+  - Upvote/downvote system for combinations
+  - Display top combos on place pages
+  - Help newcomers order like locals
+- 📋 **Comparative Battle System** (Unique Gameplay):
+  - Head-to-head place comparisons
+  - Swipeable interface (Tinder-style)
+  - ELO rating system for scientific rankings
+  - Engaging gamification for vote collection
+  - "Would you rather eat at A or B?" format
+- 📋 Collection comments and discussions
+- 📋 Collaborative collections (multiple curators)
+- 📋 Collection versioning and history
+- 📋 Advanced analytics for curators
 
 ### Phase 4 (Advanced)
+
 - 📋 Mobile apps (React Native)
-- 📋 Advanced search and filtering
-- 📋 Recommendation engine
+- 📋 Real-time status updates ("currently crowded", "dish sold out")
+- 📋 Photo uploads by users
 - 📋 Integration with maps
 - 📋 Reservation system integration
-- 📋 Analytics dashboard
+- 📋 Push notifications for collection updates
+- 📋 Curator monetization (premium collections)
 
 ### Phase 5 (Expansion)
+
 - 📋 Expand to more countries
 - 📋 Business accounts for restaurants
-- 📋 Paid promotions and features
+- 📋 Featured collection partnerships
 - 📋 API for third-party integrations
+- 📋 Collection export/import features
+- 📋 AI-powered collection suggestions
 
 ## Design Philosophy
 
-### User-Centric
-Every feature is designed with the end-user in mind. The interface is clean, intuitive, and focuses on helping users discover great places quickly.
+### Curation-First
+
+We believe the best recommendations come from passionate individuals who take time to curate their experiences. The collection system empowers users to become trusted guides.
+
+### Democratic Validation
+
+While curation is personal, validation is democratic. The community collectively determines which collections and places deserve the top spots through their votes.
 
 ### Community-Driven
-Trust is built through community participation. The voting system and account-age weighting ensure that genuine recommendations rise to the top.
+
+Trust is built through both individual expertise and collective wisdom. The platform rewards good curators while preventing single-source bias.
 
 ### Scalable Architecture
-Built with modern technologies and best practices to ensure the platform can grow from Turkey to global coverage without major rewrites.
+
+Built with modern technologies and best practices to ensure the platform can grow from Turkey to global coverage without major rewrites. The flexible collection system can accommodate any location or category.
 
 ### Multi-Language First
-Internationalization isn't an afterthought—it's baked into every aspect of the platform, from data models to UI components.
+
+Internationalization isn't an afterthought—it's baked into every aspect of the platform, from data models to UI components to collection titles.
 
 ### Performance-Focused
-Server-side rendering, edge caching, and optimized queries ensure fast page loads regardless of location.
+
+Server-side rendering, edge caching, and optimized queries ensure fast page loads regardless of location or number of collections.
 
 ## Success Metrics
 
 ### Key Performance Indicators (KPIs)
+
 1. **User Engagement**
    - Monthly active users
-   - Average session duration
-   - Pages per session
+   - Collections created per month
+   - Votes cast per day
+   - Average collections viewed per session
+   - Curator follow rate
 
 2. **Content Growth**
+   - Number of active collections
    - Number of places added
    - Number of active cities/districts
-   - User-generated submissions
+   - Collections per location
+   - Average places per collection
 
 3. **Community Health**
-   - Daily votes cast
+   - Daily collection votes
    - User retention rate
-   - Time to vote consistency
+   - Curator engagement rate
+   - Collection quality score (votes per collection)
+   - Vote distribution across collections
 
 4. **Quality Metrics**
-   - Approval rate of submissions
-   - Places with 10+ votes
+   - Collections with 10+ votes
+   - Places appearing in multiple collections
    - User satisfaction score
+   - Collection abandonment rate
+   - Curator reputation distribution
 
 ## Competitive Advantages
 
-1. **Focus on Authenticity**: Unlike platforms dominated by tourist traps, we emphasize genuine local favorites
-2. **Simple Voting**: No complex reviews to write—just vote for places you recommend
-3. **Trust System**: Account-age weighting prevents fake reviews and vote manipulation
-4. **Top 20 Focus**: Curated, quality over quantity approach
-5. **True Multi-language**: Not just translations, but native content in each language
-6. **Community-First**: No paid placements or business-biased rankings
+1. **Collection-Based System**: Unique approach that combines personal curation with democratic validation
+2. **Curator Economy**: Rewards passionate locals and food enthusiasts
+3. **Trust Through Diversity**: Multiple perspectives prevent bias
+4. **Engaging Content**: Collections tell stories, not just lists
+5. **Community-First**: No paid placements or business-biased rankings
+6. **Granular Categories**: Find exactly what you're looking for
+7. **Future-Ready**: Flavor pairing and comparative battle systems will create addictive engagement
 
 ## Technical Highlights
 
-- **Modern Stack**: Next.js 16, React, TypeScript
+- **Modern Stack**: Next.js 15, React 19, TypeScript
 - **Real-time Data**: Supabase with PostgreSQL
 - **Edge-Ready**: Built for deployment on Vercel Edge Network
 - **Type-Safe**: Full TypeScript coverage with generated database types
-- **Scalable Database**: PostgreSQL with RLS, triggers, and materialized paths
-- **SEO-Optimized**: Server-side rendering with dynamic metadata
+- **Scalable Database**: PostgreSQL with RLS, triggers, and materialized paths for hierarchies
+- **Vote Aggregation**: Efficient algorithms for calculating Top 20 from collection votes
+- **SEO-Optimized**: Server-side rendering with dynamic metadata for each location/category/collection
+- **Component Library**: shadcn/ui with Tailwind CSS for consistent, beautiful UI
+- **Authentication**: Supabase Auth with social login support
 
 ---
 
-**LocalFlavors** - Discover authentic places, powered by community wisdom.
+**LocalFlavors** - Where personal curation meets community wisdom.

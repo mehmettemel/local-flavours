@@ -17,7 +17,6 @@ import { locales, type Locale } from '@/i18n/config';
 const languageNames: Record<Locale, { native: string; flag: string }> = {
   en: { native: 'English', flag: '🇬🇧' },
   tr: { native: 'Türkçe', flag: '🇹🇷' },
-  es: { native: 'Español', flag: '🇪🇸' },
 };
 
 export function LanguageSwitcher() {

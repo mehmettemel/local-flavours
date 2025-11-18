@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { Database } from '@/types/database';
@@ -42,10 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   // Fetch user profile from public.users table with retry logic
-  const fetchProfile = async (userId: string, retryCount = 0, maxRetries = 3) => {
+  const fetchProfile = useCallback(async (userId: string, retryCount = 0, maxRetries = 3) => {
     try {
       console.log(`🔍 Fetching profile for user: ${userId} (attempt ${retryCount + 1}/${maxRetries + 1})`);
       const { data, error } = await supabase
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('❌ Unexpected error fetching profile:', error);
       setProfile(null);
     }
-  };
+  }, [supabase]);
 
   // Initialize auth state
   useEffect(() => {
@@ -137,7 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, fetchProfile]);
 
   // Sign up with email and password
   const signUp = async (email: string, password: string, username?: string) => {

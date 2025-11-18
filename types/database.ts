@@ -427,7 +427,16 @@ export interface Database {
         };
       };
     };
-    Views: {};
+    Views: {
+      user_preferences: {
+        Row: {
+          user_id: string;
+          email_notifications: boolean;
+          collection_vote_notifications: boolean;
+          new_follower_notifications: boolean;
+        };
+      };
+    };
     Functions: {
       calculate_vote_weight: {
         Args: {

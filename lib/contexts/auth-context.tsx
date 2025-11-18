@@ -12,11 +12,18 @@ interface AuthContextType {
   profile: UserProfile | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, username?: string) => Promise<{
+  signUp: (
+    email: string,
+    password: string,
+    username?: string
+  ) => Promise<{
     user: User | null;
     error: AuthError | null;
   }>;
-  signIn: (email: string, password: string) => Promise<{
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{
     user: User | null;
     error: AuthError | null;
   }>;
@@ -65,13 +72,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log('🚀 Initializing auth state...');
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('📦 Session data:', session ? 'Session exists' : 'No session');
+      console.log(
+        '📦 Session data:',
+        session ? 'Session exists' : 'No session'
+      );
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
         console.log('👤 User found, fetching profile...');
         fetchProfile(session.user.id).finally(() => {
-          console.log('✅ Auth initialization complete, setting loading = false');
+          console.log(
+            '✅ Auth initialization complete, setting loading = false'
+          );
           setLoading(false);
         });
       } else {
@@ -84,7 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 Auth state changed:', event, session ? 'Session exists' : 'No session');
+      console.log(
+        '🔄 Auth state changed:',
+        event,
+        session ? 'Session exists' : 'No session'
+      );
       setSession(session);
       setUser(session?.user ?? null);
 
@@ -107,9 +123,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Sign up with email and password
   const signUp = async (email: string, password: string, username?: string) => {
     try {
-      // Get current locale from URL path
-      const locale = window.location.pathname.split('/')[1] || 'en';
-
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -117,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: {
             username: username || email.split('@')[0],
           },
-          emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -173,11 +186,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Reset password
   const resetPassword = async (email: string) => {
-    // Get current locale from URL path
-    const locale = window.location.pathname.split('/')[1] || 'en';
-
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/${locale}/auth/reset-password`,
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     });
     return { error };
   };

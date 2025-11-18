@@ -276,7 +276,8 @@ CREATE POLICY "Anyone can view follows" ON user_follows
 CREATE POLICY "Users can manage own follows" ON user_follows
   FOR ALL USING (auth.uid() = follower_id);
 
--- Add columns to users table for collection-related stats
+-- Add columns to users table for collection-related stats (if not already added in 001_initial_schema.sql)
+-- These columns are now in 001_initial_schema.sql, but kept here for backward compatibility
 ALTER TABLE users ADD COLUMN IF NOT EXISTS followers_count INTEGER DEFAULT 0;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS following_count INTEGER DEFAULT 0;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS collections_count INTEGER DEFAULT 0;

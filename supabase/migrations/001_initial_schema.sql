@@ -14,6 +14,10 @@ CREATE TABLE users (
   trust_score INTEGER DEFAULT 100 CHECK (trust_score >= 0 AND trust_score <= 1000),
   role user_role DEFAULT 'user',
   email_verified BOOLEAN DEFAULT FALSE,
+  followers_count INTEGER DEFAULT 0,
+  following_count INTEGER DEFAULT 0,
+  collections_count INTEGER DEFAULT 0,
+  reputation_score INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

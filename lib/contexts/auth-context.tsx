@@ -44,10 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  // Fetch user profile from public.users table
-  const fetchProfile = async (userId: string) => {
+  // Fetch user profile from public.users table with retry logic
+  const fetchProfile = async (userId: string, retryCount = 0, maxRetries = 3) => {
     try {
-      console.log('🔍 Fetching profile for user:', userId);
+      console.log(`🔍 Fetching profile for user: ${userId} (attempt ${retryCount + 1}/${maxRetries + 1})`);
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -56,13 +56,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('❌ Error fetching profile:', error);
-        throw error;
+        console.error('Error details:', JSON.stringify(error, null, 2));
+
+        // If profile not found and we haven't exhausted retries, try again
+        // This handles the case where the trigger hasn't created the profile yet
+        if (error.code === 'PGRST116' && retryCount < maxRetries) {
+          const delay = Math.pow(2, retryCount) * 500; // Exponential backoff: 500ms, 1s, 2s
+          console.log(`⏳ Profile not found, retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchProfile(userId, retryCount + 1, maxRetries);
+        }
+
+        // Don't throw, just set profile to null and continue
+        setProfile(null);
+        return;
       }
 
       console.log('✅ Profile fetched successfully:', data);
       setProfile(data);
     } catch (error) {
-      console.error('❌ Error fetching profile:', error);
+      console.error('❌ Unexpected error fetching profile:', error);
       setProfile(null);
     }
   };
@@ -71,10 +84,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     console.log('🚀 Initializing auth state...');
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('❌ Error getting session:', error);
+      }
       console.log(
         '📦 Session data:',
-        session ? 'Session exists' : 'No session'
+        session ? `Session exists for user ${session.user.id}` : 'No session'
       );
       setSession(session);
       setUser(session?.user ?? null);
@@ -90,6 +106,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log('❌ No user, setting loading = false');
         setLoading(false);
       }
+    }).catch((error) => {
+      console.error('❌ Unexpected error in getSession:', error);
+      setLoading(false);
     });
 
     // Listen for auth changes
@@ -153,19 +172,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Sign in with email and password
   const signIn = async (email: string, password: string) => {
     try {
+      console.log('🔑 Attempting to sign in...');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) return { user: null, error };
+      if (error) {
+        console.error('❌ Sign in error:', error);
+        return { user: null, error };
+      }
+
+      console.log('✅ Sign in successful, user:', data.user?.id);
 
       if (data.user) {
-        await fetchProfile(data.user.id);
+        // Fetch profile but don't block on it
+        fetchProfile(data.user.id).catch((err) => {
+          console.error('❌ Failed to fetch profile after sign in:', err);
+        });
       }
 
       return { user: data.user, error: null };
     } catch (error) {
+      console.error('❌ Unexpected sign in error:', error);
       return {
         user: null,
         error: error as AuthError,

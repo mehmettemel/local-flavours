@@ -22,6 +22,10 @@ BEGIN
     trust_score,
     role,
     email_verified,
+    followers_count,
+    following_count,
+    collections_count,
+    reputation_score,
     created_at,
     updated_at
   )
@@ -31,6 +35,10 @@ BEGIN
     100, -- Default trust score
     'user', -- Default role
     NEW.email_confirmed_at IS NOT NULL,
+    0, -- Default followers_count
+    0, -- Default following_count
+    0, -- Default collections_count
+    0, -- Default reputation_score
     NOW(),
     NOW()
   );
@@ -181,12 +189,13 @@ CREATE TABLE IF NOT EXISTS email_notifications (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_email_notifications_user_id ON email_notifications(user_id);
-CREATE INDEX idx_email_notifications_sent ON email_notifications(sent);
+CREATE INDEX IF NOT EXISTS idx_email_notifications_user_id ON email_notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_email_notifications_sent ON email_notifications(sent);
 
 -- Enable RLS on email_notifications
 ALTER TABLE email_notifications ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own notifications" ON email_notifications;
 CREATE POLICY "Users can view own notifications"
   ON email_notifications FOR SELECT
   USING (auth.uid() = user_id);
@@ -228,15 +237,18 @@ CREATE TABLE IF NOT EXISTS user_preferences (
 -- Enable RLS
 ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Users can view own preferences" ON user_preferences;
 CREATE POLICY "Users can view own preferences"
   ON user_preferences FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own preferences" ON user_preferences;
 CREATE POLICY "Users can update own preferences"
   ON user_preferences FOR UPDATE
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own preferences" ON user_preferences;
 CREATE POLICY "Users can insert own preferences"
   ON user_preferences FOR INSERT
   WITH CHECK (auth.uid() = user_id);
@@ -259,6 +271,7 @@ CREATE TRIGGER on_user_create_preferences
   EXECUTE FUNCTION public.create_user_preferences();
 
 -- Update timestamp trigger for user_preferences
+DROP TRIGGER IF EXISTS update_user_preferences_updated_at ON user_preferences;
 CREATE TRIGGER update_user_preferences_updated_at
   BEFORE UPDATE ON user_preferences
   FOR EACH ROW

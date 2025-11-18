@@ -10,14 +10,13 @@
 - Wrapped `fetchProfile` in `useCallback` to prevent stale closures
 - Added proper dependencies to `useEffect` array
 
-### 2. Cookie/Session Persistence Issues
-**Root Cause**: Default cookie handling in browser client wasn't explicit enough for production.
+### 2. Supabase Client Stability Issues
+**Root Cause**: Client was being recreated on every render, breaking session continuity.
 
 **Solution**:
-- Added explicit cookie handlers in `lib/supabase/client.ts`
-- Proper cookie encoding/decoding
-- Set `SameSite=Lax` for security
-- Long max-age (1 year) for persistent sessions
+- Used `useMemo` to create a stable Supabase client instance
+- Used `useCallback` for fetchProfile to prevent stale closures
+- `@supabase/ssr` handles cookies automatically - no custom handlers needed
 
 ### 3. Profile Fetch Failures
 **Root Cause**:
@@ -43,9 +42,8 @@
    - Added retry logic with exponential backoff
 
 2. **lib/supabase/client.ts**
-   - Added explicit cookie handlers
-   - Proper cookie encoding/decoding
-   - Set SameSite and max-age attributes
+   - Removed custom cookie handlers (caused SSR errors)
+   - Using default `@supabase/ssr` behavior (handles cookies automatically)
 
 ### Files Deleted
 
@@ -127,14 +125,14 @@ const supabase = createClient();
 const supabase = useMemo(() => createClient(), []);
 ```
 
-### Cookie Handling
+### No Custom Cookie Handling Needed
 ```typescript
-// Explicit cookie handlers ensure proper persistence
-cookies: {
-  get(name: string) { /* read from document.cookie */ },
-  set(name: string, value: string, options: any) { /* write to document.cookie */ },
-  remove(name: string, options: any) { /* expire cookie */ }
-}
+// @supabase/ssr handles cookies automatically
+// Custom handlers cause SSR errors (document is not defined)
+return createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 ```
 
 ### Retry Logic
@@ -151,8 +149,9 @@ if (error.code === 'PGRST116' && retryCount < maxRetries) {
 
 1. **Stable Client**: `useMemo` ensures the Supabase client persists across renders, maintaining the session state
 2. **Stable Callbacks**: `useCallback` prevents the useEffect from retriggering unnecessarily
-3. **Explicit Cookies**: Custom cookie handlers ensure browser properly persists auth tokens
+3. **Automatic Cookie Handling**: `@supabase/ssr` handles cookies properly in both browser and SSR contexts
 4. **Proper Dependencies**: useEffect only runs when needed, not on every render
+5. **No SSR Errors**: Removed `document` references that broke server-side rendering
 
 ## Production Checklist
 

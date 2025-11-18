@@ -35,7 +35,8 @@ vercel --prod
 
 ## Key Changes Made
 - `lib/contexts/auth-context.tsx` - Stable client with `useMemo` + `useCallback`
-- `lib/supabase/client.ts` - Explicit cookie handling
+- `lib/supabase/client.ts` - Default @supabase/ssr (no custom handlers)
 - Database migration - Ensures all required columns exist
+- ✅ Build passes successfully
 
 Done! 🎉

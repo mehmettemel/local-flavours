@@ -62,11 +62,11 @@ export function PlaceCard({ place, rank }: PlaceCardProps) {
           {/* Stats */}
           <div className="flex items-center gap-2 pt-1 text-xs sm:gap-4 sm:pt-2 sm:text-sm">
             <span className="font-semibold text-orange-600 dark:text-orange-400">
-              {place.vote_score || 0} points
+              {place.vote_score || 0} puan
             </span>
             <span className="text-neutral-500 dark:text-neutral-500">•</span>
             <span className="text-neutral-600 dark:text-neutral-400">
-              {place.vote_count || 0} votes
+              {place.vote_count || 0} oy
             </span>
           </div>
         </div>

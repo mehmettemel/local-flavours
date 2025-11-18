@@ -58,7 +58,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
       id: 'all',
       slug: 'all',
       icon: null,
-      names: { en: 'All Places', tr: 'Tümü' },
+      names: { en: 'Tümü', tr: 'Tümü' },
     },
     ...categories,
   ];

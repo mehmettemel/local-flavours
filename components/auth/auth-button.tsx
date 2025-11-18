@@ -42,13 +42,13 @@ export function AuthButton() {
             size="sm"
             onClick={() => setShowLogin(true)}
           >
-            Sign In
+            Giriş Yap
           </Button>
           <Button
             size="sm"
             onClick={() => setShowSignup(true)}
           >
-            Sign Up
+            Kayıt Ol
           </Button>
         </div>
 
@@ -145,7 +145,7 @@ export function AuthButton() {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Sign Out</span>
+          <span>Çıkış Yap</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

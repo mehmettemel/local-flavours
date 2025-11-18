@@ -58,10 +58,9 @@ export function ResetPasswordDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Reset Password</DialogTitle>
+          <DialogTitle>Şifre Sıfırla</DialogTitle>
           <DialogDescription>
-            Enter your email address and we&apos;ll send you a link to reset
-            your password
+            E-posta adresini gir, sana şifreni sıfırlaman için bir bağlantı gönderelim
           </DialogDescription>
         </DialogHeader>
 
@@ -84,11 +83,11 @@ export function ResetPasswordDialog({
             </div>
             <div>
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-                Check Your Email
+                E-postanı Kontrol Et
               </h3>
               <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                We&apos;ve sent a password reset link to{' '}
-                <span className="font-medium">{email}</span>
+                Şifre sıfırlama bağlantısını{' '}
+                <span className="font-medium">{email}</span> adresine gönderdik
               </p>
             </div>
           </div>
@@ -101,11 +100,11 @@ export function ResetPasswordDialog({
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="reset-email">Email</Label>
+              <Label htmlFor="reset-email">E-posta</Label>
               <Input
                 id="reset-email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="ornek@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -117,22 +116,22 @@ export function ResetPasswordDialog({
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending link...
+                  Bağlantı gönderiliyor...
                 </>
               ) : (
-                'Send Reset Link'
+                'Sıfırlama Bağlantısı Gönder'
               )}
             </Button>
 
             <div className="text-center text-sm text-neutral-600 dark:text-neutral-400">
-              Remember your password?{' '}
+              Şifreni hatırladın mı?{' '}
               <button
                 type="button"
                 onClick={onSwitchToLogin}
                 className="text-primary hover:underline"
                 disabled={loading}
               >
-                Sign in
+                Giriş yap
               </button>
             </div>
           </form>

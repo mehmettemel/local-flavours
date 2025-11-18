@@ -56,7 +56,7 @@ export default function AdminPlacesPage() {
   };
 
   const handleDelete = async (placeId: string) => {
-    if (confirm('Are you sure you want to delete this place?')) {
+    if (confirm('Bu mekanı silmek istediğinizden emin misiniz?')) {
       deleteMutation.mutate(placeId);
     }
   };
@@ -76,36 +76,36 @@ export default function AdminPlacesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
-            Places
+            Mekanlar
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-            Manage restaurants, cafes, and other places
+            Restoranları, kafeleri ve diğer mekanları yönet
           </p>
         </div>
         <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" />
-          Add Place
+          Mekan Ekle
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Places ({places?.length || 0})</CardTitle>
+          <CardTitle>Tüm Mekanlar ({places?.length || 0})</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="py-8 text-center text-neutral-600 dark:text-neutral-400">
-              Loading places...
+              Mekanlar yükleniyor...
             </div>
           ) : places && places.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>İsim</TableHead>
+                  <TableHead>Kategori</TableHead>
+                  <TableHead>Lokasyon</TableHead>
+                  <TableHead>Durum</TableHead>
+                  <TableHead className="text-right">İşlemler</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -160,7 +160,7 @@ export default function AdminPlacesPage() {
             </Table>
           ) : (
             <div className="py-8 text-center text-neutral-600 dark:text-neutral-400">
-              No places found. Click &quot;Add Place&quot; to create one.
+              Mekan bulunamadı. Yeni mekan eklemek için &quot;Mekan Ekle&quot; butonuna tıklayın.
             </div>
           )}
         </CardContent>

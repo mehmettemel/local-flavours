@@ -55,9 +55,9 @@ export function LoginDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Sign In</DialogTitle>
+          <DialogTitle>Giriş Yap</DialogTitle>
           <DialogDescription>
-            Sign in to your account to create collections and vote
+            Koleksiyon oluşturmak ve oy vermek için hesabına giriş yap
           </DialogDescription>
         </DialogHeader>
 
@@ -69,11 +69,11 @@ export function LoginDialog({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-posta</Label>
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder="ornek@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -82,7 +82,7 @@ export function LoginDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Şifre</Label>
             <Input
               id="password"
               type="password"
@@ -98,10 +98,10 @@ export function LoginDialog({
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Signing in...
+                Giriş yapılıyor...
               </>
             ) : (
-              'Sign In'
+              'Giriş Yap'
             )}
           </Button>
 
@@ -112,18 +112,18 @@ export function LoginDialog({
               className="text-primary hover:underline"
               disabled={loading}
             >
-              Forgot password?
+              Şifreni mi unuttun?
             </button>
 
             <div className="text-neutral-600 dark:text-neutral-400">
-              Don&apos;t have an account?{' '}
+              Hesabın yok mu?{' '}
               <button
                 type="button"
                 onClick={onSwitchToSignup}
                 className="text-primary hover:underline"
                 disabled={loading}
               >
-                Sign up
+                Kayıt ol
               </button>
             </div>
           </div>

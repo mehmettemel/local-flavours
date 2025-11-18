@@ -28,88 +28,88 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
-          Dashboard
+          Kontrol Paneli
         </h1>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          Overview of your LocalFlavors platform
+          LocalFlavors platformunuza genel bakış
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Places</CardTitle>
+            <CardTitle className="text-sm font-medium">Toplam Mekan</CardTitle>
             <Store className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{placesCount || 0}</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              {pendingPlaces || 0} pending approval
+              {pendingPlaces || 0} onay bekliyor
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Collections</CardTitle>
+            <CardTitle className="text-sm font-medium">Koleksiyonlar</CardTitle>
             <BookMarked className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{collectionsCount || 0}</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              User-curated collections
+              Kullanıcı koleksiyonları
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Users</CardTitle>
+            <CardTitle className="text-sm font-medium">Kullanıcılar</CardTitle>
             <Users className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{usersCount || 0}</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Registered users
+              Kayıtlı kullanıcılar
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Locations</CardTitle>
+            <CardTitle className="text-sm font-medium">Lokasyonlar</CardTitle>
             <MapPin className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{locationsCount || 0}</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Cities and districts
+              Şehirler ve ilçeler
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
+            <CardTitle className="text-sm font-medium">Kategoriler</CardTitle>
             <FolderTree className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{categoriesCount || 0}</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Place categories
+              Mekan kategorileri
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Activity</CardTitle>
+            <CardTitle className="text-sm font-medium">Aktivite</CardTitle>
             <TrendingUp className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Live</div>
+            <div className="text-2xl font-bold">Canlı</div>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Platform is active
+              Platform aktif
             </p>
           </CardContent>
         </Card>
@@ -118,25 +118,25 @@ export default async function AdminDashboardPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
+            <CardTitle>Hızlı İşlemler</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Link href="/admin/places">
               <Button variant="outline" className="w-full justify-start">
                 <Store className="mr-2 h-4 w-4" />
-                Manage Places
+                Mekanları Yönet
               </Button>
             </Link>
             <Link href="/admin/collections">
               <Button variant="outline" className="w-full justify-start">
                 <BookMarked className="mr-2 h-4 w-4" />
-                Manage Collections
+                Koleksiyonları Yönet
               </Button>
             </Link>
             <Link href="/admin/locations">
               <Button variant="outline" className="w-full justify-start">
                 <MapPin className="mr-2 h-4 w-4" />
-                Manage Locations
+                Lokasyonları Yönet
               </Button>
             </Link>
           </CardContent>
@@ -144,26 +144,26 @@ export default async function AdminDashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>System Status</CardTitle>
+            <CardTitle>Sistem Durumu</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                Database
+                Veritabanı
               </span>
-              <span className="text-sm font-medium text-green-600">Connected</span>
+              <span className="text-sm font-medium text-green-600">Bağlı</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                Authentication
+                Kimlik Doğrulama
               </span>
-              <span className="text-sm font-medium text-green-600">Active</span>
+              <span className="text-sm font-medium text-green-600">Aktif</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                Collections System
+                Koleksiyon Sistemi
               </span>
-              <span className="text-sm font-medium text-green-600">Enabled</span>
+              <span className="text-sm font-medium text-green-600">Etkin</span>
             </div>
           </CardContent>
         </Card>

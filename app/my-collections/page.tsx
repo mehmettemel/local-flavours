@@ -101,7 +101,7 @@ export default function MyCollectionsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this collection?')) return;
+    if (!confirm('Bu koleksiyonu silmek istediğinizden emin misiniz?')) return;
 
     try {
       const { error } = await supabase
@@ -115,7 +115,7 @@ export default function MyCollectionsPage() {
       fetchCollections();
     } catch (error) {
       console.error('Error deleting collection:', error);
-      alert('Failed to delete collection');
+      alert('Koleksiyon silinemedi');
     }
   };
 

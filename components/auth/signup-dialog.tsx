@@ -42,21 +42,21 @@ export function SignupDialog({
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError('Şifreler eşleşmiyor');
       setLoading(false);
       return;
     }
 
     // Validate password strength
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError('Şifre en az 6 karakter olmalıdır');
       setLoading(false);
       return;
     }
 
     // Validate username
     if (username.length < 3) {
-      setError('Username must be at least 3 characters');
+      setError('Kullanıcı adı en az 3 karakter olmalıdır');
       setLoading(false);
       return;
     }
@@ -85,9 +85,9 @@ export function SignupDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Account</DialogTitle>
+          <DialogTitle>Hesap Oluştur</DialogTitle>
           <DialogDescription>
-            Join LocalFlavors to create collections and vote
+            Koleksiyon oluşturmak ve oy vermek için LocalFlavors'a katıl
           </DialogDescription>
         </DialogHeader>
 
@@ -110,10 +110,10 @@ export function SignupDialog({
             </div>
             <div>
               <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-                Account Created!
+                Hesap Oluşturuldu!
               </h3>
               <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                Please check your email to verify your account.
+                Hesabını doğrulamak için lütfen e-postanı kontrol et.
               </p>
             </div>
           </div>
@@ -126,11 +126,11 @@ export function SignupDialog({
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Kullanıcı Adı</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="johndoe"
+                placeholder="kullaniciadi"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -138,16 +138,16 @@ export function SignupDialog({
                 minLength={3}
               />
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                This will be your public display name
+                Bu senin herkese açık görünür adın olacak
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="signup-email">Email</Label>
+              <Label htmlFor="signup-email">E-posta</Label>
               <Input
                 id="signup-email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="ornek@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -156,7 +156,7 @@ export function SignupDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="signup-password">Password</Label>
+              <Label htmlFor="signup-password">Şifre</Label>
               <Input
                 id="signup-password"
                 type="password"
@@ -170,7 +170,7 @@ export function SignupDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="confirm-password">Şifre Tekrar</Label>
               <Input
                 id="confirm-password"
                 type="password"
@@ -187,22 +187,22 @@ export function SignupDialog({
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
+                  Hesap oluşturuluyor...
                 </>
               ) : (
-                'Sign Up'
+                'Kayıt Ol'
               )}
             </Button>
 
             <div className="text-center text-sm text-neutral-600 dark:text-neutral-400">
-              Already have an account?{' '}
+              Zaten hesabın var mı?{' '}
               <button
                 type="button"
                 onClick={onSwitchToLogin}
                 className="text-primary hover:underline"
                 disabled={loading}
               >
-                Sign in
+                Giriş yap
               </button>
             </div>
           </form>

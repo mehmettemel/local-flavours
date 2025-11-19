@@ -19,7 +19,7 @@ export default async function middleware(request: NextRequest) {
     request,
   });
 
-  // Handle Supabase session
+  // Handle Supabase session with proper cookie configuration for production
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -35,15 +35,22 @@ export default async function middleware(request: NextRequest) {
           response = NextResponse.next({
             request,
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            // Ensure cookies work in production with proper settings
+            response.cookies.set(name, value, {
+              ...options,
+              path: '/',
+              sameSite: 'lax',
+              secure: process.env.NODE_ENV === 'production',
+              httpOnly: true,
+            });
+          });
         },
       },
     }
   );
 
-  // Refresh session if expired
+  // Refresh session if expired - this is crucial for maintaining auth state
   const {
     data: { user },
   } = await supabase.auth.getUser();

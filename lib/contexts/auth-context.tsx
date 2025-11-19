@@ -1,8 +1,8 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, resetClient } from '@/lib/supabase/client';
 import { Database } from '@/types/database';
 
 type UserProfile = Database['public']['Tables']['users']['Row'];
@@ -43,13 +43,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
+  const fetchingProfile = useRef(false);
 
-  // 1. Profil Çekme Fonksiyonunu Sadeleştirdik
-  // Retry mantığını kaldırdık çünkü sayfa yüklenirken bloklamaması gerekiyor.
-  // Hata olsa bile 'null' dönerek uygulamanın açılmasını sağlıyoruz.
-  const fetchProfile = async (userId: string) => {
+  // Optimized profile fetching with race condition protection
+  const fetchProfile = useCallback(async (userId: string, force = false) => {
+    // Prevent concurrent fetches for same user
+    if (!force && fetchingProfile.current) {
+      return null;
+    }
+
+    // Don't fetch if we already have the profile for this user
+    if (!force && profile?.id === userId) {
+      return profile;
+    }
+
+    fetchingProfile.current = true;
+
     try {
-      // console.log('🔍 Fetching profile for user:', userId);
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -57,93 +67,97 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error) {
-        console.error(
-          '❌ Profil çekilemedi (Sayfa yüklenmeye devam edecek):',
-          error.message
-        );
-        // Hata olsa bile null set ediyoruz ki eski profil kalmasın
+        console.error('Error fetching profile:', error.message);
         setProfile(null);
         return null;
       }
 
-      // console.log('✅ Profile fetched:', data);
       setProfile(data);
       return data;
     } catch (error) {
-      console.error('❌ Unexpected error fetching profile:', error);
+      console.error('Unexpected error fetching profile:', error);
       setProfile(null);
       return null;
+    } finally {
+      fetchingProfile.current = false;
     }
-  };
+  }, [supabase, profile]);
 
-  // 2. Initialization Mantığını Düzelttik
+  // Initialize auth and listen to changes
   useEffect(() => {
     let mounted = true;
 
     async function initializeAuth() {
       try {
-        // Mevcut oturumu al
+        // Get current session from storage/cookies
         const {
           data: { session: initialSession },
         } = await supabase.auth.getSession();
 
         if (!mounted) return;
 
-        if (initialSession) {
+        if (initialSession?.user) {
           setSession(initialSession);
           setUser(initialSession.user);
-
-          // Kullanıcı varsa profilini çekmeyi dene ama hata verirse de devam et
-          if (initialSession.user) {
-            await fetchProfile(initialSession.user.id);
-          }
+          // Fetch profile for the authenticated user
+          await fetchProfile(initialSession.user.id);
+        } else {
+          // No session, clear everything
+          setSession(null);
+          setUser(null);
+          setProfile(null);
         }
       } catch (error) {
-        console.error('Auth başlatma hatası:', error);
+        console.error('Auth initialization error:', error);
+        // Clear state on error
+        setSession(null);
+        setUser(null);
+        setProfile(null);
       } finally {
-        // 3. NE OLURSA OLSUN LOADING'I KAPAT (Garanti Çıkış)
         if (mounted) {
           setLoading(false);
         }
       }
     }
 
-    // Başlat
     initializeAuth();
 
-    // Auth state değişikliklerini dinle
+    // Listen to auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       if (!mounted) return;
 
-      // console.log('🔄 Auth state changed:', event);
       setSession(newSession);
       setUser(newSession?.user ?? null);
 
       if (newSession?.user) {
-        // Sadece oturum açıldığında (SIGNED_IN) veya token yenilendiğinde profili güncelle
-        // INITIAL_SESSION olayını atlıyoruz çünkü yukarıdaki initializeAuth bunu zaten yaptı
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          // Eğer profilimiz yoksa veya kullanıcı değiştiyse çek
-          if (!profile || profile.id !== newSession.user.id) {
-            await fetchProfile(newSession.user.id);
-          }
+        // Fetch profile on all auth events that indicate user is authenticated
+        // This ensures profile is loaded even after page refresh
+        if (
+          event === 'SIGNED_IN' ||
+          event === 'TOKEN_REFRESHED' ||
+          event === 'INITIAL_SESSION' ||
+          event === 'USER_UPDATED'
+        ) {
+          await fetchProfile(newSession.user.id);
         }
-      } else if (event === 'SIGNED_OUT') {
+      } else {
+        // User signed out or session expired
         setProfile(null);
-        setLoading(false); // Çıkışta hemen loading kapat
       }
 
-      // Her durumda loading'i kapat (güvenlik önlemi)
-      setLoading(false);
+      // Ensure loading is false after any auth state change
+      if (mounted) {
+        setLoading(false);
+      }
     });
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Dependency array boş olmalı
+  }, [supabase, fetchProfile]);
 
   const signUp = async (email: string, password: string, username?: string) => {
     try {
@@ -203,6 +217,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setProfile(null);
       setSession(null);
+      // Reset client singleton to ensure clean state
+      resetClient();
     }
     return { error };
   };
@@ -239,7 +255,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshProfile = async () => {
     if (user) {
-      await fetchProfile(user.id);
+      await fetchProfile(user.id, true); // Force refresh
     }
   };
 

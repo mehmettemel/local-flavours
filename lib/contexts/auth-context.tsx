@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  // Profili getiren yardımcı fonksiyon
+  // Profili güvenli bir şekilde çeken fonksiyon
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -54,17 +54,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (error) {
-        console.error('❌ Error fetching profile:', error);
-        // Hata olsa bile null set ediyoruz ki "eski" profil kalmasın
-        setProfile(null);
+        console.error('❌ Profil çekme hatası (yoksayıldı):', error.message);
+        // Profil henüz oluşmamış olabilir (trigger gecikmesi), null set edip devam ediyoruz
         return null;
       }
 
       setProfile(data);
       return data;
     } catch (error) {
-      console.error('❌ Exception fetching profile:', error);
-      setProfile(null);
+      console.error('❌ Profil çekme istisnası:', error);
       return null;
     }
   };
@@ -72,10 +70,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // 1. İlk Yükleme Fonksiyonu
     async function initializeAuth() {
       try {
-        // Mevcut oturumu al
+        // 1. Mevcut oturumu al
         const {
           data: { session: initialSession },
         } = await supabase.auth.getSession();
@@ -85,46 +82,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (initialSession) {
           setSession(initialSession);
           setUser(initialSession.user);
-          // Oturum varsa profili çek
+
+          // Kullanıcı varsa profili çekmeyi dene
           if (initialSession.user) {
             await fetchProfile(initialSession.user.id);
           }
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        console.error('Auth başlatma hatası:', error);
       } finally {
-        // Ne olursa olsun loading'i kapat
+        // 2. Ne olursa olsun loading'i kapat (ÇÖZÜM BURASI)
         if (mounted) {
           setLoading(false);
         }
       }
     }
 
-    // Başlat
     initializeAuth();
 
-    // 2. Auth Değişikliklerini Dinle
+    // Auth durum değişikliklerini dinle
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       if (!mounted) return;
-
-      console.log('🔄 Auth state changed:', event);
+      console.log('🔄 Auth durumu değişti:', event);
 
       setSession(newSession);
       setUser(newSession?.user ?? null);
 
       if (newSession?.user) {
-        // Sadece profilimiz eksikse veya kullanıcı değiştiyse profili çek
-        // (Gereksiz fetch işlemlerini önler)
-        if (!profile || profile.id !== newSession.user.id) {
-          await fetchProfile(newSession.user.id);
+        // Sadece oturum açma (SIGNED_IN) olayında profili çek
+        // INITIAL_SESSION olayını atlıyoruz çünkü yukarıdaki initializeAuth bunu zaten yapıyor
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          // Profil zaten yüklüyse tekrar çekme (gereksiz network trafiğini önle)
+          if (!profile || profile.id !== newSession.user.id) {
+            await fetchProfile(newSession.user.id);
+          }
         }
-      } else {
-        // Oturum kapandıysa profili temizle
+      } else if (event === 'SIGNED_OUT') {
         setProfile(null);
+        setLoading(false); // Çıkış yapıldığında loading hemen kapanmalı
       }
 
+      // Her auth değişiminde loading'i kapatmayı garantiye al
       setLoading(false);
     });
 
@@ -132,13 +132,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Dependency array boş kalmalı
+  }, []); // Dependency array boş
 
-  // ... (Geri kalan metodlar aynı kalabilir: signUp, signIn, signOut vb.)
+  // --- Diğer fonksiyonlar (Aynı kalabilir) ---
 
   const signUp = async (email: string, password: string, username?: string) => {
     try {
-      const locale = window.location.pathname.split('/')[1] || 'en';
+      const locale =
+        typeof window !== 'undefined'
+          ? window.location.pathname.split('/')[1] || 'en'
+          : 'en';
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -152,7 +155,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) return { user: null, error };
 
-      // Email onayı kapalıysa ve session geldiyse profili hemen çek
       if (data.user && data.session) {
         await fetchProfile(data.user.id);
       }
@@ -183,18 +185,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      setProfile(null);
-      setSession(null);
-      // Sign out sonrası router.push('/') yapılabilir ama genelde component tarafında yapılır
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (!error) {
+        setUser(null);
+        setProfile(null);
+        setSession(null);
+      }
+      return { error };
+    } catch (error: any) {
+      return { error };
     }
-    return { error };
   };
 
   const resetPassword = async (email: string) => {
-    const locale = window.location.pathname.split('/')[1] || 'en';
+    const locale =
+      typeof window !== 'undefined'
+        ? window.location.pathname.split('/')[1] || 'en'
+        : 'en';
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/${locale}/auth/reset-password`,
     });
@@ -248,6 +256,7 @@ export function useAuth() {
   return context;
 }
 
+// Helper hooks
 export function useUser() {
   const { user } = useAuth();
   return user;

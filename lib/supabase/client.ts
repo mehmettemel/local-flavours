@@ -23,7 +23,7 @@ export function createClient() {
         persistSession: true,
         storage: typeof window !== 'undefined' ? window.localStorage : undefined,
       },
-      cookies: {
+      cookieOptions: {
         domain: typeof window !== 'undefined' ? window.location.hostname : undefined,
         path: '/',
         sameSite: 'lax',

@@ -23,6 +23,8 @@ interface AddPlaceDialogProps {
   collectionId: string;
   existingPlaceIds: string[];
   onPlaceAdded: (place: any) => void;
+  locationId?: string; // Optional location ID from parent collection
+  categoryId?: string; // Optional category ID from parent collection
 }
 
 export function AddPlaceDialog({
@@ -31,6 +33,8 @@ export function AddPlaceDialog({
   collectionId,
   existingPlaceIds,
   onPlaceAdded,
+  locationId,
+  categoryId,
 }: AddPlaceDialogProps) {
   const supabase = createClient();
 
@@ -147,6 +151,8 @@ export function AddPlaceDialog({
           names: { tr: newPlaceName.trim(), en: newPlaceName.trim() },
           descriptions: { tr: '', en: '' },
           address: newPlaceAddress.trim() || null,
+          location_id: locationId || null, // Use location from collection if available
+          category_id: categoryId || null, // Use category from collection if available
           status: 'approved', // Auto-approve for MVP
           vote_count: 0,
           vote_score: 0,

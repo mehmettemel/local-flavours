@@ -25,6 +25,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEn
 import { arrayMove, SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { AddPlaceDialog } from './add-place-dialog';
+import { CitySelect } from '@/components/ui/city-select';
 
 interface EditCollectionModalProps {
   open: boolean;
@@ -176,7 +177,8 @@ export function EditCollectionModal({
   // Form state
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [locationId, setLocationId] = useState('');
+  const [cityName, setCityName] = useState(''); // Now using city name instead of ID
+  const [locationId, setLocationId] = useState(''); // Will be populated from cityName
   const [categoryId, setCategoryId] = useState('');
   const [subcategoryId, setSubcategoryId] = useState('');
   const [selectedCategorySlug, setSelectedCategorySlug] = useState('');
@@ -220,6 +222,14 @@ export function EditCollectionModal({
     setLocationId(collection.location_id || '');
     setCategoryId(collection.category_id || '');
     setSubcategoryId(collection.subcategory_id || '');
+
+    // Get city name from location
+    if (collection.location_id) {
+      const location = locations.find(loc => loc.id === collection.location_id);
+      if (location) {
+        setCityName(location.names.tr);
+      }
+    }
 
     // Fetch places
     const { data: placesData } = await supabase
@@ -305,7 +315,7 @@ export function EditCollectionModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !locationId || !categoryId) {
+    if (!name || !cityName || !categoryId) {
       alert('Lütfen tüm zorunlu alanları doldurun');
       return;
     }
@@ -318,6 +328,32 @@ export function EditCollectionModal({
     setLoading(true);
 
     try {
+      // Get or create location ID from city name
+      let finalLocationId = locationId;
+      if (cityName && !finalLocationId) {
+        // Find location by city name
+        const location = locations.find(loc => loc.names.tr === cityName);
+        if (location) {
+          finalLocationId = location.id;
+        } else {
+          // Create new location if it doesn't exist
+          const slug = generateSlug(cityName);
+          const { data: newLocation, error: locError } = await supabase
+            .from('locations')
+            .insert({
+              slug,
+              type: 'city',
+              names: { tr: cityName, en: cityName },
+              path: `/turkey/${slug}`,
+            })
+            .select()
+            .single();
+
+          if (locError) throw locError;
+          finalLocationId = newLocation.id;
+        }
+      }
+
       const slug = isEdit ? collection.slug : generateSlug(name) + '-' + Math.random().toString(36).substring(2, 6);
 
       const collectionData = {
@@ -325,7 +361,7 @@ export function EditCollectionModal({
         names: { tr: name, en: name },
         descriptions: { tr: description, en: description },
         creator_id: userId,
-        location_id: locationId,
+        location_id: finalLocationId,
         category_id: categoryId,
         subcategory_id: subcategoryId || null,
         status: 'active',
@@ -409,6 +445,7 @@ export function EditCollectionModal({
   const resetForm = () => {
     setName('');
     setDescription('');
+    setCityName('');
     setLocationId('');
     setCategoryId('');
     setSubcategoryId('');
@@ -457,18 +494,20 @@ export function EditCollectionModal({
                   <Label htmlFor="location">
                     Şehir <span className="text-red-500">*</span>
                   </Label>
-                  <Select value={locationId} onValueChange={setLocationId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Şehir seç" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {locations.map((location) => (
-                        <SelectItem key={location.id} value={location.id}>
-                          {location.names.tr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <CitySelect
+                    value={cityName}
+                    onValueChange={(value) => {
+                      setCityName(value);
+                      // Try to find matching location ID
+                      const location = locations.find(loc => loc.names.tr === value);
+                      if (location) {
+                        setLocationId(location.id);
+                      } else {
+                        setLocationId('');
+                      }
+                    }}
+                    placeholder="Şehir ara ve seç..."
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -583,6 +622,8 @@ export function EditCollectionModal({
         collectionId={collection?.id || 'temp'}
         existingPlaceIds={places.map(p => p.place_id || p.place?.id)}
         onPlaceAdded={handlePlaceAdded}
+        locationId={locationId}
+        categoryId={categoryId}
       />
     </>
   );

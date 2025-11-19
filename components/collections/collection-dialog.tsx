@@ -116,14 +116,8 @@ export function CollectionDialog({
       if (selectedCategory) {
         setSelectedCategorySlug(selectedCategory.slug);
 
-        // If "Yemek" is selected, fetch subcategories
-        if (selectedCategory.slug === 'yemek') {
-          fetchSubcategories(categoryId);
-        } else {
-          // Clear subcategories for other categories
-          setSubcategories([]);
-          setSubcategoryId('');
-        }
+        // Fetch subcategories for all categories
+        fetchSubcategories(categoryId);
       }
     } else {
       setSelectedCategorySlug('');
@@ -135,13 +129,23 @@ export function CollectionDialog({
   const generateSlug = (name: string) => {
     // Turkish character replacements
     const turkishMap: { [key: string]: string } = {
-      'ç': 'c', 'ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
-      'Ç': 'c', 'Ğ': 'g', 'Ö': 'o', 'Ş': 's', 'Ü': 'u'
+      ç: 'c',
+      ğ: 'g',
+      ı: 'i',
+      İ: 'i',
+      ö: 'o',
+      ş: 's',
+      ü: 'u',
+      Ç: 'c',
+      Ğ: 'g',
+      Ö: 'o',
+      Ş: 's',
+      Ü: 'u',
     };
 
     return name
       .split('')
-      .map(char => turkishMap[char] || char)
+      .map((char) => turkishMap[char] || char)
       .join('')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -155,9 +159,9 @@ export function CollectionDialog({
       return;
     }
 
-    // Validate subcategory is selected for "Yemek" category
-    if (selectedCategorySlug === 'yemek' && !subcategoryId) {
-      alert('Yemek kategorisi için lütfen bir alt kategori seçin');
+    // Validate subcategory is selected if category has subcategories
+    if (subcategories.length > 0 && !subcategoryId) {
+      alert('Lütfen bir alt kategori seçin');
       return;
     }
 
@@ -165,7 +169,8 @@ export function CollectionDialog({
 
     try {
       // Generate slug from Turkish name
-      const slug = generateSlug(name) + '-' + Math.random().toString(36).substring(2, 6);
+      const slug =
+        generateSlug(name) + '-' + Math.random().toString(36).substring(2, 6);
 
       const collectionData = {
         slug: isEdit ? collection.slug : slug,
@@ -175,7 +180,12 @@ export function CollectionDialog({
         location_id: locationId,
         category_id: categoryId,
         subcategory_id: subcategoryId || null,
-        tags: tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+        tags: tags
+          ? tags
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [],
         status: 'active',
       };
 
@@ -222,7 +232,9 @@ export function CollectionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{isEdit ? 'Koleksiyonu Düzenle' : 'Yeni Koleksiyon'}</DialogTitle>
+          <DialogTitle>
+            {isEdit ? 'Koleksiyonu Düzenle' : 'Yeni Koleksiyon'}
+          </DialogTitle>
           <DialogDescription>
             {isEdit
               ? 'Koleksiyon bilgilerini güncelle'
@@ -267,7 +279,11 @@ export function CollectionDialog({
             <Label htmlFor="location">
               Şehir <span className="text-red-500">*</span>
             </Label>
-            <Select value={locationId} onValueChange={setLocationId} disabled={loading}>
+            <Select
+              value={locationId}
+              onValueChange={setLocationId}
+              disabled={loading}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Şehir seç" />
               </SelectTrigger>
@@ -286,7 +302,11 @@ export function CollectionDialog({
             <Label htmlFor="category">
               Kategori <span className="text-red-500">*</span>
             </Label>
-            <Select value={categoryId} onValueChange={setCategoryId} disabled={loading}>
+            <Select
+              value={categoryId}
+              onValueChange={setCategoryId}
+              disabled={loading}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Kategori seç" />
               </SelectTrigger>
@@ -300,20 +320,24 @@ export function CollectionDialog({
             </Select>
           </div>
 
-          {/* Subcategory - Only show for "Yemek" category */}
-          {selectedCategorySlug === 'yemek' && (
+          {/* Subcategory - Show if category has subcategories */}
+          {subcategories.length > 0 && (
             <div className="space-y-2">
               <Label htmlFor="subcategory">
-                Yemek Türü <span className="text-red-500">*</span>
+                Alt Kategori <span className="text-red-500">*</span>
               </Label>
-              <Select value={subcategoryId} onValueChange={setSubcategoryId} disabled={loading}>
+              <Select
+                value={subcategoryId}
+                onValueChange={setSubcategoryId}
+                disabled={loading}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Yemek türü seç" />
+                  <SelectValue placeholder="Alt kategori seç" />
                 </SelectTrigger>
                 <SelectContent>
                   {subcategories.map((subcategory) => (
                     <SelectItem key={subcategory.id} value={subcategory.id}>
-                      {subcategory.icon} {subcategory.names.tr}
+                      {subcategory.names.tr}
                     </SelectItem>
                   ))}
                 </SelectContent>

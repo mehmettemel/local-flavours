@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { createClient } from '@/lib/supabase/client';
+import { CitySelect } from '@/components/ui/city-select';
 
 interface PlaceDialogProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
     descriptionEn: '',
     descriptionTr: '',
     address: '',
+    cityName: '', // City name for the CitySelect component
     locationId: '',
     categoryId: '',
     status: 'pending' as 'pending' | 'approved' | 'rejected',
@@ -77,6 +79,17 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
     if (place) {
       const names = place.names as any;
       const descriptions = place.descriptions as any;
+
+      // Get city name from location
+      let cityName = '';
+      if (place.location_id && locations) {
+        const location = locations.find(loc => loc.id === place.location_id);
+        if (location && location.type === 'city') {
+          const locNames = location.names as any;
+          cityName = locNames?.tr || '';
+        }
+      }
+
       setFormData({
         slug: place.slug || '',
         nameEn: names?.en || '',
@@ -84,6 +97,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         descriptionEn: descriptions?.en || '',
         descriptionTr: descriptions?.tr || '',
         address: place.address || '',
+        cityName,
         locationId: place.location_id || '',
         categoryId: place.category_id || '',
         status: place.status || 'pending',
@@ -97,16 +111,58 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         descriptionEn: '',
         descriptionTr: '',
         address: '',
+        cityName: '',
         locationId: '',
         categoryId: '',
         status: 'pending',
         imageUrl: '',
       });
     }
-  }, [place]);
+  }, [place, locations]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      // Get or create location ID from city name
+      let finalLocationId = data.locationId;
+      if (data.cityName && !finalLocationId) {
+        // Find location by city name
+        const location = locations?.find(loc => {
+          const locNames = loc.names as any;
+          return locNames?.tr === data.cityName && loc.type === 'city';
+        });
+
+        if (location) {
+          finalLocationId = location.id;
+        } else {
+          // Create new city location if it doesn't exist
+          const slug = data.cityName
+            .toLowerCase()
+            .replace(/ç/g, 'c')
+            .replace(/ğ/g, 'g')
+            .replace(/ı/g, 'i')
+            .replace(/İ/g, 'i')
+            .replace(/ö/g, 'o')
+            .replace(/ş/g, 's')
+            .replace(/ü/g, 'u')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
+          const { data: newLocation, error: locError } = await supabase
+            .from('locations')
+            .insert({
+              slug,
+              type: 'city',
+              names: { tr: data.cityName, en: data.cityName },
+              path: `/turkey/${slug}`,
+            })
+            .select()
+            .single();
+
+          if (locError) throw locError;
+          finalLocationId = newLocation.id;
+        }
+      }
+
       const placeData = {
         slug: data.slug,
         names: {
@@ -118,7 +174,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
           tr: data.descriptionTr,
         },
         address: data.address,
-        location_id: data.locationId,
+        location_id: finalLocationId,
         category_id: data.categoryId,
         status: data.status,
         images: data.imageUrl ? [data.imageUrl] : [],
@@ -235,28 +291,26 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
             />
           </div>
 
-          {/* Location */}
+          {/* Location (City) */}
           <div className="space-y-2">
-            <Label htmlFor="location">Location *</Label>
-            <Select
-              value={formData.locationId}
-              onValueChange={(value) => handleChange('locationId', value)}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations?.map((location) => {
-                  const names = location.names as any;
-                  return (
-                    <SelectItem key={location.id} value={location.id}>
-                      {names?.en || location.slug} ({location.type})
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="location">Şehir (City) *</Label>
+            <CitySelect
+              value={formData.cityName}
+              onValueChange={(value) => {
+                handleChange('cityName', value);
+                // Try to find matching location ID
+                const location = locations?.find(loc => {
+                  const locNames = loc.names as any;
+                  return locNames?.tr === value && loc.type === 'city';
+                });
+                if (location) {
+                  handleChange('locationId', location.id);
+                } else {
+                  handleChange('locationId', '');
+                }
+              }}
+              placeholder="Şehir ara ve seç..."
+            />
           </div>
 
           {/* Category */}

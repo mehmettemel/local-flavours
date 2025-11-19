@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { Database } from '@/types/database';
@@ -42,12 +42,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = createClient();
 
-  // Fetch user profile from public.users table with retry logic
-  const fetchProfile = useCallback(async (userId: string, retryCount = 0, maxRetries = 3) => {
+  // Profili getiren yardımcı fonksiyon
+  const fetchProfile = async (userId: string) => {
     try {
-      console.log(`🔍 Fetching profile for user: ${userId} (attempt ${retryCount + 1}/${maxRetries + 1})`);
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -56,92 +55,90 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) {
         console.error('❌ Error fetching profile:', error);
-        console.error('Error details:', JSON.stringify(error, null, 2));
-
-        // If profile not found and we haven't exhausted retries, try again
-        // This handles the case where the trigger hasn't created the profile yet
-        if (error.code === 'PGRST116' && retryCount < maxRetries) {
-          const delay = Math.pow(2, retryCount) * 500; // Exponential backoff: 500ms, 1s, 2s
-          console.log(`⏳ Profile not found, retrying in ${delay}ms...`);
-          await new Promise(resolve => setTimeout(resolve, delay));
-          return fetchProfile(userId, retryCount + 1, maxRetries);
-        }
-
-        // Don't throw, just set profile to null and continue
+        // Hata olsa bile null set ediyoruz ki "eski" profil kalmasın
         setProfile(null);
-        return;
+        return null;
       }
 
-      console.log('✅ Profile fetched successfully:', data);
       setProfile(data);
+      return data;
     } catch (error) {
-      console.error('❌ Unexpected error fetching profile:', error);
+      console.error('❌ Exception fetching profile:', error);
       setProfile(null);
+      return null;
     }
-  }, [supabase]);
+  };
 
-  // Initialize auth state
   useEffect(() => {
-    console.log('🚀 Initializing auth state...');
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      if (error) {
-        console.error('❌ Error getting session:', error);
-      }
-      console.log(
-        '📦 Session data:',
-        session ? `Session exists for user ${session.user.id}` : 'No session'
-      );
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        console.log('👤 User found, fetching profile...');
-        fetchProfile(session.user.id).finally(() => {
-          console.log(
-            '✅ Auth initialization complete, setting loading = false'
-          );
-          setLoading(false);
-        });
-      } else {
-        console.log('❌ No user, setting loading = false');
-        setLoading(false);
-      }
-    }).catch((error) => {
-      console.error('❌ Unexpected error in getSession:', error);
-      setLoading(false);
-    });
+    let mounted = true;
 
-    // Listen for auth changes
+    // 1. İlk Yükleme Fonksiyonu
+    async function initializeAuth() {
+      try {
+        // Mevcut oturumu al
+        const {
+          data: { session: initialSession },
+        } = await supabase.auth.getSession();
+
+        if (!mounted) return;
+
+        if (initialSession) {
+          setSession(initialSession);
+          setUser(initialSession.user);
+          // Oturum varsa profili çek
+          if (initialSession.user) {
+            await fetchProfile(initialSession.user.id);
+          }
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+      } finally {
+        // Ne olursa olsun loading'i kapat
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    // Başlat
+    initializeAuth();
+
+    // 2. Auth Değişikliklerini Dinle
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(
-        '🔄 Auth state changed:',
-        event,
-        session ? 'Session exists' : 'No session'
-      );
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (!mounted) return;
 
-      if (session?.user) {
-        console.log('👤 User in auth change, fetching profile...');
-        await fetchProfile(session.user.id);
+      console.log('🔄 Auth state changed:', event);
+
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+
+      if (newSession?.user) {
+        // Sadece profilimiz eksikse veya kullanıcı değiştiyse profili çek
+        // (Gereksiz fetch işlemlerini önler)
+        if (!profile || profile.id !== newSession.user.id) {
+          await fetchProfile(newSession.user.id);
+        }
       } else {
-        console.log('❌ No user in auth change');
+        // Oturum kapandıysa profili temizle
         setProfile(null);
       }
-      console.log('✅ Setting loading = false after auth change');
+
       setLoading(false);
     });
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
-  }, [supabase, fetchProfile]);
+  }, []); // Dependency array boş kalmalı
 
-  // Sign up with email and password
+  // ... (Geri kalan metodlar aynı kalabilir: signUp, signIn, signOut vb.)
+
   const signUp = async (email: string, password: string, username?: string) => {
     try {
+      const locale = window.location.pathname.split('/')[1] || 'en';
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -149,83 +146,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: {
             username: username || email.split('@')[0],
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
         },
       });
 
       if (error) return { user: null, error };
 
-      // If email confirmation is disabled, fetch profile immediately
+      // Email onayı kapalıysa ve session geldiyse profili hemen çek
       if (data.user && data.session) {
         await fetchProfile(data.user.id);
       }
 
       return { user: data.user, error: null };
     } catch (error) {
-      return {
-        user: null,
-        error: error as AuthError,
-      };
+      return { user: null, error: error as AuthError };
     }
   };
 
-  // Sign in with email and password
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('🔑 Attempting to sign in...');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        console.error('❌ Sign in error:', error);
-        return { user: null, error };
-      }
-
-      console.log('✅ Sign in successful, user:', data.user?.id);
+      if (error) return { user: null, error };
 
       if (data.user) {
-        // Fetch profile but don't block on it
-        fetchProfile(data.user.id).catch((err) => {
-          console.error('❌ Failed to fetch profile after sign in:', err);
-        });
+        await fetchProfile(data.user.id);
       }
 
       return { user: data.user, error: null };
     } catch (error) {
-      console.error('❌ Unexpected sign in error:', error);
-      return {
-        user: null,
-        error: error as AuthError,
-      };
+      return { user: null, error: error as AuthError };
     }
   };
 
-  // Sign out
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
       setUser(null);
       setProfile(null);
       setSession(null);
+      // Sign out sonrası router.push('/') yapılabilir ama genelde component tarafında yapılır
     }
     return { error };
   };
 
-  // Reset password
   const resetPassword = async (email: string) => {
+    const locale = window.location.pathname.split('/')[1] || 'en';
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: `${window.location.origin}/${locale}/auth/reset-password`,
     });
     return { error };
   };
 
-  // Update user profile
   const updateProfile = async (updates: Partial<UserProfile>) => {
-    if (!user) {
-      return { error: new Error('No user logged in') };
-    }
+    if (!user) return { error: new Error('No user logged in') };
 
     try {
       const { error } = await supabase
@@ -234,17 +211,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', user.id);
 
       if (error) throw error;
-
-      // Refresh profile
       await fetchProfile(user.id);
-
       return { error: null };
     } catch (error) {
       return { error: error as Error };
     }
   };
 
-  // Refresh profile data
   const refreshProfile = async () => {
     if (user) {
       await fetchProfile(user.id);
@@ -275,7 +248,6 @@ export function useAuth() {
   return context;
 }
 
-// Helper hooks
 export function useUser() {
   const { user } = useAuth();
   return user;

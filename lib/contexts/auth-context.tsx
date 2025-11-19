@@ -65,16 +65,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     fetchingProfile.current = true;
     console.log('🔄 [FETCH PROFILE] Fetching from database...');
+    console.log('🔄 [FETCH PROFILE] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
 
     try {
-      const { data, error } = await supabase
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile fetch timeout after 10s')), 10000)
+      );
+
+      const fetchPromise = supabase
         .from('users')
         .select('*')
         .eq('id', userId)
         .single();
 
+      console.log('🔄 [FETCH PROFILE] Query sent, waiting for response...');
+
+      const { data, error } = await Promise.race([
+        fetchPromise,
+        timeoutPromise
+      ]) as any;
+
+      console.log('🔄 [FETCH PROFILE] Response received!');
+      console.log('🔄 [FETCH PROFILE] Data:', data);
+      console.log('🔄 [FETCH PROFILE] Error:', error);
+
       if (error) {
-        console.error('❌ [FETCH PROFILE] Error:', error.message);
+        console.error('❌ [FETCH PROFILE] Error:', error);
+        console.error('❌ [FETCH PROFILE] Error details:', JSON.stringify(error));
         setProfile(null);
         return null;
       }
@@ -84,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return data;
     } catch (error) {
       console.error('❌ [FETCH PROFILE] Unexpected error:', error);
+      console.error('❌ [FETCH PROFILE] Error type:', error instanceof Error ? error.message : 'Unknown');
       setProfile(null);
       return null;
     } finally {
@@ -116,10 +135,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (initialSession?.user) {
           setSession(initialSession);
           setUser(initialSession.user);
+
           // Fetch profile for the authenticated user
+          // Don't block the app if profile fetch fails
           console.log('📥 [AUTH] Fetching profile...');
-          const profileData = await fetchProfile(initialSession.user.id);
-          console.log('✅ [AUTH] Profile fetched:', profileData ? 'SUCCESS' : 'FAILED');
+          try {
+            const profileData = await fetchProfile(initialSession.user.id);
+            console.log('✅ [AUTH] Profile fetched:', profileData ? 'SUCCESS' : 'FAILED');
+
+            if (!profileData) {
+              console.warn('⚠️ [AUTH] Profile fetch failed but user is authenticated');
+              console.warn('⚠️ [AUTH] App will continue without profile data');
+            }
+          } catch (profileError) {
+            console.error('❌ [AUTH] Profile fetch error (non-blocking):', profileError);
+            // User is still authenticated, just no profile
+          }
         } else {
           // No session, clear everything
           console.log('⚠️ [AUTH] No session found, clearing state');
@@ -135,7 +166,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfile(null);
       } finally {
         if (mounted) {
-          console.log('✅ [AUTH] Loading complete');
+          console.log('✅ [AUTH] Loading complete (loading=false)');
           setLoading(false);
         }
       }

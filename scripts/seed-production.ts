@@ -84,8 +84,9 @@ async function main() {
   console.log('\n⚠️  WARNING: This will modify the PRODUCTION database!');
   console.log('This script will:');
   console.log('  1. Delete old/unused categories');
-  console.log('  2. Add new category structure (5 main + 22 sub categories)');
-  console.log('  3. Keep existing data (places, collections, etc.)\n');
+  console.log('  2. Update to flat category structure (23 categories at same level)');
+  console.log('  3. Ensure all 81 Turkish cities are present');
+  console.log('  4. Keep existing data (places, collections, etc.)\n');
 
   const answer = await askQuestion('Are you sure you want to continue? (yes/no): ');
 

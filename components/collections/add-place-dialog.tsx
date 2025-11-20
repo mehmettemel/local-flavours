@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMainCategories, useSubcategories } from '@/lib/hooks/use-categories';
+import { useCategories } from '@/lib/hooks/use-categories';
 import { useCities } from '@/lib/hooks/use-locations';
 import {
   Dialog,
@@ -16,13 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Combobox } from '@/components/ui/combobox';
 import { Loader2, Search, Plus, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
@@ -62,13 +56,11 @@ export function AddPlaceDialog({
   const [newPlaceAddress, setNewPlaceAddress] = useState('');
   const [newPlaceLocationId, setNewPlaceLocationId] = useState(locationId || '');
   const [newPlaceCategoryId, setNewPlaceCategoryId] = useState(categoryId || '');
-  const [newPlaceSubcategoryId, setNewPlaceSubcategoryId] = useState('');
   const [similarPlaces, setSimilarPlaces] = useState<any[]>([]);
 
   // TanStack Query hooks for dropdowns
   const { data: cities = [] } = useCities();
-  const { data: categories = [] } = useMainCategories();
-  const { data: subcategories = [] } = useSubcategories(newPlaceCategoryId);
+  const { data: categories = [] } = useCategories();
 
   useEffect(() => {
     if (open) {
@@ -180,7 +172,7 @@ export function AddPlaceDialog({
           address: newPlaceAddress.trim() || null,
           location_id: newPlaceLocationId || null,
           category_id: newPlaceCategoryId || null,
-          subcategory_id: newPlaceSubcategoryId || null,
+          subcategory_id: null,
           status: 'approved', // Auto-approve for MVP
           vote_count: 0,
           vote_score: 0,
@@ -285,7 +277,6 @@ export function AddPlaceDialog({
     setNewPlaceAddress('');
     setNewPlaceLocationId(locationId || '');
     setNewPlaceCategoryId(categoryId || '');
-    setNewPlaceSubcategoryId('');
     setSimilarPlaces([]);
     searchPlaces();
   };
@@ -387,21 +378,17 @@ export function AddPlaceDialog({
                   <Label htmlFor="new-place-city">
                     Şehir <span className="text-red-500">*</span>
                   </Label>
-                  <Select
+                  <Combobox
+                    options={cities.map((city) => ({
+                      value: city.id,
+                      label: city.names.tr,
+                    }))}
                     value={newPlaceLocationId}
                     onValueChange={setNewPlaceLocationId}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Şehir seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.id}>
-                          {city.names.tr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder="Şehir seçin..."
+                    searchPlaceholder="Şehir ara..."
+                    emptyText="Şehir bulunamadı."
+                  />
                 </div>
 
                 {/* Category Selection */}
@@ -409,49 +396,18 @@ export function AddPlaceDialog({
                   <Label htmlFor="new-place-category">
                     Kategori <span className="text-red-500">*</span>
                   </Label>
-                  <Select
+                  <Combobox
+                    options={categories.map((category) => ({
+                      value: category.id,
+                      label: category.names.tr,
+                    }))}
                     value={newPlaceCategoryId}
-                    onValueChange={(value) => {
-                      setNewPlaceCategoryId(value);
-                      setNewPlaceSubcategoryId('');
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kategori seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.names.tr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onValueChange={setNewPlaceCategoryId}
+                    placeholder="Kategori seçin..."
+                    searchPlaceholder="Kategori ara..."
+                    emptyText="Kategori bulunamadı."
+                  />
                 </div>
-
-                {/* Subcategory Selection - Only show if category has subcategories */}
-                {subcategories.length > 0 && (
-                  <div className="space-y-2">
-                    <Label htmlFor="new-place-subcategory">
-                      Alt Kategori
-                    </Label>
-                    <Select
-                      value={newPlaceSubcategoryId}
-                      onValueChange={setNewPlaceSubcategoryId}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Alt kategori seçin (opsiyonel)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {subcategories.map((subcategory) => (
-                          <SelectItem key={subcategory.id} value={subcategory.id}>
-                            {subcategory.names.tr}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
 
                 {/* Similar Places Warning */}
                 {similarPlaces.length > 0 && (

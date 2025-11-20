@@ -70,205 +70,146 @@ function createSlug(name: string): string {
     .replace(/^-|-$/g, '');
 }
 
-// CATEGORY DEFINITIONS
+// CATEGORY DEFINITIONS - FLAT STRUCTURE (NO PARENT-CHILD)
 const CATEGORIES = [
-  // --- MAIN CATEGORIES ---
-  {
-    slug: 'yemek',
-    names: { tr: 'Yemek', en: 'Food' },
-    icon: 'Utensils',
-    display_order: 10,
-    parent_slug: null,
-  },
-  {
-    slug: 'kafe',
-    names: { tr: 'Kafe', en: 'Cafe' },
-    icon: 'Coffee',
-    display_order: 20,
-    parent_slug: null,
-  },
-  {
-    slug: 'gece-hayati',
-    names: { tr: 'Gece Hayatı', en: 'Nightlife' },
-    icon: 'Martini',
-    display_order: 30,
-    parent_slug: null,
-  },
-  {
-    slug: 'tatli-firin',
-    names: { tr: 'Tatlı & Fırın', en: 'Dessert & Bakery' },
-    icon: 'Croissant',
-    display_order: 40,
-    parent_slug: null,
-  },
-  {
-    slug: 'genel',
-    names: { tr: 'Genel / Diğer', en: 'General / Other' },
-    icon: 'MapPin',
-    display_order: 99,
-    parent_slug: null,
-  },
-
-  // --- YEMEK SUB-CATEGORIES ---
+  // All categories at the same level
   {
     slug: 'kebap-ocakbasi',
     names: { tr: 'Kebap & Ocakbaşı', en: 'Kebab & Grill' },
     icon: 'Flame',
     display_order: 1,
-    parent_slug: 'yemek',
   },
   {
     slug: 'esnaf-lokantasi',
     names: { tr: 'Esnaf Lokantası', en: 'Traditional Eatery' },
     icon: 'Soup',
     display_order: 2,
-    parent_slug: 'yemek',
   },
   {
     slug: 'doner',
     names: { tr: 'Döner', en: 'Doner Kebab' },
     icon: 'ChefHat',
     display_order: 3,
-    parent_slug: 'yemek',
   },
   {
     slug: 'pide-lahmacun',
     names: { tr: 'Pide & Lahmacun', en: 'Pide & Lahmacun' },
     icon: 'Pizza',
     display_order: 4,
-    parent_slug: 'yemek',
   },
   {
     slug: 'burger',
     names: { tr: 'Burger', en: 'Burger' },
     icon: 'Sandwich',
     display_order: 5,
-    parent_slug: 'yemek',
   },
   {
     slug: 'sokak-lezzetleri',
     names: { tr: 'Sokak Lezzetleri', en: 'Street Food' },
     icon: 'Truck',
     display_order: 6,
-    parent_slug: 'yemek',
   },
   {
     slug: 'corbaci',
     names: { tr: 'Çorbacı', en: 'Soup House' },
     icon: 'Soup',
     display_order: 7,
-    parent_slug: 'yemek',
   },
   {
     slug: 'kahvalti',
     names: { tr: 'Kahvaltı & Börek', en: 'Breakfast' },
     icon: 'Sun',
     display_order: 8,
-    parent_slug: 'yemek',
   },
   {
     slug: 'balik-deniz',
     names: { tr: 'Balık & Deniz Ürünleri', en: 'Seafood' },
     icon: 'Fish',
     display_order: 9,
-    parent_slug: 'yemek',
   },
   {
     slug: 'dunya-mutfagi',
     names: { tr: 'Dünya Mutfağı', en: 'World Cuisine' },
     icon: 'Globe',
     display_order: 10,
-    parent_slug: 'yemek',
   },
-
-  // --- KAFE SUB-CATEGORIES ---
   {
     slug: 'nitelikli-kahve',
     names: { tr: 'Nitelikli Kahve', en: 'Specialty Coffee' },
-    icon: 'Bean',
-    display_order: 1,
-    parent_slug: 'kafe',
+    icon: 'Coffee',
+    display_order: 11,
   },
   {
     slug: 'turk-kahvesi',
     names: { tr: 'Türk Kahvesi & Çay', en: 'Turkish Coffee & Tea' },
     icon: 'CupSoda',
-    display_order: 2,
-    parent_slug: 'kafe',
+    display_order: 12,
   },
   {
     slug: 'kitap-kafe',
     names: { tr: 'Kitap Kafe', en: 'Book Cafe' },
     icon: 'BookOpen',
-    display_order: 3,
-    parent_slug: 'kafe',
+    display_order: 13,
   },
   {
     slug: 'calisma-dostu',
     names: { tr: 'Çalışma Dostu', en: 'Work Friendly' },
     icon: 'Laptop',
-    display_order: 4,
-    parent_slug: 'kafe',
+    display_order: 14,
   },
-
-  // --- GECE HAYATI SUB-CATEGORIES ---
   {
     slug: 'pub',
     names: { tr: 'Pub & Bar', en: 'Pub & Bar' },
     icon: 'Beer',
-    display_order: 1,
-    parent_slug: 'gece-hayati',
+    display_order: 15,
   },
   {
     slug: 'meyhane',
     names: { tr: 'Meyhane', en: 'Meyhane (Tavern)' },
     icon: 'GlassWater',
-    display_order: 2,
-    parent_slug: 'gece-hayati',
+    display_order: 16,
   },
   {
     slug: 'sarap-evi',
     names: { tr: 'Şarap Evi', en: 'Wine House' },
     icon: 'Wine',
-    display_order: 3,
-    parent_slug: 'gece-hayati',
+    display_order: 17,
   },
   {
     slug: 'kokteyl-bar',
     names: { tr: 'Kokteyl Bar', en: 'Cocktail Bar' },
     icon: 'Martini',
-    display_order: 4,
-    parent_slug: 'gece-hayati',
+    display_order: 18,
   },
-
-  // --- TATLI & FIRIN SUB-CATEGORIES ---
   {
     slug: 'baklava-serbetli',
     names: { tr: 'Baklava & Şerbetli', en: 'Baklava & Traditional' },
     icon: 'Gem',
-    display_order: 1,
-    parent_slug: 'tatli-firin',
+    display_order: 19,
   },
   {
     slug: 'pastane',
     names: { tr: 'Pastane & Fırın', en: 'Patisserie & Bakery' },
     icon: 'Cake',
-    display_order: 2,
-    parent_slug: 'tatli-firin',
+    display_order: 20,
   },
   {
     slug: 'dondurma',
     names: { tr: 'Dondurma', en: 'Ice Cream' },
-    icon: 'IceCream',
-    display_order: 3,
-    parent_slug: 'tatli-firin',
+    icon: 'IceCream2',
+    display_order: 21,
   },
   {
     slug: 'cikolata',
     names: { tr: 'Çikolatacı', en: 'Chocolatier' },
     icon: 'Candy',
-    display_order: 4,
-    parent_slug: 'tatli-firin',
+    display_order: 22,
+  },
+  {
+    slug: 'genel',
+    names: { tr: 'Genel / Diğer', en: 'General / Other' },
+    icon: 'MapPin',
+    display_order: 99,
   },
 ];
 
@@ -306,15 +247,12 @@ export async function seedDatabase() {
     }
 
     // ============================================
-    // 2. SEED CATEGORIES
+    // 2. SEED CATEGORIES (FLAT STRUCTURE)
     // ============================================
     console.log('\n📦 Seeding categories...');
 
-    // First, create all main categories (parent_slug === null)
-    const mainCategories = CATEGORIES.filter((c) => c.parent_slug === null);
-    const categoryIdMap: { [key: string]: string } = {};
-
-    for (const category of mainCategories) {
+    // All categories at the same level (no parent-child hierarchy)
+    for (const category of CATEGORIES) {
       const { data: existingCategory } = await supabase
         .from('categories')
         .select('*')
@@ -322,73 +260,32 @@ export async function seedDatabase() {
         .single();
 
       if (!existingCategory) {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('categories')
           .insert({
             slug: category.slug,
             names: category.names,
             icon: category.icon,
             display_order: category.display_order,
-            parent_id: null,
+            parent_id: null, // Always null for flat structure
           } as any)
           .select()
           .single();
 
         if (error) throw error;
-        categoryIdMap[category.slug] = (data as any).id;
         console.log(`  ✅ ${category.slug} created`);
       } else {
-        categoryIdMap[category.slug] = (existingCategory as any).id;
-        console.log(`  ✅ ${category.slug} already exists`);
-      }
-    }
-
-    // Then, create all sub-categories
-    const subCategories = CATEGORIES.filter((c) => c.parent_slug !== null);
-
-    console.log('\n📋 Seeding subcategories...');
-
-    for (const subcategory of subCategories) {
-      const parentId = categoryIdMap[subcategory.parent_slug!];
-
-      if (!parentId) {
-        console.warn(
-          `  ⚠️  Parent not found for ${subcategory.slug}, skipping...`
-        );
-        continue;
-      }
-
-      const { data: existingSubcategory } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('slug', subcategory.slug)
-        .single();
-
-      if (!existingSubcategory) {
-        const { error } = await supabase.from('categories').insert({
-          slug: subcategory.slug,
-          names: subcategory.names,
-          icon: subcategory.icon,
-          display_order: subcategory.display_order,
-          parent_id: parentId,
-        } as any);
+        // Update existing category to ensure parent_id is null
+        const { error } = await supabase
+          .from('categories')
+          .update({
+            parent_id: null,
+            display_order: category.display_order,
+          } as any)
+          .eq('slug', category.slug);
 
         if (error) throw error;
-        console.log(`  ✅ ${subcategory.slug} created under ${subcategory.parent_slug}`);
-      } else {
-        // Update parent_id if it's not set correctly
-        const existingSubAny = existingSubcategory as any;
-        if (existingSubAny.parent_id !== parentId) {
-          const { error } = await supabase
-            .from('categories')
-            .update({ parent_id: parentId })
-            .eq('id', existingSubAny.id);
-
-          if (error) throw error;
-          console.log(`  ✅ ${subcategory.slug} updated with parent`);
-        } else {
-          console.log(`  ✅ ${subcategory.slug} already exists`);
-        }
+        console.log(`  ✅ ${category.slug} already exists (updated to flat structure)`);
       }
     }
 
@@ -572,16 +469,6 @@ export async function seedDatabase() {
 
     const { data: allCategories } = await supabase.from('categories').select('*');
 
-    const { data: mainCats } = await supabase
-      .from('categories')
-      .select('*')
-      .is('parent_id', null);
-
-    const { data: subCats } = await supabase
-      .from('categories')
-      .select('*')
-      .not('parent_id', 'is', null);
-
     const { data: allLocations } = await supabase.from('locations').select('*');
 
     const { data: cityLocations } = await supabase
@@ -595,9 +482,7 @@ export async function seedDatabase() {
       .eq('type', 'district');
 
     console.log('\n  Categories:');
-    console.log(`    - ${allCategories?.length || 0} total categories`);
-    console.log(`    - ${mainCats?.length || 0} main categories`);
-    console.log(`    - ${subCats?.length || 0} subcategories`);
+    console.log(`    - ${allCategories?.length || 0} total categories (flat structure)`);
 
     console.log('\n  Locations:');
     console.log(`    - ${allLocations?.length || 0} total locations`);

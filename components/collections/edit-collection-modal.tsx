@@ -12,13 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Combobox } from '@/components/ui/combobox';
 import { Loader2, Plus, X, GripVertical, Utensils } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
@@ -172,7 +166,6 @@ export function EditCollectionModal({
   const [loading, setLoading] = useState(false);
   const [locations, setLocations] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [subcategories, setSubcategories] = useState<any[]>([]);
 
   // Form state
   const [name, setName] = useState('');
@@ -180,8 +173,6 @@ export function EditCollectionModal({
   const [cityName, setCityName] = useState(''); // Now using city name instead of ID
   const [locationId, setLocationId] = useState(''); // Will be populated from cityName
   const [categoryId, setCategoryId] = useState('');
-  const [subcategoryId, setSubcategoryId] = useState('');
-  const [selectedCategorySlug, setSelectedCategorySlug] = useState('');
 
   // Places state
   const [places, setPlaces] = useState<any[]>([]);
@@ -200,28 +191,11 @@ export function EditCollectionModal({
     }
   }, [open, collection]);
 
-  // Fetch subcategories when category changes
-  useEffect(() => {
-    if (categoryId) {
-      const selectedCategory = categories.find((cat) => cat.id === categoryId);
-      if (selectedCategory) {
-        setSelectedCategorySlug(selectedCategory.slug);
-        if (selectedCategory.slug === 'yemek') {
-          fetchSubcategories(categoryId);
-        } else {
-          setSubcategories([]);
-          setSubcategoryId('');
-        }
-      }
-    }
-  }, [categoryId, categories]);
-
   const loadCollectionData = async () => {
     setName(collection.names?.tr || '');
     setDescription(collection.descriptions?.tr || '');
     setLocationId(collection.location_id || '');
     setCategoryId(collection.category_id || '');
-    setSubcategoryId(collection.subcategory_id || '');
 
     // Get city name from location
     if (collection.location_id) {
@@ -258,20 +232,9 @@ export function EditCollectionModal({
     const { data } = await supabase
       .from('categories')
       .select('id, slug, names')
-      .is('parent_id', null)
       .order('display_order');
 
     setCategories(data || []);
-  };
-
-  const fetchSubcategories = async (parentId: string) => {
-    const { data } = await supabase
-      .from('categories')
-      .select('id, slug, names')
-      .eq('parent_id', parentId)
-      .order('display_order');
-
-    setSubcategories(data || []);
   };
 
   const generateSlug = (name: string) => {
@@ -320,11 +283,6 @@ export function EditCollectionModal({
       return;
     }
 
-    if (selectedCategorySlug === 'yemek' && !subcategoryId) {
-      alert('Yemek kategorisi için lütfen bir alt kategori seçin');
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -363,7 +321,7 @@ export function EditCollectionModal({
         creator_id: userId,
         location_id: finalLocationId,
         category_id: categoryId,
-        subcategory_id: subcategoryId || null,
+        subcategory_id: null,
         status: 'active',
       };
 
@@ -448,10 +406,7 @@ export function EditCollectionModal({
     setCityName('');
     setLocationId('');
     setCategoryId('');
-    setSubcategoryId('');
     setPlaces([]);
-    setSelectedCategorySlug('');
-    setSubcategories([]);
   };
 
   return (
@@ -514,40 +469,19 @@ export function EditCollectionModal({
                   <Label htmlFor="category">
                     Kategori <span className="text-red-500">*</span>
                   </Label>
-                  <Select value={categoryId} onValueChange={setCategoryId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Kategori seç" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.names.tr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Combobox
+                    options={categories.map((category) => ({
+                      value: category.id,
+                      label: category.names.tr,
+                    }))}
+                    value={categoryId}
+                    onValueChange={setCategoryId}
+                    placeholder="Kategori seçin..."
+                    searchPlaceholder="Kategori ara..."
+                    emptyText="Kategori bulunamadı."
+                  />
                 </div>
               </div>
-
-              {selectedCategorySlug === 'yemek' && (
-                <div className="space-y-2">
-                  <Label htmlFor="subcategory">
-                    Yemek Türü <span className="text-red-500">*</span>
-                  </Label>
-                  <Select value={subcategoryId} onValueChange={setSubcategoryId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Yemek türü seç" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subcategories.map((subcategory) => (
-                        <SelectItem key={subcategory.id} value={subcategory.id}>
-                          {subcategory.names.tr}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
             </div>
 
             {/* Places Section */}

@@ -26,12 +26,6 @@ export const collectionFormSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  subcategoryId: z
-    .string()
-    .uuid()
-    .optional()
-    .nullable(),
-
   tags: z
     .string()
     .optional()

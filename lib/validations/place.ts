@@ -25,12 +25,6 @@ export const placeFormSchema = z.object({
     .uuid('Geçerli bir kategori seçin'),
 
   // Optional fields
-  subcategoryId: z
-    .string()
-    .uuid()
-    .optional()
-    .nullable(),
-
   description: z
     .string()
     .max(500, 'Açıklama en fazla 500 karakter olabilir')

@@ -15,17 +15,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Combobox } from '@/components/ui/combobox';
 import { Loader2, Info } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { useMainCategories, useSubcategories } from '@/lib/hooks/use-categories';
+import { useCategories } from '@/lib/hooks/use-categories';
 import { useCities } from '@/lib/hooks/use-locations';
 import {
   collectionFormSchema,
@@ -54,8 +48,7 @@ export function CollectionDialog({
 
   // TanStack Query hooks
   const { data: cities = [], isLoading: citiesLoading } = useCities();
-  const { data: mainCategories = [], isLoading: categoriesLoading } =
-    useMainCategories();
+  const { data: categories = [], isLoading: categoriesLoading } = useCategories();
 
   // React Hook Form with Zod validation
   const {
@@ -72,14 +65,9 @@ export function CollectionDialog({
       description: '',
       locationId: '',
       categoryId: '',
-      subcategoryId: '',
       tags: '',
     },
   });
-
-  // Watch category to fetch subcategories
-  const selectedCategoryId = watch('categoryId');
-  const { data: subcategories = [] } = useSubcategories(selectedCategoryId);
 
   // Load existing collection data for editing
   useEffect(() => {
@@ -89,20 +77,12 @@ export function CollectionDialog({
         description: collection.descriptions?.tr || '',
         locationId: collection.location_id || '',
         categoryId: collection.category_id || '',
-        subcategoryId: collection.subcategory_id || '',
         tags: formatTags(collection.tags || []),
       });
     } else if (!open) {
       reset();
     }
   }, [collection, open, reset]);
-
-  // Clear subcategory when category changes
-  useEffect(() => {
-    if (selectedCategoryId) {
-      setValue('subcategoryId', '');
-    }
-  }, [selectedCategoryId, setValue]);
 
   // Generate slug helper
   const generateSlug = (name: string) => {
@@ -146,7 +126,7 @@ export function CollectionDialog({
         creator_id: userId,
         location_id: data.locationId,
         category_id: data.categoryId,
-        subcategory_id: data.subcategoryId || null,
+        subcategory_id: null,
         tags: parseTags(data.tags || ''),
         status: 'active',
       };
@@ -175,8 +155,6 @@ export function CollectionDialog({
       alert(error.message || 'Koleksiyon kaydedilemedi');
     }
   };
-
-  const hasSubcategories = subcategories.length > 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -240,22 +218,19 @@ export function CollectionDialog({
               <Label htmlFor="location" className="text-base font-semibold">
                 Şehir <span className="text-red-500">*</span>
               </Label>
-              <Select
+              <Combobox
+                options={cities.map((city) => ({
+                  value: city.id,
+                  label: city.names.tr,
+                }))}
                 value={watch('locationId')}
                 onValueChange={(value) => setValue('locationId', value)}
+                placeholder="Şehir seçin..."
+                searchPlaceholder="Şehir ara..."
+                emptyText="Şehir bulunamadı."
                 disabled={isSubmitting || citiesLoading}
-              >
-                <SelectTrigger className="h-11 text-base">
-                  <SelectValue placeholder="Şehir seçin" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city.id} value={city.id}>
-                      {city.names.tr}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                className="h-11"
+              />
               {errors.locationId && (
                 <p className="text-sm text-red-500">
                   {errors.locationId.message}
@@ -264,66 +239,33 @@ export function CollectionDialog({
             </div>
 
             {/* Category Selection */}
-            <div className="space-y-2">
+            <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="category" className="text-base font-semibold">
                 Kategori <span className="text-red-500">*</span>
               </Label>
-              <Select
+              <Combobox
+                options={categories.map((category) => ({
+                  value: category.id,
+                  label: category.names.tr,
+                }))}
                 value={watch('categoryId')}
                 onValueChange={(value) => setValue('categoryId', value)}
+                placeholder="Kategori seçin..."
+                searchPlaceholder="Kategori ara..."
+                emptyText="Kategori bulunamadı."
                 disabled={isSubmitting || categoriesLoading}
-              >
-                <SelectTrigger className="h-11 text-base">
-                  <SelectValue placeholder="Kategori seçin" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mainCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.names.tr}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                className="h-11"
+              />
               {errors.categoryId && (
                 <p className="text-sm text-red-500">
                   {errors.categoryId.message}
                 </p>
               )}
+              <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Info className="h-3.5 w-3.5" />
+                Bu koleksiyondaki mekanların türünü belirtin
+              </p>
             </div>
-
-            {/* Subcategory Selection - Only show if category has subcategories */}
-            {hasSubcategories && (
-              <div className="space-y-2 sm:col-span-2">
-                <Label htmlFor="subcategory" className="text-base font-semibold">
-                  Alt Kategori <span className="text-red-500">*</span>
-                </Label>
-                <Select
-                  value={watch('subcategoryId') || ''}
-                  onValueChange={(value) => setValue('subcategoryId', value)}
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger className="h-11 text-base">
-                    <SelectValue placeholder="Alt kategori seçin" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subcategories.map((subcategory) => (
-                      <SelectItem key={subcategory.id} value={subcategory.id}>
-                        {subcategory.names.tr}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.subcategoryId && (
-                  <p className="text-sm text-red-500">
-                    {errors.subcategoryId.message}
-                  </p>
-                )}
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Info className="h-3.5 w-3.5" />
-                  Bu koleksiyondaki mekanların türünü belirtin
-                </p>
-              </div>
-            )}
 
             {/* Tags */}
             <div className="space-y-2 sm:col-span-2">

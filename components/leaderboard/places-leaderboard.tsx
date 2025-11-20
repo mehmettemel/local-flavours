@@ -11,13 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Combobox } from '@/components/ui/combobox';
 import { MapPin, TrendingUp, ThumbsUp, ThumbsDown, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -80,13 +74,17 @@ export function PlacesLeaderboard({
       const { data } = await supabase
         .from('categories')
         .select('id, slug, names, icon')
-        .is('parent_id', null)
         .order('display_order');
 
       setCategories(data || []);
     };
     fetchCategories();
   }, []);
+
+  // Top 6 categories to show as buttons
+  const topCategories = categories.slice(0, 6);
+  // Rest of categories for combobox
+  const restCategories = categories.slice(6);
 
   // Filter places when category changes
   useEffect(() => {
@@ -184,36 +182,57 @@ export function PlacesLeaderboard({
       {/* City Selector Section */}
       <div className="space-y-4">
         {/* Category Filter Badges */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="space-y-3">
           <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Kategori:
           </span>
-          <Button
-            variant={!selectedCategory ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedCategory('')}
-            className="h-8"
-          >
-            Tümü
-          </Button>
-          {categories.map((category) => (
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Tümü button */}
             <Button
-              key={category.id}
-              variant={selectedCategory === category.slug ? 'default' : 'outline'}
+              variant={!selectedCategory ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedCategory(category.slug)}
-              className="h-8 gap-1.5"
+              onClick={() => setSelectedCategory('')}
+              className="h-9"
             >
-              <span>{getCategoryEmoji(category.slug)}</span>
-              <span>{category.names.tr}</span>
-              {selectedCategory === category.slug && (
-                <X className="ml-1 h-3 w-3" onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedCategory('');
-                }} />
-              )}
+              Tümü
             </Button>
-          ))}
+
+            {/* Top 6 categories as buttons */}
+            {topCategories.map((category) => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.slug ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedCategory(category.slug)}
+                className="h-9 gap-1.5"
+              >
+                <span>{getCategoryEmoji(category.slug)}</span>
+                <span>{category.names.tr}</span>
+                {selectedCategory === category.slug && (
+                  <X className="ml-1 h-3 w-3" onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCategory('');
+                  }} />
+                )}
+              </Button>
+            ))}
+
+            {/* Rest of categories in combobox */}
+            {restCategories.length > 0 && (
+              <Combobox
+                options={restCategories.map((cat) => ({
+                  value: cat.slug,
+                  label: `${getCategoryEmoji(cat.slug)} ${cat.names.tr}`,
+                }))}
+                value={selectedCategory && restCategories.find(c => c.slug === selectedCategory) ? selectedCategory : ''}
+                onValueChange={(value) => setSelectedCategory(value)}
+                placeholder="Diğer kategoriler..."
+                searchPlaceholder="Kategori ara..."
+                emptyText="Kategori bulunamadı."
+                className="w-[200px]"
+              />
+            )}
+          </div>
         </div>
         {/* Quick Access Buttons */}
         <div className="flex flex-wrap items-center gap-3">
@@ -239,18 +258,18 @@ export function PlacesLeaderboard({
           <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Tüm Şehirler:
           </span>
-          <Select value={selectedCity} onValueChange={handleCityChange}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Şehir seç" />
-            </SelectTrigger>
-            <SelectContent>
-              {cities.map((city) => (
-                <SelectItem key={city.id} value={city.slug}>
-                  {city.names.tr}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Combobox
+            options={cities.map((city) => ({
+              value: city.slug,
+              label: city.names.tr,
+            }))}
+            value={selectedCity}
+            onValueChange={handleCityChange}
+            placeholder="Şehir seçin..."
+            searchPlaceholder="Şehir ara..."
+            emptyText="Şehir bulunamadı."
+            className="w-[250px]"
+          />
         </div>
       </div>
 

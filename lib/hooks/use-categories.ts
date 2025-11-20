@@ -11,56 +11,9 @@ interface Category {
 }
 
 /**
- * Fetch all main categories (parent_id is null)
+ * Fetch all categories (flat structure - no parent-child hierarchy)
  */
-export function useMainCategories() {
-  const supabase = createClient();
-
-  return useQuery({
-    queryKey: ['categories', 'main'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .is('parent_id', null)
-        .order('display_order');
-
-      if (error) throw error;
-      return data as Category[];
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-}
-
-/**
- * Fetch subcategories by parent category ID
- */
-export function useSubcategories(parentId: string | null | undefined) {
-  const supabase = createClient();
-
-  return useQuery({
-    queryKey: ['categories', 'subcategories', parentId],
-    queryFn: async () => {
-      if (!parentId) return [];
-
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('parent_id', parentId)
-        .order('display_order');
-
-      if (error) throw error;
-      return data as Category[];
-    },
-    enabled: !!parentId, // Only run query if parentId exists
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-}
-
-/**
- * Fetch all categories (main + subcategories)
- */
-export function useAllCategories() {
+export function useCategories() {
   const supabase = createClient();
 
   return useQuery({

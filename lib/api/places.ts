@@ -96,6 +96,23 @@ export async function getAllPlaces(limit = 100, offset = 0) {
 export async function getTopPlacesByCity(citySlug: string, limit = 5) {
   const supabase = await createClient();
 
+  // If "all" is selected, get all places across all cities
+  if (citySlug === 'all') {
+    const { data, error } = await supabase
+      .from('places')
+      .select(`
+        *,
+        category:categories(*),
+        location:locations(*)
+      `)
+      .eq('status', 'approved')
+      .order('vote_score', { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+    return data;
+  }
+
   // First get the city
   const { data: city } = await supabase
     .from('locations')

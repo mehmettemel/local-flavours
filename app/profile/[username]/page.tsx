@@ -23,6 +23,7 @@ import {
   Users,
   UserPlus,
   UserMinus,
+  Settings,
 } from 'lucide-react';
 import { CollectionCard } from '@/components/collections/collection-card';
 import Link from 'next/link';
@@ -266,27 +267,37 @@ export default function ProfilePage() {
             </div>
 
             {/* Action Buttons */}
-            {!isOwnProfile && currentUser && (
-              <Button
-                onClick={handleFollow}
-                disabled={followLoading}
-                variant={isFollowing ? 'outline' : 'default'}
-              >
-                {followLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : isFollowing ? (
-                  <>
-                    <UserMinus className="mr-2 h-4 w-4" />
-                    Unfollow
-                  </>
-                ) : (
-                  <>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Follow
-                  </>
-                )}
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {isOwnProfile && (
+                <Link href="/settings">
+                  <Button variant="outline">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Ayarlar
+                  </Button>
+                </Link>
+              )}
+              {!isOwnProfile && currentUser && (
+                <Button
+                  onClick={handleFollow}
+                  disabled={followLoading}
+                  variant={isFollowing ? 'outline' : 'default'}
+                >
+                  {followLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : isFollowing ? (
+                    <>
+                      <UserMinus className="mr-2 h-4 w-4" />
+                      Unfollow
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Follow
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

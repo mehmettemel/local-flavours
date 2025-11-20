@@ -1,0 +1,40 @@
+{
+  "collection": {
+    "name": "Adana'nın Yerel Lezzet Durakları",
+    "description": "Turist tuzaklarından uzak, 4.0 üzeri puana sahip ve yerlilerin müdavimi olduğu, gerçek Adana lezzetlerini sunan 5 özel mekan.",
+    "cityName": "Adana",
+    "categorySlug": "kebap-ocakbasi"
+  },
+  "places": [
+    {
+      "name": "Tarihi İştah Kebap",
+      "address": "Alidede Mah., Seyhan, Adana",
+      "description": "Salaş atmosferi ve meşhur 'Jet Kebap' spesiyali ile bilinen, lezzetin ön planda olduğu tarihi bir mekan.",
+      "recommendedItems": ["Jet Kebap", "Adana Kebap", "Ayran"]
+    },
+    {
+      "name": "Yeşil Kapı Kebap",
+      "address": "Reşatbey, Ordu Cad., Seyhan, Adana",
+      "description": "Gösterişten uzak, aile işletmesi sıcaklığında hizmet veren ve etiyle öne çıkan gerçek bir kebapçı.",
+      "recommendedItems": ["Adana Kebap", "Külbastı", "Ezme"]
+    },
+    {
+      "name": "Kling Usta",
+      "address": "Cemalpaşa, Toros Cad., Seyhan, Adana",
+      "description": "İsmini sahibinin eski bir film karakterine benzerliğinden alan, yılların eskitemediği klasik bir lezzet durağı.",
+      "recommendedItems": ["Adana Kebap", "Beyti", "Şalgam"]
+    },
+    {
+      "name": "Bankalar Lokantası",
+      "address": "Kocavezir, Seyhan, Adana",
+      "description": "Adana'nın en eski esnaf lokantalarından biri. Kebap dışında muazzam tencere yemekleri de sunuyor.",
+      "recommendedItems": ["Et Haşlama", "Güveç", "Pilav"]
+    },
+    {
+      "name": "Cik Cik Ali",
+      "address": "Kurtuluş Cad., Seyhan, Adana",
+      "description": "Bol yeşillik ve salata ikramıyla bilinen, otantik atmosferini koruyan sanayi tipi kebapçı.",
+      "recommendedItems": ["Adana Kebap", "Ciğer Şiş", "Söğüş Salata"]
+    }
+  ]
+}

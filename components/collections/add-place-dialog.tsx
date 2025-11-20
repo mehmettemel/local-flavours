@@ -54,6 +54,7 @@ export function AddPlaceDialog({
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newPlaceName, setNewPlaceName] = useState('');
   const [newPlaceAddress, setNewPlaceAddress] = useState('');
+  const [newPlaceGoogleMapsUrl, setNewPlaceGoogleMapsUrl] = useState('');
   const [newPlaceLocationId, setNewPlaceLocationId] = useState(locationId || '');
   const [newPlaceCategoryId, setNewPlaceCategoryId] = useState(categoryId || '');
   const [similarPlaces, setSimilarPlaces] = useState<any[]>([]);
@@ -170,6 +171,7 @@ export function AddPlaceDialog({
           names: { tr: newPlaceName.trim(), en: newPlaceName.trim() },
           descriptions: { tr: '', en: '' },
           address: newPlaceAddress.trim() || null,
+          google_maps_url: newPlaceGoogleMapsUrl.trim() || null,
           location_id: newPlaceLocationId || null,
           category_id: newPlaceCategoryId || null,
           subcategory_id: null,
@@ -371,6 +373,20 @@ export function AddPlaceDialog({
                     onChange={(e) => setNewPlaceAddress(e.target.value)}
                     placeholder="Örn: Kadıköy, İstanbul"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new-place-google-maps">Google Maps Link (Opsiyonel)</Label>
+                  <Input
+                    id="new-place-google-maps"
+                    type="url"
+                    value={newPlaceGoogleMapsUrl}
+                    onChange={(e) => setNewPlaceGoogleMapsUrl(e.target.value)}
+                    placeholder="https://maps.google.com/..."
+                  />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Google Maps'ten mekanın linkini kopyalayıp buraya yapıştırın
+                  </p>
                 </div>
 
                 {/* City Selection */}

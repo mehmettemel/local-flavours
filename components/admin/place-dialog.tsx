@@ -42,6 +42,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
     descriptionEn: '',
     descriptionTr: '',
     address: '',
+    googleMapsUrl: '',
     cityName: '', // City name for the CitySelect component
     locationId: '',
     categoryId: '',
@@ -97,6 +98,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         descriptionEn: descriptions?.en || '',
         descriptionTr: descriptions?.tr || '',
         address: place.address || '',
+        googleMapsUrl: place.google_maps_url || '',
         cityName,
         locationId: place.location_id || '',
         categoryId: place.category_id || '',
@@ -111,6 +113,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
         descriptionEn: '',
         descriptionTr: '',
         address: '',
+        googleMapsUrl: '',
         cityName: '',
         locationId: '',
         categoryId: '',
@@ -174,6 +177,7 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
           tr: data.descriptionTr,
         },
         address: data.address,
+        google_maps_url: data.googleMapsUrl || null,
         location_id: finalLocationId,
         category_id: data.categoryId,
         status: data.status,
@@ -289,6 +293,21 @@ export function PlaceDialog({ isOpen, onClose, place }: PlaceDialogProps) {
               placeholder="Kemankeş Karamustafa Paşa, Karaköy"
               required
             />
+          </div>
+
+          {/* Google Maps URL */}
+          <div className="space-y-2">
+            <Label htmlFor="googleMapsUrl">Google Maps Link</Label>
+            <Input
+              id="googleMapsUrl"
+              type="url"
+              value={formData.googleMapsUrl}
+              onChange={(e) => handleChange('googleMapsUrl', e.target.value)}
+              placeholder="https://maps.google.com/..."
+            />
+            <p className="text-xs text-neutral-500">
+              Google Maps'ten mekanın linkini kopyalayıp buraya yapıştırın
+            </p>
           </div>
 
           {/* Location (City) */}

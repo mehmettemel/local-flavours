@@ -11,8 +11,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
   const cities = await getCitiesByCountry('turkey');
 
-  // Get selected city from query params or default to Istanbul
-  const selectedCitySlug = params.city || 'istanbul';
+  // Get selected city from query params or default to "all"
+  const selectedCitySlug = params.city || 'all';
 
   // Get top 20 places for selected city
   const topPlaces = await getTopPlacesByCity(selectedCitySlug, 20);

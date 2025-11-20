@@ -239,6 +239,16 @@ export function PlacesLeaderboard({
           <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             Hızlı Erişim:
           </span>
+          {/* Tüm Şehirler button */}
+          <Button
+            variant={selectedCity === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => handleCityChange('all')}
+            className="gap-2"
+          >
+            <MapPin className="h-3.5 w-3.5" />
+            Tüm Şehirler
+          </Button>
           {featuredCityButtons.map((city) => (
             <Button
               key={city.id}
@@ -284,7 +294,10 @@ export function PlacesLeaderboard({
             )}
             <div>
               <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
-                {cities.find((c) => c.slug === selectedCity)?.names.tr} - Top 20 Mekanlar
+                {selectedCity === 'all'
+                  ? 'Tüm Şehirler - Top 20 Mekanlar'
+                  : `${cities.find((c) => c.slug === selectedCity)?.names.tr} - Top 20 Mekanlar`
+                }
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 Topluluk oylarına göre sıralanan en iyi mekanlar

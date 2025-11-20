@@ -163,6 +163,11 @@ Dropdown içinde uzun listeler için:
 />
 ```
 
+**Seçili öğe gösterimi:**
+- ✅ Seçili öğe **turuncu background** ile gösterilir (`bg-orange-100 dark:bg-orange-900/30`)
+- ✅ Checkbox **kullanılmaz** (daha temiz görünüm)
+- ✅ Dark mode desteği var
+
 ## 🎨 Styling Best Practices
 
 ### Tailwind CSS

@@ -23,6 +23,13 @@ Projeye hoş geldiniz! Bu klasör, projenin dokümantasyonunu içerir.
 - Width, scroll, responsive design kuralları
 - Yaygın hatalar ve çözümleri
 
+### 4. **Combobox Styling Guide**
+📄 [COMBOBOX-STYLING.md](./COMBOBOX-STYLING.md)
+- Seçili öğe gösterimi (turuncu background)
+- Light/Dark mode renk paleti
+- Checkbox kullanmama gerekçesi
+- Tüm combobox styling standartları
+
 ## 🚀 Hızlı Başlangıç
 
 ### Development Ortamı

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -97,13 +97,11 @@ export function Combobox({
                   onValueChange?.(currentValue === value ? "" : currentValue)
                   setOpen(false)
                 }}
+                className={cn(
+                  "cursor-pointer",
+                  value === option.value && "bg-orange-100 dark:bg-orange-900/30 text-orange-900 dark:text-orange-100"
+                )}
               >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === option.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
                 {option.label}
               </CommandItem>
             ))}

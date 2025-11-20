@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown } from 'lucide-react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 import { cn } from '@/lib/utils';
@@ -93,13 +93,11 @@ export function CitySelect({
                     onValueChange(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}
+                  className={cn(
+                    "cursor-pointer",
+                    value === city.name && "bg-orange-100 dark:bg-orange-900/30 text-orange-900 dark:text-orange-100"
+                  )}
                 >
-                  <Check
-                    className={cn(
-                      'mr-2 h-4 w-4',
-                      value === city.name ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
                   {city.name}
                 </CommandItem>
               ))}

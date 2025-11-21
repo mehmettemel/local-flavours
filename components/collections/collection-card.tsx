@@ -2,7 +2,9 @@
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MapPin, Star, Edit, Trash2 } from 'lucide-react';
+import { MapPin, Star, Edit, Trash2, Eye } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Collection {
   id: string;
@@ -27,9 +29,17 @@ interface CollectionCardProps {
 
 export function CollectionCard({ collection, onEdit, onDelete, showActions = true }: CollectionCardProps) {
   const locale = 'tr'; // Turkish as primary language
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/collections/${collection.slug}`);
+  };
 
   return (
-    <Card className="group relative flex flex-col transition-shadow hover:shadow-lg">
+    <Card
+      className="group relative flex flex-col transition-shadow hover:shadow-lg cursor-pointer"
+      onClick={handleCardClick}
+    >
       {collection.is_featured && (
         <div className="absolute right-3 top-3 rounded-full bg-yellow-100 p-1.5 dark:bg-yellow-900/30">
           <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
@@ -71,31 +81,45 @@ export function CollectionCard({ collection, onEdit, onDelete, showActions = tru
         </div>
       </CardContent>
 
-      {showActions && (
-        <CardFooter className="flex gap-2">
-          {onEdit && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1"
-              onClick={onEdit}
-            >
-              <Edit className="mr-2 h-3.5 w-3.5" />
-              Düzenle
-            </Button>
-          )}
-          {onDelete && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onDelete(collection.id)}
-              className="text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          )}
-        </CardFooter>
-      )}
+      <CardFooter className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleCardClick();
+          }}
+        >
+          <Eye className="mr-2 h-3.5 w-3.5" />
+          Detay
+        </Button>
+        {showActions && onEdit && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+          >
+            <Edit className="h-3.5 w-3.5" />
+          </Button>
+        )}
+        {showActions && onDelete && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(collection.id);
+            }}
+            className="text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 }

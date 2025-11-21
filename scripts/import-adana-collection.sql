@@ -100,7 +100,7 @@ BEGIN
 
   -- Koleksiyona bağla
   INSERT INTO collection_places (collection_id, place_id, display_order, curator_note, recommended_items)
-  VALUES (v_collection_id, v_place_id, 0, 'Salaş atmosferi ve meşhur ''Jet Kebap'' spesiyali ile bilinen, lezzetin ön planda olduğu tarihi bir mekan.', '["Jet Kebap", "Adana Kebap", "Ayran"]'::jsonb);
+  VALUES (v_collection_id, v_place_id, 0, 'Salaş atmosferi ve meşhur ''Jet Kebap'' spesiyali ile bilinen, lezzetin ön planda olduğu tarihi bir mekan.', ARRAY['Jet Kebap', 'Adana Kebap', 'Ayran']);
 
   -- 7. Mekan 2: Yeşil Kapı Kebap
   SELECT id INTO v_place_id
@@ -137,7 +137,7 @@ BEGIN
   END IF;
 
   INSERT INTO collection_places (collection_id, place_id, display_order, curator_note, recommended_items)
-  VALUES (v_collection_id, v_place_id, 1, 'Gösterişten uzak, aile işletmesi sıcaklığında hizmet veren ve etiyle öne çıkan gerçek bir kebapçı.', '["Adana Kebap", "Külbastı", "Ezme"]'::jsonb);
+  VALUES (v_collection_id, v_place_id, 1, 'Gösterişten uzak, aile işletmesi sıcaklığında hizmet veren ve etiyle öne çıkan gerçek bir kebapçı.', ARRAY['Adana Kebap', 'Külbastı', 'Ezme']);
 
   -- 8. Mekan 3: Kling Usta
   SELECT id INTO v_place_id
@@ -174,7 +174,7 @@ BEGIN
   END IF;
 
   INSERT INTO collection_places (collection_id, place_id, display_order, curator_note, recommended_items)
-  VALUES (v_collection_id, v_place_id, 2, 'İsmini sahibinin eski bir film karakterine benzerliğinden alan, yılların eskitemediği klasik bir lezzet durağı.', '["Adana Kebap", "Beyti", "Şalgam"]'::jsonb);
+  VALUES (v_collection_id, v_place_id, 2, 'İsmini sahibinin eski bir film karakterine benzerliğinden alan, yılların eskitemediği klasik bir lezzet durağı.', ARRAY['Adana Kebap', 'Beyti', 'Şalgam']);
 
   -- 9. Mekan 4: Bankalar Lokantası
   SELECT id INTO v_place_id
@@ -211,7 +211,7 @@ BEGIN
   END IF;
 
   INSERT INTO collection_places (collection_id, place_id, display_order, curator_note, recommended_items)
-  VALUES (v_collection_id, v_place_id, 3, 'Adana''nın en eski esnaf lokantalarından biri. Kebap dışında muazzam tencere yemekleri de sunuyor.', '["Et Haşlama", "Güveç", "Pilav"]'::jsonb);
+  VALUES (v_collection_id, v_place_id, 3, 'Adana''nın en eski esnaf lokantalarından biri. Kebap dışında muazzam tencere yemekleri de sunuyor.', ARRAY['Et Haşlama', 'Güveç', 'Pilav']);
 
   -- 10. Mekan 5: Cik Cik Ali
   SELECT id INTO v_place_id
@@ -248,7 +248,7 @@ BEGIN
   END IF;
 
   INSERT INTO collection_places (collection_id, place_id, display_order, curator_note, recommended_items)
-  VALUES (v_collection_id, v_place_id, 4, 'Bol yeşillik ve salata ikramıyla bilinen, otantik atmosferini koruyan sanayi tipi kebapçı.', '["Adana Kebap", "Ciğer Şiş", "Söğüş Salata"]'::jsonb);
+  VALUES (v_collection_id, v_place_id, 4, 'Bol yeşillik ve salata ikramıyla bilinen, otantik atmosferini koruyan sanayi tipi kebapçı.', ARRAY['Adana Kebap', 'Ciğer Şiş', 'Söğüş Salata']);
 
   RAISE NOTICE '✅ İşlem başarıyla tamamlandı!';
   RAISE NOTICE 'Koleksiyon slug: %', v_collection_slug;

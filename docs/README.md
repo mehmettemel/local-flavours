@@ -30,6 +30,20 @@ Projeye hoş geldiniz! Bu klasör, projenin dokümantasyonunu içerir.
 - Checkbox kullanmama gerekçesi
 - Tüm combobox styling standartları
 
+### 5. **Voting System**
+📄 [VOTING-SYSTEM.md](./VOTING-SYSTEM.md)
+- Oy verme sistemi nasıl çalışır
+- Database trigger ve RLS yapılandırması
+- Session management ve cookie ayarları
+- Troubleshooting rehberi
+
+### 6. **Production Database Setup**
+📄 [PRODUCTION-DATABASE-SETUP.md](./PRODUCTION-DATABASE-SETUP.md)
+- Production database kurulum adımları
+- Migration dosyaları sırası
+- RLS policy doğrulama
+- Admin kullanıcı oluşturma
+
 ## 🚀 Hızlı Başlangıç
 
 ### Development Ortamı
@@ -180,6 +194,6 @@ Sorularınız veya sorunlarınız için:
 
 ---
 
-**Son güncelleme**: 2025-01-20
+**Son güncelleme**: 2025-11-21
 
 Proje hakkında daha fazla bilgi için dokümantasyon dosyalarını inceleyin.

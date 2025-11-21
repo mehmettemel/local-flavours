@@ -98,7 +98,7 @@ export async function getTopPlacesByCity(citySlug: string, limit = 5) {
 
   // If "all" is selected, get all places across all cities
   if (citySlug === 'all') {
-    const { data, error } = await supabase
+    const { data: places, error } = await supabase
       .from('places')
       .select(`
         *,
@@ -110,7 +110,10 @@ export async function getTopPlacesByCity(citySlug: string, limit = 5) {
       .limit(limit);
 
     if (error) throw error;
-    return data;
+
+    // Get vote counts for each place
+    const placesWithVotes = await getPlacesWithVoteCounts(supabase, places || []);
+    return placesWithVotes;
   }
 
   // First get the city
@@ -124,7 +127,7 @@ export async function getTopPlacesByCity(citySlug: string, limit = 5) {
   if (!city) return [];
 
   // Then get top places
-  const { data, error } = await supabase
+  const { data: places, error } = await supabase
     .from('places')
     .select(`
       *,
@@ -137,5 +140,46 @@ export async function getTopPlacesByCity(citySlug: string, limit = 5) {
     .limit(limit);
 
   if (error) throw error;
-  return data;
+
+  // Get vote counts for each place
+  const placesWithVotes = await getPlacesWithVoteCounts(supabase, places || []);
+  return placesWithVotes;
+}
+
+async function getPlacesWithVoteCounts(supabase: any, places: any[]) {
+  if (!places.length) return [];
+
+  const placeIds = places.map(p => p.id);
+
+  // Get upvote counts
+  const { data: upvotes } = await supabase
+    .from('votes')
+    .select('place_id')
+    .in('place_id', placeIds)
+    .eq('value', 1);
+
+  // Get downvote counts
+  const { data: downvotes } = await supabase
+    .from('votes')
+    .select('place_id')
+    .in('place_id', placeIds)
+    .eq('value', -1);
+
+  // Count votes per place
+  const upvoteCounts: Record<string, number> = {};
+  const downvoteCounts: Record<string, number> = {};
+
+  (upvotes || []).forEach((v: any) => {
+    upvoteCounts[v.place_id] = (upvoteCounts[v.place_id] || 0) + 1;
+  });
+
+  (downvotes || []).forEach((v: any) => {
+    downvoteCounts[v.place_id] = (downvoteCounts[v.place_id] || 0) + 1;
+  });
+
+  return places.map(place => ({
+    ...place,
+    upvote_count: upvoteCounts[place.id] || 0,
+    downvote_count: downvoteCounts[place.id] || 0,
+  }));
 }

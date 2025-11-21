@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +22,13 @@ export function AuthButton() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showReset, setShowReset] = useState(false);
+
+  // Listen for custom event to open login dialog
+  useEffect(() => {
+    const handleOpenLogin = () => setShowLogin(true);
+    window.addEventListener('open-login-dialog', handleOpenLogin);
+    return () => window.removeEventListener('open-login-dialog', handleOpenLogin);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();

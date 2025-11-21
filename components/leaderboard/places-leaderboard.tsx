@@ -12,19 +12,23 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
-import { MapPin, TrendingUp, ThumbsUp, ThumbsDown, Loader2, X } from 'lucide-react';
+import { MapPin, TrendingUp, ThumbsUp, ThumbsDown, Loader2, X, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/contexts/auth-context';
+import { toast } from 'sonner';
 
 interface Place {
   id: string;
   slug: string;
   names: { en: string; tr: string };
   descriptions: { en: string; tr: string };
+  address?: string;
   vote_score: number;
   vote_count: number;
+  upvote_count: number;
+  downvote_count: number;
   category?: {
     slug: string;
     names: { en: string; tr: string };
@@ -60,7 +64,7 @@ export function PlacesLeaderboard({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const supabase = createClient();
-  const { user } = useAuth();
+  const { user, session } = useAuth();
 
   // Featured cities for quick access buttons
   const featuredCities = ['istanbul', 'ankara', 'izmir', 'antalya', 'bursa'];
@@ -107,7 +111,20 @@ export function PlacesLeaderboard({
 
   const handleVote = async (placeId: string, voteType: 'up' | 'down') => {
     if (!user) {
-      alert('Oy vermek için lütfen giriş yapın');
+      toast.error('Oy vermek için giriş yapmalısınız', {
+        action: {
+          label: 'Giriş Yap',
+          onClick: () => window.dispatchEvent(new CustomEvent('open-login-dialog')),
+        },
+      });
+      return;
+    }
+
+    console.log('Voting with user:', user.id, 'for place:', placeId);
+    console.log('Session from context:', session?.user?.id);
+
+    if (!session) {
+      toast.error('Oturum bulunamadı, lütfen tekrar giriş yapın');
       return;
     }
 
@@ -115,35 +132,62 @@ export function PlacesLeaderboard({
       const voteValue = voteType === 'up' ? 1 : -1;
 
       // Check if user already voted
-      const { data: existingVote } = await supabase
+      const { data: existingVote, error: selectError } = await supabase
         .from('votes')
         .select('*')
         .eq('user_id', user.id)
         .eq('place_id', placeId)
-        .single();
+        .maybeSingle();
+
+      if (selectError) {
+        console.error('Select error:', selectError);
+        throw selectError;
+      }
 
       if (existingVote) {
-        // Update existing vote
-        const { error } = await supabase
-          .from('votes')
-          .update({ value: voteValue })
-          .eq('id', existingVote.id);
+        // If same vote, remove it (toggle off)
+        if (existingVote.value === voteValue) {
+          const { error } = await supabase
+            .from('votes')
+            .delete()
+            .eq('id', existingVote.id);
 
-        if (error) throw error;
+          if (error) {
+            console.error('Delete error:', error);
+            throw error;
+          }
+          toast.success('Oyunuz kaldırıldı');
+        } else {
+          // Update existing vote
+          const { error } = await supabase
+            .from('votes')
+            .update({ value: voteValue })
+            .eq('id', existingVote.id);
+
+          if (error) {
+            console.error('Update error:', error);
+            throw error;
+          }
+          toast.success(voteType === 'up' ? 'Beğendiniz!' : 'Beğenmediniz');
+        }
       } else {
         // Insert new vote
         const { error } = await supabase
           .from('votes')
           .insert([{ user_id: user.id, place_id: placeId, value: voteValue }]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
+        toast.success(voteType === 'up' ? 'Beğendiniz!' : 'Beğenmediniz');
       }
 
       // Refresh the page to show updated votes
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error voting:', error);
-      alert('Oy kullanılırken bir hata oluştu');
+      toast.error(`Oy kullanılırken bir hata oluştu: ${error.message || error}`);
     }
   };
 
@@ -313,14 +357,15 @@ export function PlacesLeaderboard({
                 <TableHead className="w-[80px] text-center">Sıra</TableHead>
                 <TableHead>Mekan</TableHead>
                 <TableHead>Kategori</TableHead>
-                <TableHead className="text-center">Oy</TableHead>
-                <TableHead className="text-right">Puan</TableHead>
+                <TableHead className="text-center">Harita</TableHead>
+                <TableHead className="text-center">Puan</TableHead>
+                <TableHead className="text-right">Oy</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPlaces.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center">
+                  <TableCell colSpan={6} className="h-32 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <MapPin className="h-8 w-8 text-neutral-400" />
                       <p className="text-sm text-neutral-500">
@@ -339,21 +384,23 @@ export function PlacesLeaderboard({
                     | { en: string; tr: string }
                     | undefined;
 
+                  const googleMapsUrl = place.address
+                    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}`
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(names.tr)}`;
+
                   return (
                     <TableRow
                       key={place.id}
-                      className="group hover:bg-orange-50/50 dark:hover:bg-orange-950/20"
+                      className="group cursor-pointer hover:bg-orange-50/50 dark:hover:bg-orange-950/20"
+                      onClick={() => router.push(`/places/${place.slug}`)}
                     >
                       <TableCell className="text-center font-semibold">
                         <span className="text-lg">{getRankEmoji(rank)}</span>
                       </TableCell>
                       <TableCell>
-                        <Link
-                          href={`/places/${place.slug}`}
-                          className="block font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400"
-                        >
+                        <span className="block font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400">
                           {names.tr}
-                        </Link>
+                        </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -365,36 +412,49 @@ export function PlacesLeaderboard({
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-center gap-2">
+                      <TableCell className="text-center">
+                        <a
+                          href={googleMapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                          <TrendingUp className="h-3 w-3" />
+                          {place.vote_score || 0}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                           <Button
                             variant="ghost"
                             size="sm"
                             className="h-8 w-8 p-0 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900/30 dark:hover:text-green-400"
                             onClick={() => handleVote(place.id, 'up')}
-                            disabled={!user}
                           >
                             <ThumbsUp className="h-4 w-4" />
                           </Button>
-                          <span className="min-w-[2ch] text-center text-sm font-medium">
-                            {place.vote_count || 0}
+                          <span className="min-w-[2ch] text-center text-sm font-medium text-green-600 dark:text-green-400">
+                            {place.upvote_count || 0}
+                          </span>
+                          <span className="text-neutral-300 dark:text-neutral-600">/</span>
+                          <span className="min-w-[2ch] text-center text-sm font-medium text-red-600 dark:text-red-400">
+                            {place.downvote_count || 0}
                           </span>
                           <Button
                             variant="ghost"
                             size="sm"
                             className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                             onClick={() => handleVote(place.id, 'down')}
-                            disabled={!user}
                           >
                             <ThumbsDown className="h-4 w-4" />
                           </Button>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
-                          <TrendingUp className="h-3 w-3" />
-                          {place.vote_score || 0}
-                        </span>
                       </TableCell>
                     </TableRow>
                   );

@@ -42,7 +42,6 @@ export default async function middleware(request: NextRequest) {
               path: '/',
               sameSite: 'lax',
               secure: process.env.NODE_ENV === 'production',
-              httpOnly: true,
             });
           });
         },

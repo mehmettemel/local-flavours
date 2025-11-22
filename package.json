@@ -11,7 +11,11 @@
     "format:check": "prettier --check .",
     "seed": "tsx scripts/seed-database.ts",
     "seed:production": "tsx scripts/seed-production.ts",
-    "seed:demo": "tsx scripts/seed-demo-collections.ts"
+    "seed:demo": "tsx scripts/seed-demo-collections.ts",
+    "seed:collections": "tsx scripts/seed-collections.ts",
+    "seed:collections:prod": "tsx scripts/seed-collections.ts --prod",
+    "seed:collections:clear": "tsx scripts/seed-collections.ts --clear",
+    "seed:collections:prod:clear": "tsx scripts/seed-collections.ts --prod --clear"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

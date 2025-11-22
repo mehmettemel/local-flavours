@@ -11,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Combobox } from '@/components/ui/combobox';
 import { Loader2, Plus, X, GripVertical, Utensils } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -19,7 +18,6 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEn
 import { arrayMove, SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { AddPlaceDialog } from './add-place-dialog';
-import { CitySelect } from '@/components/ui/city-select';
 
 interface EditCollectionModalProps {
   open: boolean;
@@ -164,14 +162,10 @@ export function EditCollectionModal({
   const isEdit = !!collection;
 
   const [loading, setLoading] = useState(false);
-  const [locations, setLocations] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
 
   // Form state
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [cityName, setCityName] = useState(''); // Now using city name instead of ID
-  const [locationId, setLocationId] = useState(''); // Will be populated from cityName
   const [categoryId, setCategoryId] = useState('');
 
   // Places state
@@ -183,7 +177,6 @@ export function EditCollectionModal({
   // Load data
   useEffect(() => {
     if (open) {
-      fetchLocations();
       fetchCategories();
       if (isEdit) {
         loadCollectionData();
@@ -193,17 +186,7 @@ export function EditCollectionModal({
 
   const loadCollectionData = async () => {
     setName(collection.names?.tr || '');
-    setDescription(collection.descriptions?.tr || '');
-    setLocationId(collection.location_id || '');
     setCategoryId(collection.category_id || '');
-
-    // Get city name from location
-    if (collection.location_id) {
-      const location = locations.find(loc => loc.id === collection.location_id);
-      if (location) {
-        setCityName(location.names.tr);
-      }
-    }
 
     // Fetch places
     const { data: placesData } = await supabase
@@ -216,16 +199,6 @@ export function EditCollectionModal({
       .order('display_order', { ascending: true });
 
     setPlaces(placesData || []);
-  };
-
-  const fetchLocations = async () => {
-    const { data } = await supabase
-      .from('locations')
-      .select('id, slug, names')
-      .eq('type', 'city')
-      .order('names->tr');
-
-    setLocations(data || []);
   };
 
   const fetchCategories = async () => {
@@ -278,7 +251,7 @@ export function EditCollectionModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !cityName || !categoryId) {
+    if (!name || !categoryId) {
       alert('Lütfen tüm zorunlu alanları doldurun');
       return;
     }
@@ -286,42 +259,13 @@ export function EditCollectionModal({
     setLoading(true);
 
     try {
-      // Get or create location ID from city name
-      let finalLocationId = locationId;
-      if (cityName && !finalLocationId) {
-        // Find location by city name
-        const location = locations.find(loc => loc.names.tr === cityName);
-        if (location) {
-          finalLocationId = location.id;
-        } else {
-          // Create new location if it doesn't exist
-          const slug = generateSlug(cityName);
-          const { data: newLocation, error: locError } = await supabase
-            .from('locations')
-            .insert({
-              slug,
-              type: 'city',
-              names: { tr: cityName, en: cityName },
-              path: `/turkey/${slug}`,
-            })
-            .select()
-            .single();
-
-          if (locError) throw locError;
-          finalLocationId = newLocation.id;
-        }
-      }
-
       const slug = isEdit ? collection.slug : generateSlug(name) + '-' + Math.random().toString(36).substring(2, 6);
 
       const collectionData = {
         slug: isEdit ? collection.slug : slug,
         names: { tr: name, en: name },
-        descriptions: { tr: description, en: description },
         creator_id: userId,
-        location_id: finalLocationId,
         category_id: categoryId,
-        subcategory_id: null,
         status: 'active',
       };
 
@@ -402,9 +346,6 @@ export function EditCollectionModal({
 
   const resetForm = () => {
     setName('');
-    setDescription('');
-    setCityName('');
-    setLocationId('');
     setCategoryId('');
     setPlaces([]);
   };
@@ -428,59 +369,26 @@ export function EditCollectionModal({
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="İstanbul'daki En İyi Kahve Dükkanları"
+                  placeholder="En İyi Kahve Dükkanları"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Açıklama</Label>
-                <Textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Şehirdeki favori kahve mekanlarım..."
-                  rows={3}
+                <Label htmlFor="category">
+                  Kategori <span className="text-red-500">*</span>
+                </Label>
+                <Combobox
+                  options={categories.map((category) => ({
+                    value: category.id,
+                    label: category.names.tr,
+                  }))}
+                  value={categoryId}
+                  onValueChange={setCategoryId}
+                  placeholder="Kategori seçin..."
+                  searchPlaceholder="Kategori ara..."
+                  emptyText="Kategori bulunamadı."
                 />
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="location">
-                    Şehir <span className="text-red-500">*</span>
-                  </Label>
-                  <CitySelect
-                    value={cityName}
-                    onValueChange={(value) => {
-                      setCityName(value);
-                      // Try to find matching location ID
-                      const location = locations.find(loc => loc.names.tr === value);
-                      if (location) {
-                        setLocationId(location.id);
-                      } else {
-                        setLocationId('');
-                      }
-                    }}
-                    placeholder="Şehir ara ve seç..."
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="category">
-                    Kategori <span className="text-red-500">*</span>
-                  </Label>
-                  <Combobox
-                    options={categories.map((category) => ({
-                      value: category.id,
-                      label: category.names.tr,
-                    }))}
-                    value={categoryId}
-                    onValueChange={setCategoryId}
-                    placeholder="Kategori seçin..."
-                    searchPlaceholder="Kategori ara..."
-                    emptyText="Kategori bulunamadı."
-                  />
-                </div>
               </div>
             </div>
 
@@ -556,7 +464,6 @@ export function EditCollectionModal({
         collectionId={collection?.id || 'temp'}
         existingPlaceIds={places.map(p => p.place_id || p.place?.id)}
         onPlaceAdded={handlePlaceAdded}
-        locationId={locationId}
         categoryId={categoryId}
       />
     </>

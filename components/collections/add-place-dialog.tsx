@@ -26,7 +26,6 @@ interface AddPlaceDialogProps {
   collectionId: string;
   existingPlaceIds: string[];
   onPlaceAdded: (place: any) => void;
-  locationId?: string; // Optional location ID from parent collection
   categoryId?: string; // Optional category ID from parent collection
 }
 
@@ -36,7 +35,6 @@ export function AddPlaceDialog({
   collectionId,
   existingPlaceIds,
   onPlaceAdded,
-  locationId,
   categoryId,
 }: AddPlaceDialogProps) {
   const supabase = createClient();
@@ -55,7 +53,7 @@ export function AddPlaceDialog({
   const [newPlaceName, setNewPlaceName] = useState('');
   const [newPlaceAddress, setNewPlaceAddress] = useState('');
   const [newPlaceGoogleMapsUrl, setNewPlaceGoogleMapsUrl] = useState('');
-  const [newPlaceLocationId, setNewPlaceLocationId] = useState(locationId || '');
+  const [newPlaceLocationId, setNewPlaceLocationId] = useState('');
   const [newPlaceCategoryId, setNewPlaceCategoryId] = useState(categoryId || '');
   const [similarPlaces, setSimilarPlaces] = useState<any[]>([]);
 
@@ -277,7 +275,7 @@ export function AddPlaceDialog({
     setShowCreateForm(false);
     setNewPlaceName('');
     setNewPlaceAddress('');
-    setNewPlaceLocationId(locationId || '');
+    setNewPlaceLocationId('');
     setNewPlaceCategoryId(categoryId || '');
     setSimilarPlaces([]);
     searchPlaces();

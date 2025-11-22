@@ -135,9 +135,10 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
             const place = item.place;
             if (!place) return null;
 
-            const googleMapsUrl = place.address
-              ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}`
-              : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.names?.tr || '')}`;
+            const googleMapsUrl = place.google_maps_url
+              || (place.address
+                ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}`
+                : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.names?.tr || '')}`);
 
             return (
               <div

@@ -384,9 +384,10 @@ export function PlacesLeaderboard({
                     | { en: string; tr: string }
                     | undefined;
 
-                  const googleMapsUrl = place.address
-                    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}`
-                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(names.tr)}`;
+                  const googleMapsUrl = place.google_maps_url
+                    || (place.address
+                      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.address)}`
+                      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(names.tr)}`);
 
                   return (
                     <TableRow

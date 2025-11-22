@@ -16,6 +16,7 @@ import {
 import { Plus, Loader2, MapPin, FolderTree, Star } from 'lucide-react';
 import { EditCollectionModal } from '@/components/collections/edit-collection-modal';
 import { CollectionCard } from '@/components/collections/collection-card';
+import { useAlertDialog } from '@/hooks/use-alert-dialog';
 
 interface Collection {
   id: string;
@@ -35,6 +36,7 @@ export default function MyCollectionsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const supabase = createClient();
+  const { alert, confirm } = useAlertDialog();
 
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,7 +104,8 @@ export default function MyCollectionsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bu koleksiyonu silmek istediğinizden emin misiniz?')) return;
+    const confirmed = await confirm('Bu koleksiyonu silmek istediğinizden emin misiniz?');
+    if (!confirmed) return;
 
     try {
       const { error } = await supabase

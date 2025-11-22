@@ -1,8 +1,7 @@
 // @ts-nocheck
 'use client';
 
-import { useState } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Table,
@@ -14,13 +13,10 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlaceDialog } from '@/components/admin/place-dialog';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 
 export default function AdminPlacesPage() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState<any>(null);
   const queryClient = useQueryClient();
   const supabase = createClient();
 
@@ -51,25 +47,10 @@ export default function AdminPlacesPage() {
     },
   });
 
-  const handleEdit = (place: any) => {
-    setSelectedPlace(place);
-    setIsDialogOpen(true);
-  };
-
   const handleDelete = async (placeId: string) => {
     if (confirm('Bu mekanı silmek istediğinizden emin misiniz?')) {
       deleteMutation.mutate(placeId);
     }
-  };
-
-  const handleCreate = () => {
-    setSelectedPlace(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setSelectedPlace(null);
   };
 
   return (
@@ -80,13 +61,9 @@ export default function AdminPlacesPage() {
             Mekanlar
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-            Restoranları, kafeleri ve diğer mekanları yönet
+            Koleksiyonlardan eklenen mekanları görüntüle ve yönet
           </p>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="mr-2 h-4 w-4" />
-          Mekan Ekle
-        </Button>
       </div>
 
       <Card>
@@ -105,6 +82,7 @@ export default function AdminPlacesPage() {
                   <TableHead>İsim</TableHead>
                   <TableHead>Kategori</TableHead>
                   <TableHead>Lokasyon</TableHead>
+                  <TableHead>Google ID</TableHead>
                   <TableHead>Durum</TableHead>
                   <TableHead className="text-right">İşlemler</TableHead>
                 </TableRow>
@@ -112,7 +90,7 @@ export default function AdminPlacesPage() {
               <TableBody>
                 {places.map((place) => {
                   const names = place.names as any;
-                  const placeName = names?.en || place.slug;
+                  const placeName = names?.tr || names?.en || place.slug;
 
                   return (
                     <TableRow key={place.id}>
@@ -122,6 +100,15 @@ export default function AdminPlacesPage() {
                       </TableCell>
                       <TableCell>
                         {place.locations?.slug || 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        {place.google_place_id ? (
+                          <Badge variant="outline" className="font-mono text-xs">
+                            Google
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-neutral-500">Text</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -141,14 +128,8 @@ export default function AdminPlacesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleEdit(place)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
                             onClick={() => handleDelete(place.id)}
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -161,17 +142,11 @@ export default function AdminPlacesPage() {
             </Table>
           ) : (
             <div className="py-8 text-center text-neutral-600 dark:text-neutral-400">
-              Mekan bulunamadı. Yeni mekan eklemek için &quot;Mekan Ekle&quot; butonuna tıklayın.
+              Henüz mekan eklenmemiş. Mekanlar koleksiyonlar aracılığıyla eklenir.
             </div>
           )}
         </CardContent>
       </Card>
-
-      <PlaceDialog
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
-        place={selectedPlace}
-      />
     </div>
   );
 }

@@ -1,206 +1,164 @@
-# Local Flavours - Documentation
+# LocalFlavours - Dokümantasyon
 
-Projeye hoş geldiniz! Bu klasör, projenin dokümantasyonunu içerir.
+Modern, hızlı ve sade koleksiyon bazlı mekan keşif platformu.
 
-## 📚 Dokümantasyon İndeksi
+## 📚 Dökümanlar
 
-### 1. **Environment Setup**
-📄 [ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)
-- Development ve production ortam kurulumu
-- Environment variables yapılandırması
-- Supabase bağlantı ayarları
+### Kurulum & Başlangıç
+- **[ENVIRONMENT-SETUP.md](./ENVIRONMENT-SETUP.md)** - Geliştirme ortamı kurulumu
+- **[AUTHENTICATION-GUIDE.md](./AUTHENTICATION-GUIDE.md)** - Supabase auth kurulumu
 
-### 2. **Production Database Seeding**
-📄 [PRODUCTION-SEED.md](../PRODUCTION-SEED.md)
-- Production database güncelleme rehberi
-- Kategori ve şehir seed işlemleri
-- Güvenlik kontrolleri ve backup stratejisi
+### Google Places Entegrasyonu
+- **[GOOGLE-PLACES-SETUP.md](./GOOGLE-PLACES-SETUP.md)** - Google Places API kurulumu ve kullanımı
 
-### 3. **UI Component Best Practices**
-📄 [UI-COMPONENT-BEST-PRACTICES.md](./UI-COMPONENT-BEST-PRACTICES.md)
-- UI component geliştirme standartları
-- Combobox, dropdown, form component'leri
-- Width, scroll, responsive design kuralları
-- Yaygın hatalar ve çözümleri
+### Mimari & Planlama
+- **[NEW-SIMPLE-ARCHITECTURE.md](./NEW-SIMPLE-ARCHITECTURE.md)** - Yeni sade yapı mimarisi
+- **[project-overview.md](./project-overview.md)** - Proje genel bakış
 
-### 4. **Combobox Styling Guide**
-📄 [COMBOBOX-STYLING.md](./COMBOBOX-STYLING.md)
-- Seçili öğe gösterimi (turuncu background)
-- Light/Dark mode renk paleti
-- Checkbox kullanmama gerekçesi
-- Tüm combobox styling standartları
+### UI Components
+- **[UI-COMPONENTS-FIXES.md](./UI-COMPONENTS-FIXES.md)** - UI component sorunları ve çözümleri
 
-### 5. **Voting System**
-📄 [VOTING-SYSTEM.md](./VOTING-SYSTEM.md)
-- Oy verme sistemi nasıl çalışır
-- Database trigger ve RLS yapılandırması
-- Session management ve cookie ayarları
-- Troubleshooting rehberi
+## 🗂️ Dosya Yapısı
 
-### 6. **Production Database Setup**
-📄 [PRODUCTION-DATABASE-SETUP.md](./PRODUCTION-DATABASE-SETUP.md)
-- Production database kurulum adımları
-- Migration dosyaları sırası
-- RLS policy doğrulama
-- Admin kullanıcı oluşturma
+```
+docs/
+├── README.md                      # Bu dosya
+├── AUTHENTICATION-GUIDE.md        # Auth kurulumu
+├── ENVIRONMENT-SETUP.md           # Geliştirme ortamı
+├── GOOGLE-PLACES-SETUP.md         # Google Places API
+├── NEW-SIMPLE-ARCHITECTURE.md     # Yeni mimari
+├── UI-COMPONENTS-FIXES.md         # UI component sorunları ve çözümleri
+└── project-overview.md            # Proje özeti
 
-### 7. **Collection Import Guide**
-📄 [COLLECTION-IMPORT-GUIDE.md](./COLLECTION-IMPORT-GUIDE.md)
-- SQL ile koleksiyon ekleme template'i
-- TypeScript script ile import
-- Örnek JSON veri yapıları
-- Kategori ve şehir slug'ları
+supabase/migrations/
+├── 001_initial_schema.sql         # İlk schema (users, locations, categories, places)
+├── 003_collections_schema.sql     # Collections & voting sistemi
+├── 004_auth_setup.sql             # Auth & RLS policies
+├── 011_simplify_collections.sql   # Collections sadeleştirme
+└── 012_add_google_place_id.sql    # Google Places entegrasyonu
+
+scripts/
+└── seed-database.ts               # Database seed script (locations & categories)
+```
 
 ## 🚀 Hızlı Başlangıç
 
-### Development Ortamı
+### 1. Environment Setup
+```bash
+# .env.local oluştur
+cp .env.example .env.local
 
-1. **Dependencies yükleyin**:
-   ```bash
-   npm install
-   ```
+# Environment variables ekle:
+NEXT_PUBLIC_SUPABASE_URL=your_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+GOOGLE_PLACES_API_KEY=your_google_api_key
+```
 
-2. **Environment variables ayarlayın**:
-   ```bash
-   cp .env.example .env.local
-   # .env.local dosyasını düzenleyin
-   ```
+### 2. Dependencies
+```bash
+npm install
+```
 
-3. **Database seed**:
-   ```bash
-   npm run seed
-   ```
+### 3. Database Migrations
+Supabase Dashboard → SQL Editor'de sırayla çalıştır:
+1. `001_initial_schema.sql`
+2. `003_collections_schema.sql`
+3. `004_auth_setup.sql`
+4. `011_simplify_collections.sql`
+5. `012_add_google_place_id.sql`
 
-4. **Development server başlatın**:
-   ```bash
-   npm run dev
-   ```
+### 4. Seed Database
+```bash
+npm run seed
+```
 
-### Production Deploy
+### 5. Dev Server
+```bash
+npm run dev
+```
 
-1. **Production environment ayarlayın**:
-   ```bash
-   # .env.production dosyasını oluşturun ve düzenleyin
-   ```
+## 🎯 Yeni Sade Yapı
 
-2. **Build alın**:
-   ```bash
-   npm run build
-   ```
+### Koleksiyon Oluşturma
+1. Koleksiyon adı + kategori
+2. Google Places ile mekan ara VEYA text olarak ekle
+3. 3-20 mekan ekle (array içinde)
+4. Sürükle-bırak ile sırala
+5. Oluştur → Hepsi tek seferde kaydedilir
 
-3. **Production seed**:
-   ```bash
-   npm run seed:production
-   ```
+### Özellikler
+- ✅ Google Places autocomplete
+- ✅ Otomatik adres, telefon, rating, fotoğraf
+- ✅ Text fallback (Google'da bulamazsan)
+- ✅ Akıllı şehir eşleştirme
+- ✅ google_place_id ile mükemmel duplicate detection
+- ✅ Responsive fullscreen dialog
+- ✅ Drag & drop sıralama
 
-4. **Production server**:
-   ```bash
-   npm start
-   ```
+## 📝 Migration Sırası
 
-## 🛠️ Geliştirme Komutları
+Migrations mutlaka sırayla çalıştırılmalı:
+
+1. **001** → Initial schema (core tables)
+2. **003** → Collections & voting
+3. **004** → Auth & RLS
+4. **011** → Collections simplification
+5. **012** → Google Places integration
+
+## 🔧 Seed Script
+
+`seed-database.ts` şunları ekler:
+- Türkiye ve şehirler (locations)
+- Ana kategoriler ve alt kategoriler
+- Temel veri yapısı
 
 ```bash
-# Development
-npm run dev              # Dev server (port 3001)
-npm run build           # Production build
-npm run start           # Production server
-npm run lint            # ESLint check
-npm run format          # Prettier format
-npm run format:check    # Prettier check
-
-# Database
-npm run seed            # Local database seed
-npm run seed:production # Production database seed
-npm run seed:demo       # Demo data seed
+npm run seed
 ```
 
-## 📁 Proje Yapısı
+## 📖 Detaylı Dökümanlar
 
+Her bir döküman dosyasında detaylı bilgi bulabilirsin:
+
+- **Ortam kurulumu** → `ENVIRONMENT-SETUP.md`
+- **Auth kurulumu** → `AUTHENTICATION-GUIDE.md`
+- **Google Places** → `GOOGLE-PLACES-SETUP.md`
+- **Yeni mimari** → `NEW-SIMPLE-ARCHITECTURE.md`
+- **UI Component çözümleri** → `UI-COMPONENTS-FIXES.md`
+- **Proje detayları** → `project-overview.md`
+
+## 🆘 Sorun Giderme
+
+### Build Hatası
+```bash
+rm -rf .next node_modules
+npm install
+npm run dev
 ```
-local-flavours/
-├── app/                 # Next.js app directory
-├── components/          # React components
-│   ├── ui/             # Reusable UI components
-│   ├── collections/    # Collection related components
-│   └── leaderboard/    # Leaderboard components
-├── lib/                # Utilities and helpers
-│   ├── api/           # API functions
-│   ├── hooks/         # Custom React hooks
-│   ├── contexts/      # React contexts
-│   └── validations/   # Zod schemas
-├── scripts/           # Database scripts
-├── docs/              # Documentation (bu klasör)
-└── public/            # Static assets
-```
 
-## 🎯 Önemli Dosyalar
+### Supabase Bağlantı Hatası
+- `.env.local` dosyasındaki URL ve key'leri kontrol et
+- Supabase Dashboard'da RLS policies aktif mi kontrol et
 
-- `components/ui/combobox.tsx` - Aranabilir dropdown component
-- `lib/hooks/use-categories.ts` - Kategori data hook
-- `lib/hooks/use-locations.ts` - Şehir data hook
-- `scripts/seed-database.ts` - Database seed script
-- `scripts/seed-production.ts` - Production seed script
+### Google Places API Hatası
+- API key domain restriction'ları kontrol et
+- Console'da API kullanımını kontrol et
+- `GOOGLE-PLACES-SETUP.md` dökümanına bak
 
-## 🔍 Kod Standartları
+### UI Component Sorunları
+- Dialog içinde Combobox scroll sorunları
+- `UI-COMPONENTS-FIXES.md` dökümanına bak
 
-### TypeScript
-- Tüm componentler TypeScript ile yazılmalı
-- `any` tipi kullanmaktan kaçının
-- Interface ve type tanımları açık ve anlaşılır olmalı
+## 📞 Destek
 
-### React
-- Functional components kullanın
-- Custom hooks ile logic'i ayırın
-- Props için interface tanımlayın
-
-### Styling
-- Tailwind CSS utility classes
-- Mobile-first responsive design
-- Dark mode desteği
-
-### Testing
-- Component test checklist'i takip edin
-- Build başarılı olmalı
-- TypeScript hatasız olmalı
-
-## 🐛 Yaygın Sorunlar
-
-### Combobox scroll çalışmıyor
-**Çözüm**: Combobox component'inde trigger width otomatik ölçülüyor. `max-h-[300px] overflow-auto` class'ı var.
-
-### Kategoriler yüklenmyor
-**Çözüm**: `npm run seed` ile database'i seed edin.
-
-### Dark mode çalışmıyor
-**Çözüm**: Tüm color class'larında `dark:` variant olmalı.
-
-## 📝 Dokümantasyona Katkı
-
-Yeni feature eklerken veya değişiklik yaparken:
-
-1. İlgili dokümantasyonu güncelleyin
-2. Code örneği ekleyin
-3. Known issues bölümünü kontrol edin
-4. Değişiklikleri commit message'a yazın
-
-## 🔗 Faydalı Linkler
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Supabase Documentation](https://supabase.com/docs)
-- [TailwindCSS Documentation](https://tailwindcss.com/docs)
-- [TanStack Query Documentation](https://tanstack.com/query/latest)
-- [Zod Documentation](https://zod.dev)
-
-## 📮 Destek
-
-Sorularınız veya sorunlarınız için:
-- GitHub Issues açın
-- Development team ile iletişime geçin
-- Dokümantasyonu kontrol edin
+Sorun yaşarsan:
+1. İlgili dökümanı oku
+2. Console log'lara bak
+3. Network tab'da API çağrılarını kontrol et
+4. GitHub Issues'da ara veya yeni issue aç
 
 ---
 
-**Son güncelleme**: 2025-11-21
-
-Proje hakkında daha fazla bilgi için dokümantasyon dosyalarını inceleyin.
+**Son Güncelleme:** 2025-01-22
+**Versiyon:** 2.0 (Sade Yapı)

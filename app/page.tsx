@@ -1,7 +1,12 @@
-import { getCitiesByCountry } from '@/lib/api/locations';
+import { getTopCollections, getFeaturedCollection } from '@/lib/api/collections';
+import { getCategories } from '@/lib/api/categories';
 import { getTopPlacesByCity } from '@/lib/api/places';
+import { HeroBanner } from '@/components/home/hero-banner';
+import { CollectionFeed } from '@/components/collections/collection-feed';
 import { PlacesLeaderboard } from '@/components/leaderboard/places-leaderboard';
-import { Sparkles, TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Flame, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 interface HomePageProps {
   searchParams: Promise<{ city?: string }>;
@@ -9,68 +14,102 @@ interface HomePageProps {
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
-  const cities = await getCitiesByCountry('turkey');
+  const selectedCitySlug = params.city || 'adana'; // Default to Adana
 
-  // Get selected city from query params or default to "all"
-  const selectedCitySlug = params.city || 'all';
-
-  // Get top 20 places for selected city
-  const topPlaces = await getTopPlacesByCity(selectedCitySlug, 20);
+  // Fetch data in parallel
+  const [featuredCollection, topCollections, categories, topPlaces] = await Promise.all([
+    getFeaturedCollection(selectedCitySlug),
+    getTopCollections(selectedCitySlug, 12),
+    getCategories({ parent_id: null, limit: 8 }), // Get main categories
+    getTopPlacesByCity(selectedCitySlug, 10),
+  ]);
 
   return (
     <>
-      {/* Compact Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-neutral-50 via-orange-50/20 to-neutral-50 py-12 dark:from-neutral-950 dark:via-orange-950/10 dark:to-neutral-950">
-        <div className="container relative mx-auto px-4 text-center">
-          <div className="mx-auto max-w-3xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1.5 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Topluluk Odaklı Yerel Öneriler</span>
+      {/* Hero Banner - Featured Collection */}
+      {featuredCollection && (
+        <section className="container mx-auto px-4 py-8">
+          <HeroBanner collection={featuredCollection} />
+        </section>
+      )}
+
+      {/* Top Collections Feed */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+              <Flame className="h-3.5 w-3.5" />
+              <span>Haftanın En Popülerleri</span>
             </div>
-
-            <h1 className="mb-3 text-4xl font-bold tracking-tight text-neutral-900 md:text-5xl dark:text-neutral-50">
-              Otantik Yerel Lezzetleri Keşfet
-            </h1>
-
-            <p className="mx-auto max-w-xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-              Türkiye'deki en iyi yerel mekanları keşfedin ve paylaşın. Favorilerinize oy verin ve başkalarının restoranlar, kafeler ve barlarda otantik deneyimler bulmasına yardımcı olun.
+            <h2 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
+              Öne Çıkan Koleksiyonlar
+            </h2>
+            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+              Topluluğun en çok beğendiği mekan listeleri
             </p>
-
-            {/* Stats */}
-            <div className="mx-auto mt-6 flex max-w-md items-center justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-orange-500" />
-                <span className="text-neutral-600 dark:text-neutral-400">
-                  <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                    {topPlaces?.length || 0}
-                  </span>{' '}
-                  Mekan
-                </span>
-              </div>
-              <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-700" />
-              <div className="flex items-center gap-2">
-                <span className="text-neutral-600 dark:text-neutral-400">
-                  <span className="font-semibold text-neutral-900 dark:text-neutral-50">
-                    {cities?.length || 0}
-                  </span>{' '}
-                  Şehir
-                </span>
-              </div>
-            </div>
           </div>
         </div>
+
+        <CollectionFeed collections={topCollections} />
       </section>
 
-      {/* Leaderboard Section */}
-      <section className="bg-neutral-50 py-16 dark:bg-neutral-950">
-        <div className="container mx-auto px-4">
+      {/* Categories Section */}
+      {categories && categories.length > 0 && (
+        <section className="border-y border-neutral-200 bg-neutral-50 py-12 dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="container mx-auto px-4">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+                Kategorilere Göre Keşfet
+              </h2>
+              <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+                İlgilendiğin kategorideki mekanları bul
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/categories/${category.slug}`}
+                  className="group"
+                >
+                  <Badge
+                    variant="outline"
+                    className="w-full cursor-pointer justify-center border-neutral-300 bg-white px-4 py-3 text-sm transition-all hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-orange-500 dark:hover:bg-orange-950 dark:hover:text-orange-400"
+                  >
+                    {category.names?.tr || category.slug}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Star Places - Most Listed */}
+      {topPlaces && topPlaces.length > 0 && (
+        <section className="container mx-auto px-4 py-12">
+          <div className="mb-8">
+            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Yıldız Mekanlar</span>
+            </div>
+            <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+              En Çok Listelenen Mekanlar
+            </h2>
+            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+              Koleksiyonlarda en sık görülen popüler yerler
+            </p>
+          </div>
+
           <PlacesLeaderboard
-            initialPlaces={topPlaces || []}
-            cities={cities || []}
+            initialPlaces={topPlaces}
+            cities={[]}
             selectedCitySlug={selectedCitySlug}
+            compact={true}
           />
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

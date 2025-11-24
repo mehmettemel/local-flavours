@@ -390,7 +390,7 @@ export async function toggleCollectionFeatured(
 ): Promise<Collection> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const { data, error} = await supabase
     .from('collections')
     .update({ is_featured: isFeatured })
     .eq('id', id)
@@ -403,4 +403,86 @@ export async function toggleCollectionFeatured(
   }
 
   return data;
+}
+
+/**
+ * Get top collections by vote score (for homepage feed)
+ */
+export async function getTopCollections(
+  citySlug?: string,
+  limit: number = 12
+): Promise<CollectionWithDetails[]> {
+  const supabase = await createClient();
+
+  try {
+    let query = supabase
+      .from('collections')
+      .select(`
+        *,
+        creator:users!collections_creator_id_fkey(id, email, raw_user_meta_data),
+        category:categories!collections_category_id_fkey(id, slug, names),
+        collection_places(
+          id,
+          place:places(id, names, location:locations(slug))
+        )
+      `)
+      .eq('status', 'active')
+      .order('vote_score', { ascending: false });
+
+    const { data: collections, error } = await query.limit(limit * 2); // Fetch more for filtering
+
+    if (error) {
+      console.error('Error fetching top collections:', error);
+      return [];
+    }
+
+    if (!collections) return [];
+
+    // Transform and filter
+    const result: CollectionWithDetails[] = collections
+      .map((collection) => {
+        const places = collection.collection_places || [];
+
+        // Filter by city if needed
+        let filteredPlaces = places;
+        if (citySlug) {
+          filteredPlaces = places.filter(
+            (cp: any) => cp.place?.location?.slug === citySlug
+          );
+        }
+
+        // Skip if city filter applied and no places match
+        if (citySlug && filteredPlaces.length === 0) {
+          return null;
+        }
+
+        return {
+          ...collection,
+          places_count: filteredPlaces.length,
+          preview_places: filteredPlaces
+            .slice(0, 3)
+            .map((cp: any) => ({
+              id: cp.place.id,
+              names: cp.place.names,
+            })),
+        } as CollectionWithDetails;
+      })
+      .filter((c): c is CollectionWithDetails => c !== null)
+      .slice(0, limit); // Take only requested number
+
+    return result;
+  } catch (error) {
+    console.error('Error in getTopCollections:', error);
+    return [];
+  }
+}
+
+/**
+ * Get featured/hero collection (highest vote score)
+ */
+export async function getFeaturedCollection(
+  citySlug?: string
+): Promise<CollectionWithDetails | null> {
+  const collections = await getTopCollections(citySlug, 1);
+  return collections[0] || null;
 }

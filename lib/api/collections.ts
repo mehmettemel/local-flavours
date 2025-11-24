@@ -50,7 +50,7 @@ export async function getCollections(params?: {
       `
       *,
       creator:users!collections_creator_id_fkey(id, username),
-      location:locations!collections_location_id_fkey(id, slug, names),
+      location:locations(id, slug, names),
       category:categories!collections_category_id_fkey(id, slug, names),
       subcategory:categories!collections_subcategory_id_fkey(id, slug, names)
     `
@@ -120,7 +120,7 @@ export async function getCollectionById(
       `
       *,
       creator:users!collections_creator_id_fkey(id, username),
-      location:locations!collections_location_id_fkey(id, slug, names),
+      location:locations(id, slug, names),
       category:categories!collections_category_id_fkey(id, slug, names),
       subcategory:categories!collections_subcategory_id_fkey(id, slug, names)
     `
@@ -159,7 +159,7 @@ export async function getCollectionBySlug(
       `
       *,
       creator:users!collections_creator_id_fkey(id, username),
-      location:locations!collections_location_id_fkey(id, slug, names),
+      location:locations(id, slug, names),
       category:categories!collections_category_id_fkey(id, slug, names),
       subcategory:categories!collections_subcategory_id_fkey(id, slug, names)
     `
@@ -419,7 +419,7 @@ export async function getTopCollections(
       .from('collections')
       .select(`
         *,
-        creator:users!collections_creator_id_fkey(id, email, raw_user_meta_data),
+        creator:users!collections_creator_id_fkey(id, username),
         category:categories!collections_category_id_fkey(id, slug, names),
         collection_places(
           id,

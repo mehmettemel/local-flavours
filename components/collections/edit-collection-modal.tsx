@@ -172,10 +172,12 @@ export function EditCollectionModal({
 
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const [cities, setCities] = useState<any[]>([]);
 
   // Form state
   const [name, setName] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [locationId, setLocationId] = useState('');
 
   // Places array (local state)
   const [places, setPlaces] = useState<PlaceInArray[]>([]);
@@ -192,6 +194,7 @@ export function EditCollectionModal({
   useEffect(() => {
     if (open) {
       fetchCategories();
+      fetchCities();
       if (isEdit) {
         loadCollectionData();
       }
@@ -209,9 +212,20 @@ export function EditCollectionModal({
     setCategories(data || []);
   };
 
+  const fetchCities = async () => {
+    const { data } = await supabase
+      .from('locations')
+      .select('id, slug, names')
+      .eq('type', 'city')
+      .order('names->tr');
+
+    setCities(data || []);
+  };
+
   const loadCollectionData = async () => {
     setName(collection.names?.tr || '');
     setCategoryId(collection.category_id || '');
+    setLocationId(collection.location_id || '');
 
     // Fetch places
     const { data: placesData } = await supabase
@@ -353,8 +367,8 @@ export function EditCollectionModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !categoryId) {
-      alert('Lütfen koleksiyon adı ve kategori seçin');
+    if (!name || !categoryId || !locationId) {
+      alert('Lütfen koleksiyon adı, kategori ve şehir seçin');
       return;
     }
 
@@ -377,9 +391,10 @@ export function EditCollectionModal({
 
       const collectionData = {
         slug,
-        names: { tr: name, en: name },
+        names: { tr: name },
         creator_id: userId,
         category_id: categoryId,
+        location_id: locationId,
         status: 'active',
       };
 
@@ -428,13 +443,15 @@ export function EditCollectionModal({
             placeId = existingPlace.id;
           } else {
             // Create new place from Google data
-            const locationId = place.details?.extracted_location
-              ? (
-                  await matchLocationFromGoogle(
-                    place.details.extracted_location
-                  )
-                )?.id
-              : null;
+            let matchedLocationId = null;
+            
+            if (place.details?.extracted_location) {
+               const match = await matchLocationFromGoogle(place.details.extracted_location);
+               matchedLocationId = match?.id;
+            }
+
+            // Fallback to collection location if no match found
+            const finalLocationId = matchedLocationId || locationId;
 
             const { data: newPlace, error: placeError } = await supabase
               .from('places')
@@ -443,10 +460,10 @@ export function EditCollectionModal({
                   generateSlug(place.name) +
                   '-' +
                   Math.random().toString(36).substring(2, 6),
-                names: { tr: place.name, en: place.name },
+                names: { tr: place.name },
                 google_place_id: place.google_place_id,
                 address: place.address || null,
-                location_id: locationId,
+                location_id: finalLocationId,
                 category_id: categoryId,
                 phone_number: place.details?.phone_number || null,
                 website: place.details?.website || null,
@@ -459,7 +476,8 @@ export function EditCollectionModal({
                 images:
                   place.details?.photos?.slice(0, 5).map((p: any) => p.url) ||
                   [],
-                status: 'approved',
+                submitted_by: userId,
+                status: 'pending',
                 vote_count: 0,
                 vote_score: 0,
               })
@@ -478,10 +496,12 @@ export function EditCollectionModal({
                 generateSlug(place.name) +
                 '-' +
                 Math.random().toString(36).substring(2, 6),
-              names: { tr: place.name, en: place.name },
+              names: { tr: place.name },
               google_place_id: null,
               category_id: categoryId,
-              status: 'approved',
+              location_id: locationId, // Use collection location
+              submitted_by: userId,
+              status: 'pending',
               vote_count: 0,
               vote_score: 0,
             })
@@ -519,6 +539,7 @@ export function EditCollectionModal({
   const resetForm = () => {
     setName('');
     setCategoryId('');
+    setLocationId('');
     setPlaces([]);
     setSearchQuery('');
   };
@@ -526,16 +547,17 @@ export function EditCollectionModal({
   const canSubmit =
     name.trim() &&
     categoryId &&
+    locationId &&
     places.length >= 2 &&
     places.length <= 20 &&
     !loading;
 
   // Mark form as modified when any field changes
   useEffect(() => {
-    if (name || categoryId || places.length > 0 || searchQuery) {
+    if (name || categoryId || locationId || places.length > 0 || searchQuery) {
       setIsModified(true);
     }
-  }, [name, categoryId, places, searchQuery]);
+  }, [name, categoryId, locationId, places, searchQuery]);
 
   // Handle dialog close with confirmation
   const handleOpenChange = async (newOpen: boolean) => {
@@ -584,7 +606,25 @@ export function EditCollectionModal({
                   />
                 </div>
 
-                <div className="space-y-2 sm:col-span-2">
+                <div className="space-y-2">
+                  <Label htmlFor="city">
+                    Şehir <span className="text-red-500">*</span>
+                  </Label>
+                  <Combobox
+                    options={cities.map((city) => ({
+                      value: city.id,
+                      label: city.names.tr,
+                    }))}
+                    value={locationId}
+                    onValueChange={setLocationId}
+                    placeholder="Şehir seçin..."
+                    searchPlaceholder="Şehir ara..."
+                    emptyText="Şehir bulunamadı."
+                    className="h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="category">
                     Kategori <span className="text-red-500">*</span>
                   </Label>

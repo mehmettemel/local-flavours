@@ -16,6 +16,18 @@ export async function getCountries() {
   return data;
 }
 
+export async function getCities() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('type', 'city')
+    .order('names->tr');
+
+  if (error) throw error;
+  return data;
+}
+
 export async function getCitiesByCountry(countrySlug: string) {
   const supabase = await createClient();
 

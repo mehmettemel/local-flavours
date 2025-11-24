@@ -1,11 +1,11 @@
 import { getTopCollections, getFeaturedCollection } from '@/lib/api/collections';
 import { getCategories } from '@/lib/api/categories';
-import { getTopPlacesByCity } from '@/lib/api/places';
+import { getCities } from '@/lib/api/locations';
 import { HeroBanner } from '@/components/home/hero-banner';
 import { CollectionFeed } from '@/components/collections/collection-feed';
-import { PlacesLeaderboard } from '@/components/leaderboard/places-leaderboard';
+import { CollectionsLeaderboard } from '@/components/leaderboard/collections-leaderboard';
 import { Badge } from '@/components/ui/badge';
-import { Flame, Sparkles } from 'lucide-react';
+import { Flame, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 interface HomePageProps {
@@ -17,11 +17,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const selectedCitySlug = params.city || 'adana'; // Default to Adana
 
   // Fetch data in parallel
-  const [featuredCollection, topCollections, categories, topPlaces] = await Promise.all([
+  const [featuredCollection, topCollections, categories, leaderboardCollections, cities] = await Promise.all([
     getFeaturedCollection(selectedCitySlug),
     getTopCollections(selectedCitySlug, 12),
     getCategories({ parent_id: null, limit: 8 }), // Get main categories
-    getTopPlacesByCity(selectedCitySlug, 10),
+    getTopCollections(selectedCitySlug, 20), // Get top 20 for leaderboard
+    getCities(),
   ]);
 
   return (
@@ -86,27 +87,26 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </section>
       )}
 
-      {/* Star Places - Most Listed */}
-      {topPlaces && topPlaces.length > 0 && (
+      {/* Best Collections Leaderboard */}
+      {leaderboardCollections && leaderboardCollections.length > 0 && (
         <section className="container mx-auto px-4 py-12">
           <div className="mb-8">
             <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Yıldız Mekanlar</span>
+              <TrendingUp className="h-3.5 w-3.5" />
+              <span>Lider Tablosu</span>
             </div>
             <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
-              En Çok Listelenen Mekanlar
+              En İyi Koleksiyonlar
             </h2>
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-              Koleksiyonlarda en sık görülen popüler yerler
+              En çok oy alan ve güvenilen koleksiyonlar
             </p>
           </div>
 
-          <PlacesLeaderboard
-            initialPlaces={topPlaces}
-            cities={[]}
+          <CollectionsLeaderboard
+            initialCollections={leaderboardCollections}
+            cities={cities || []}
             selectedCitySlug={selectedCitySlug}
-            compact={true}
           />
         </section>
       )}

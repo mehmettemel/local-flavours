@@ -28,7 +28,6 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({ collection, onEdit, onDelete, showActions = true }: CollectionCardProps) {
-  const locale = 'tr'; // Turkish as primary language
   const router = useRouter();
 
   const handleCardClick = () => {
@@ -48,17 +47,17 @@ export function CollectionCard({ collection, onEdit, onDelete, showActions = tru
 
       <CardHeader>
         <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-          {collection.names[locale as 'en' | 'tr']}
+          {collection.names.tr}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-          {collection.descriptions[locale as 'en' | 'tr']}
+          {collection.descriptions?.tr}
         </p>
       </CardHeader>
 
       <CardContent className="flex-1 space-y-3">
         <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
           <MapPin className="h-4 w-4" />
-          <span>{collection.location?.names[locale as 'en' | 'tr'] || 'Bilinmiyor'}</span>
+          <span>{collection.location?.names?.tr || 'Bilinmiyor'}</span>
         </div>
 
         <div className="flex items-center gap-4 text-sm">
@@ -77,7 +76,7 @@ export function CollectionCard({ collection, onEdit, onDelete, showActions = tru
         </div>
 
         <div className="inline-flex rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100">
-          {collection.category?.names[locale as 'en' | 'tr'] || 'Kategorisiz'}
+          {collection.category?.names?.tr || 'Kategorisiz'}
         </div>
       </CardContent>
 

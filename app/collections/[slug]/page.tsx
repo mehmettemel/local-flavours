@@ -50,6 +50,32 @@ async function getCollection(slug: string) {
   };
 }
 
+import { Metadata } from 'next';
+import { JsonLd } from '@/components/seo/json-ld';
+
+// ... imports
+
+export async function generateMetadata({ params }: CollectionPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const collection = await getCollection(slug);
+
+  if (!collection) {
+    return {
+      title: 'Koleksiyon Bulunamadı',
+    };
+  }
+
+  return {
+    title: collection.names?.tr,
+    description: collection.descriptions?.tr,
+    openGraph: {
+      title: collection.names?.tr,
+      description: collection.descriptions?.tr,
+      type: 'article',
+    },
+  };
+}
+
 export default async function CollectionPage({ params }: CollectionPageProps) {
   const { slug } = await params;
   const collection = await getCollection(slug);
@@ -57,6 +83,25 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
   if (!collection) {
     notFound();
   }
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: collection.names?.tr,
+    description: collection.descriptions?.tr,
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: collection.places?.map((item: any, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Restaurant',
+          name: item.place?.names?.tr,
+          address: item.place?.address,
+        },
+      })),
+    },
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
@@ -68,6 +113,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+      <JsonLd data={jsonLd} />
       {/* Header */}
       <div className="border-b border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         <div className="container mx-auto px-4 py-8">

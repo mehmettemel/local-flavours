@@ -47,7 +47,8 @@ export function CollectionsLeaderboard({
   const { user, session } = useAuth();
 
   // Featured cities for quick access buttons
-  const featuredCities = ['istanbul', 'ankara', 'izmir', 'antalya', 'bursa'];
+  // Featured cities for quick access buttons
+  const featuredCities = ['istanbul', 'ankara', 'izmir', 'bursa', 'antalya', 'adana', 'konya', 'gaziantep'];
   const featuredCityButtons = cities.filter((city) =>
     featuredCities.includes(city.slug)
   );
@@ -278,10 +279,13 @@ export function CollectionsLeaderboard({
             Tüm Şehirler:
           </span>
           <Combobox
-            options={cities.map((city) => ({
-              value: city.slug,
-              label: city.names.tr,
-            }))}
+            options={[
+              { value: 'all', label: 'Tümü' },
+              ...cities.map((city) => ({
+                value: city.slug,
+                label: city.names.tr,
+              }))
+            ]}
             value={selectedCity}
             onValueChange={handleCityChange}
             placeholder="Şehir seçin..."

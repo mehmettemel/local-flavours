@@ -1,6 +1,6 @@
-# LocalFlavors Dokümantasyonu
+# mekan.guru Dokümantasyonu
 
-LocalFlavors, topluluk destekli yerel restoran ve mekan öneri platformudur. Kullanıcılar kendi koleksiyonlarını oluşturabilir, mekanları oyabilir ve şehir bazlı sıralamalar görebilir.
+mekan.guru, topluluk destekli yerel restoran ve mekan öneri platformudur. Kullanıcılar kendi koleksiyonlarını oluşturabilir, mekanları oyabilir ve şehir bazlı sıralamalar görebilir.
 
 ## 📚 Dokümantasyon İçeriği
 

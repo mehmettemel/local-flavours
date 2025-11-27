@@ -70,10 +70,10 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Local Flavours',
-  url: 'https://localflavours.com',
+  url: 'https://mekan.guru',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://localflavours.com/search?q={search_term_string}'
+    target: 'https://mekan.guru/search?q={search_term_string}'
   }
 };
 ```
@@ -261,7 +261,7 @@ Bu duplicate content sorunlarını önler.
 
 ```bash
 # 1. https://search.google.com/search-console adresine git
-# 2. Domain özelliğini ekle: localflavours.com
+# 2. Domain özelliğini ekle: mekan.guru
 # 3. DNS doğrulama yap veya HTML tag al
 # 4. Verification code'u layout.tsx'e ekle:
 
@@ -271,7 +271,7 @@ verification: {
 ```
 
 **Sonrası:**
-- Sitemap'i submit et: `https://localflavours.com/sitemap.xml`
+- Sitemap'i submit et: `https://mekan.guru/sitemap.xml`
 - Indexing'i başlat
 
 #### 3. **Google Analytics 4 Kurulumu**
@@ -392,8 +392,8 @@ Google'ın structured data'yı tanıması için:
 # 1. Site'yi deploy et
 # 2. https://search.google.com/test/rich-results adresine git
 # 3. URL'ini test et:
-https://localflavours.com/places/[slug]
-https://localflavours.com/collections/[slug]
+https://mekan.guru/places/[slug]
+https://mekan.guru/collections/[slug]
 
 # Beklenen sonuç:
 # ✅ Restaurant schema geçerli

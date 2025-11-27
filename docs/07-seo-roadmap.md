@@ -30,7 +30,7 @@ Maks boyut: 300KB
 3. Tasarla:
    - Arka plan: Gradient (turuncu-beyaz)
    - Logo ortada
-   - Alt yazı: "LocalFlavours - Türkiye'nin En İyi Restoranları"
+   - Alt yazı: "mekan.guru - Türkiye'nin En İyi Restoranları"
 4. Download → JPG
 5. `public/og-image.jpg` olarak kaydet
 
@@ -57,7 +57,7 @@ ls -la public/*.{ico,png}
 **1. Domain Al (Eğer yoksa)**
 ```
 Önerilen: .com veya .co
-Örnek: localflavours.com
+Örnek: mekan.guru
 Alternatif: localflavors.co
 ```
 
@@ -70,7 +70,7 @@ Alternatif: localflavors.co
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
-NEXT_PUBLIC_APP_URL=https://localflavours.com
+NEXT_PUBLIC_APP_URL=https://mekan.guru
 GOOGLE_PLACES_API_KEY=...
 NODE_ENV=production
 
@@ -93,7 +93,7 @@ NODE_ENV=production
 1. [Google Search Console](https://search.google.com/search-console) aç
 2. "Add Property" tıkla
 3. "Domain" seç (tüm subdomain'leri kapsar)
-4. Domain gir: `localflavours.com`
+4. Domain gir: `mekan.guru`
 
 **Adım 2: Doğrula**
 ```
@@ -125,7 +125,7 @@ Yöntem 2: HTML Tag (Kolay)
 **Adım 4: URL Inspection**
 ```
 1. Search Console > URL Inspection
-2. Ana sayfa URL'ini test et: https://localflavours.com
+2. Ana sayfa URL'ini test et: https://mekan.guru
 3. "Request Indexing" tıkla
 4. 5-10 farklı sayfayı da ekle:
    - /turkey/istanbul
@@ -187,7 +187,7 @@ export default function RootLayout({ children }) {
 2. "Add Site" tıkla
 3. Google Search Console'dan import et (kolay yol)
 4. Veya manuel doğrula (DNS/HTML tag)
-5. Sitemap ekle: https://localflavours.com/sitemap.xml
+5. Sitemap ekle: https://mekan.guru/sitemap.xml
 ```
 
 #### **Yandex Webmaster** (Opsiyonel - Türkiye'de kullanılıyor)
@@ -336,7 +336,7 @@ npm run seed  # Hızlı test verisi için
 npm run build
 npm run start
 
-# 2. Chrome'da aç: https://localflavours.com
+# 2. Chrome'da aç: https://mekan.guru
 # 3. F12 > Lighthouse tab
 # 4. "Analyze page load" tıkla
 
@@ -438,10 +438,10 @@ export default {
 2. URL'leri test et:
 
 Test edilecek sayfalar:
-- https://localflavours.com
-- https://localflavours.com/turkey/istanbul
-- https://localflavours.com/collections/[slug]
-- https://localflavours.com/places/[slug]
+- https://mekan.guru
+- https://mekan.guru/turkey/istanbul
+- https://mekan.guru/collections/[slug]
+- https://mekan.guru/places/[slug]
 
 Beklenen sonuçlar:
 ✅ WebSite schema geçerli
@@ -536,7 +536,7 @@ Pazar: 3 yeni koleksiyon oluştur
 - Medium'da yayınla
 - Blogger'da yayınla
 - Kendi blog'unda paylaş
-- Yazının sonunda: "Kaynak: LocalFlavours.com"
+- Yazının sonunda: "Kaynak: mekan.guru.com"
 ```
 
 **4. İşbirlikleri:**

@@ -453,8 +453,8 @@ export function EditCollectionModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !categoryId || !locationId) {
-      alert('Lütfen koleksiyon adı, kategori ve şehir seçin');
+    if (!name || !categoryId) {
+      alert('Lütfen koleksiyon adı ve kategori seçin');
       return;
     }
 
@@ -698,17 +698,26 @@ export function EditCollectionModal({
                     Şehir <span className="text-red-500">*</span>
                   </Label>
                   <Combobox
-                    options={cities.map((city) => ({
-                      value: city.id,
-                      label: city.names.tr,
-                    }))}
-                    value={locationId}
-                    onValueChange={setLocationId}
+                    options={[
+                      {
+                        value: '',
+                        label: '🌍 Genel (Tüm Şehirler)',
+                      },
+                      ...cities.map((city) => ({
+                        value: city.id,
+                        label: city.names.tr,
+                      })),
+                    ]}
+                    value={locationId || ''}
+                    onValueChange={(value) => setLocationId(value || null)}
                     placeholder="Şehir seçin..."
                     searchPlaceholder="Şehir ara..."
                     emptyText="Şehir bulunamadı."
                     className="h-11"
                   />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Genel seçeneği ile koleksiyonunuza tüm şehirlerden mekan ekleyebilirsiniz
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -716,10 +725,18 @@ export function EditCollectionModal({
                     Kategori <span className="text-red-500">*</span>
                   </Label>
                   <Combobox
-                    options={categories.map((category) => ({
-                      value: category.id,
-                      label: category.names.tr,
-                    }))}
+                    options={[
+                      {
+                        value: categories.find((c) => c.slug === 'genel')?.id || '',
+                        label: '🌍 Genel (Tüm Kategoriler)',
+                      },
+                      ...categories
+                        .filter((c) => c.slug !== 'genel')
+                        .map((category) => ({
+                          value: category.id,
+                          label: category.names.tr,
+                        })),
+                    ]}
                     value={categoryId}
                     onValueChange={setCategoryId}
                     placeholder="Kategori seçin..."
@@ -727,6 +744,9 @@ export function EditCollectionModal({
                     emptyText="Kategori bulunamadı."
                     className="h-11"
                   />
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Genel seçeneği ile koleksiyonunuza farklı kategorilerden mekanlar ekleyebilirsiniz
+                  </p>
                 </div>
               </div>
 

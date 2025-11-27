@@ -24,9 +24,9 @@ import { Button } from '@/components/ui/button';
 export const metadata: Metadata = {
   title: 'Sıkça Sorulan Sorular (SSS)',
   description:
-    'LocalFlavours hakkında merak ettiğiniz her şey. Platform nasıl çalışır, koleksiyon nasıl oluşturulur, oylama sistemi ve daha fazlası.',
+    'mekan.guru hakkında merak ettiğiniz her şey. Platform nasıl çalışır, koleksiyon nasıl oluşturulur, oylama sistemi ve daha fazlası.',
   keywords: [
-    'localflavours sss',
+    'mekanguru sss',
     'nasıl kullanılır',
     'koleksiyon oluşturma',
     'oylama sistemi',
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     'sıkça sorulan sorular',
   ],
   openGraph: {
-    title: 'Sıkça Sorulan Sorular | LocalFlavours',
-    description: 'LocalFlavours hakkında merak ettiğiniz her şey',
+    title: 'Sıkça Sorulan Sorular | mekan.guru',
+    description: 'mekan.guru hakkında merak ettiğiniz her şey',
     type: 'website',
   },
 };
@@ -55,7 +55,7 @@ export default function FAQPage() {
               Size Nasıl Yardımcı Olabiliriz?
             </h1>
             <p className="text-lg text-neutral-600 dark:text-neutral-400">
-              LocalFlavours hakkında merak ettiğiniz her şeyi burada bulabilirsiniz.
+              mekan.guru hakkında merak ettiğiniz her şeyi burada bulabilirsiniz.
             </p>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function FAQPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <QuickLinkCard
             title="Platform Hakkında"
-            description="LocalFlavours nedir?"
+            description="mekan.guru nedir?"
             icon={<Star className="h-5 w-5" />}
             href="#platform"
           />
@@ -109,10 +109,10 @@ export default function FAQPage() {
 
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <AccordionTrigger>LocalFlavours nedir?</AccordionTrigger>
+                <AccordionTrigger>mekan.guru nedir?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    LocalFlavours, Türkiye'nin en iyi restoranlarını ve mekanlarını keşfetmenizi
+                    mekan.guru, Türkiye'nin en iyi restoranlarını ve mekanlarını keşfetmenizi
                     sağlayan topluluk destekli bir platformdur. Kullanıcılar kendi koleksiyonlarını
                     oluşturabilir, mekanları oylayabilir ve şehir bazlı sıralamalarda en popüler
                     yerleri görebilir.
@@ -125,10 +125,10 @@ export default function FAQPage() {
               </AccordionItem>
 
               <AccordionItem value="item-2">
-                <AccordionTrigger>LocalFlavours ücretsiz mi?</AccordionTrigger>
+                <AccordionTrigger>mekan.guru ücretsiz mi?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Evet, LocalFlavours tamamen ücretsizdir! Koleksiyon oluşturabilir, mekanları
+                    Evet, mekan.guru tamamen ücretsizdir! Koleksiyon oluşturabilir, mekanları
                     oylayabilir ve tüm özelliklere sınırsız erişebilirsiniz. Herhangi bir ücret
                     talep edilmez.
                   </p>
@@ -562,7 +562,7 @@ export default function FAQPage() {
                 </AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Evet! LocalFlavours açık kaynak bir projedir. GitHub repository'mize pull
+                    Evet! mekan.guru açık kaynak bir projedir. GitHub repository'mize pull
                     request gönderebilir, hata düzeltmeleri yapabilir veya yeni özellikler
                     ekleyebilirsiniz.
                   </p>

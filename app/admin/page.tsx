@@ -31,7 +31,7 @@ export default async function AdminDashboardPage() {
           Kontrol Paneli
         </h1>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          LocalFlavors platformunuza genel bakış
+          mekan.guru platformunuza genel bakış
         </p>
       </div>
 

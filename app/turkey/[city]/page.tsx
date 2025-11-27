@@ -117,7 +117,7 @@ export default async function CityPage({
               className="group flex items-center gap-1.5 text-base font-bold text-neutral-900 transition-all hover:text-orange-500 sm:gap-2 sm:text-lg md:text-xl dark:text-neutral-50 dark:hover:text-orange-400"
             >
               <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 sm:h-5 sm:w-5" />
-              <span className="hidden sm:inline">LocalFlavors</span>
+              <span className="hidden sm:inline">mekan.guru</span>
               <span className="sm:hidden">LF</span>
             </Link>
           </div>

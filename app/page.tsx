@@ -16,9 +16,10 @@ interface HomePageProps {
 }
 
 export const metadata: Metadata = {
-  title: 'Local Flavours - Türkiye\'nin En İyi Mekanları ve Restoranları',
+  title: 'mekan.guru - Türkiye\'nin En İyi Mekanları ve Restoranları',
   description: 'Türkiye\'nin her şehrinden en iyi restoranlar, kafeler ve mekanları keşfedin. Kullanıcı koleksiyonları ile güvenilir öneriler. İstanbul, Ankara, İzmir ve daha fazlası.',
   keywords: [
+    'mekan.guru',
     'türkiye restoranlar',
     'istanbul restoranlar',
     'ankara mekanlar',
@@ -33,15 +34,15 @@ export const metadata: Metadata = {
     'restaurant recommendations'
   ],
   openGraph: {
-    title: 'Local Flavours - Türkiye\'nin En İyi Mekanları',
+    title: 'mekan.guru - Türkiye\'nin En İyi Mekanları',
     description: 'Türkiye\'nin her şehrinden en iyi restoranlar, kafeler ve mekanları keşfedin.',
     type: 'website',
     locale: 'tr_TR',
-    url: '/',
-    siteName: 'Local Flavours',
+    url: 'https://mekan.guru',
+    siteName: 'mekan.guru',
   },
   alternates: {
-    canonical: '/',
+    canonical: 'https://mekan.guru',
   },
 };
 
@@ -62,23 +63,23 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Local Flavours',
+    name: 'mekan.guru',
     description: 'Türkiye\'nin en iyi mekanlarını ve restoranlarını keşfedin',
-    url: process.env.NEXT_PUBLIC_APP_URL || 'https://localflavours.com',
+    url: process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL || 'https://localflavours.com'}/search?q={search_term_string}`
+        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/search?q={search_term_string}`
       },
       'query-input': 'required name=search_term_string'
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Local Flavours',
+      name: 'mekan.guru',
       logo: {
         '@type': 'ImageObject',
-        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://localflavours.com'}/og-image.jpg`
+        url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/og-image.jpg`
       }
     }
   };

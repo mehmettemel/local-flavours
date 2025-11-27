@@ -22,14 +22,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://localflavours.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'),
   title: {
-    default: 'Local Flavours - Türkiye\'nin En İyi Restoranları ve Mekanları',
-    template: '%s | Local Flavours',
+    default: 'mekan.guru - Türkiye\'nin En İyi Restoranları ve Mekanları',
+    template: '%s | mekan.guru',
   },
   description:
     'Türkiye\'nin tüm şehirlerinden en iyi restoranları, kafeleri ve mekanları keşfedin. Kullanıcı önerileri ve puanlamaları ile güvenilir mekan rehberi.',
   keywords: [
+    'mekan.guru',
     'türkiye restoranlar',
     'restoran önerileri',
     'mekan keşfi',
@@ -47,9 +48,9 @@ export const metadata: Metadata = {
     'restoran puanlama',
     'kullanıcı önerileri'
   ],
-  authors: [{ name: 'Local Flavours Team' }],
-  creator: 'Local Flavours',
-  publisher: 'Local Flavours',
+  authors: [{ name: 'mekan.guru Team' }],
+  creator: 'mekan.guru',
+  publisher: 'mekan.guru',
   robots: {
     index: true,
     follow: true,
@@ -64,26 +65,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
-    url: '/',
-    title: 'Local Flavours - Türkiye\'nin En İyi Restoranları',
+    url: 'https://mekan.guru',
+    title: 'mekan.guru - Türkiye\'nin En İyi Restoranları',
     description:
       'Türkiye\'nin tüm şehirlerinden en iyi restoranları, kafeleri ve mekanları keşfedin. Kullanıcı önerileri ile güvenilir mekan rehberi.',
-    siteName: 'Local Flavours',
+    siteName: 'mekan.guru',
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Local Flavours - Türkiye Restoran Rehberi',
+        alt: 'mekan.guru - Türkiye Restoran Rehberi',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Local Flavours - Türkiye\'nin En İyi Restoranları',
+    title: 'mekan.guru - Türkiye\'nin En İyi Restoranları',
     description:
       'Türkiye\'nin tüm şehirlerinden en iyi restoranları keşfedin. Kullanıcı önerileri ile güvenilir mekan rehberi.',
-    creator: '@localflavours',
+    creator: '@mekanguru',
     images: ['/og-image.jpg'],
   },
   icons: {

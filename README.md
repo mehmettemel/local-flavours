@@ -1,4 +1,4 @@
-# 🍊 LocalFlavors - Community-Driven Local Recommendations
+# 🍊 mekan.guru - Community-Driven Local Recommendations
 
 Discover authentic restaurants, cafes, and hidden gems through community-curated collections and democratic voting.
 
@@ -276,6 +276,6 @@ MIT License - see LICENSE file for details
 
 ---
 
-**LocalFlavors** - Where personal curation meets community wisdom.
+**mekan.guru** - Where personal curation meets community wisdom.
 
 Built with ❤️ using Next.js, TypeScript, and Supabase.

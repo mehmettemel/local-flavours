@@ -36,7 +36,7 @@ export function SiteHeader() {
         <Link href="/" className="flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-orange-500 dark:text-orange-400" />
           <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">
-            LocalFlavors
+            mekan.guru
           </h1>
         </Link>
 
@@ -131,7 +131,7 @@ export function SiteHeader() {
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
                   <Sparkles className="h-5 w-5 text-orange-500" />
-                  LocalFlavors
+                  mekan.guru
                 </SheetTitle>
                 <SheetDescription className="text-left">
                   Türkiye'nin en iyi mekanları

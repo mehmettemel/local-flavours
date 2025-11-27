@@ -8,7 +8,7 @@ import { ContactForm } from '@/components/contact/contact-form';
 export const metadata: Metadata = {
   title: 'İletişim',
   description:
-    'LocalFlavours ile iletişime geçin. Sorularınız, önerileriniz ve geri bildirimleriniz için bizimle iletişime geçebilirsiniz.',
+    'mekan.guru ile iletişime geçin. Sorularınız, önerileriniz ve geri bildirimleriniz için bizimle iletişime geçebilirsiniz.',
   keywords: [
     'iletişim',
     'destek',
@@ -18,8 +18,8 @@ export const metadata: Metadata = {
     'contact',
   ],
   openGraph: {
-    title: 'İletişim | LocalFlavours',
-    description: 'LocalFlavours ile iletişime geçin',
+    title: 'İletişim | mekan.guru',
+    description: 'mekan.guru ile iletişime geçin',
     type: 'website',
   },
 };

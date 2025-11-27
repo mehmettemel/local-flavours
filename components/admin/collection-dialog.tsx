@@ -298,25 +298,31 @@ export function CollectionDialog({
             <div>
               <Label htmlFor="locationId">Location</Label>
               <Select
-                value={formData.locationId}
+                value={formData.locationId || 'general'}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, locationId: value })
+                  setFormData({ ...formData, locationId: value === 'general' ? '' : value })
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select location" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locations?.map((location) => {
-                    const names = location.names as { en: string; tr: string };
-                    return (
-                      <SelectItem key={location.id} value={location.id}>
-                        {names.en} ({location.type})
-                      </SelectItem>
-                    );
-                  })}
+                  <SelectItem value="general">🌍 General (All Cities)</SelectItem>
+                  {locations
+                    ?.filter((location) => location.type === 'city')
+                    .map((location) => {
+                      const names = location.names as { en: string; tr: string };
+                      return (
+                        <SelectItem key={location.id} value={location.id}>
+                          {names.en}
+                        </SelectItem>
+                      );
+                    })}
                 </SelectContent>
               </Select>
+              <p className="mt-1 text-xs text-neutral-500">
+                Select General for collections with places from multiple cities
+              </p>
             </div>
 
             <div>
@@ -333,14 +339,18 @@ export function CollectionDialog({
                 <SelectContent>
                   {categories?.map((category) => {
                     const names = category.names as { en: string; tr: string };
+                    const isGeneral = (category as any).slug === 'genel';
                     return (
                       <SelectItem key={category.id} value={category.id}>
-                        {names.en}
+                        {isGeneral ? '🌍 ' : ''}{names.en}
                       </SelectItem>
                     );
                   })}
                 </SelectContent>
               </Select>
+              <p className="mt-1 text-xs text-neutral-500">
+                General category allows places from multiple categories
+              </p>
             </div>
           </div>
 

@@ -105,7 +105,7 @@ export default async function PlacePage({ params }: PlacePageProps) {
         worstRating: 1,
         ratingCount: place.vote_count || 0,
       },
-      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://localflavours.com'}/places/${place.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/places/${place.slug}`,
     };
 
     return (

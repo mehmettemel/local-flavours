@@ -95,6 +95,28 @@ CREATE INDEX idx_categories_display_order ON categories(display_order);
 }
 ```
 
+**⭐ Özel Kategori: "Genel"**
+
+Birden fazla kategoriden mekan içeren koleksiyonlar için özel bir "Genel" kategorisi bulunur:
+
+```json
+{
+  "slug": "genel",
+  "names": {
+    "en": "General",
+    "tr": "Genel",
+    "description_en": "Collections with places from multiple categories",
+    "description_tr": "Birden fazla kategoriden mekanlar içeren koleksiyonlar"
+  },
+  "icon": "Globe",
+  "display_order": -1
+}
+```
+
+- `display_order: -1` ile kategori listelerinin en üstünde gösterilir
+- Koleksiyonlar bu kategoriyi seçerek farklı kategorilerden mekanları bir arada sunabilir
+- Örnek: "İstanbul'un En İyi Mekanları" koleksiyonu kebapçı, cafe ve restoranları birlikte içerebilir
+
 ---
 
 ### 3. locations
@@ -224,6 +246,30 @@ CREATE INDEX idx_collections_vote_score ON collections(vote_score DESC);
 - `is_featured`: Admin tarafından öne çıkarılan koleksiyonlar
 - `tags`: Aranabilir etiketler
 - `subcategory_id`: Alt kategori (örn: Adana Kebap)
+
+**⭐ "Genel" Koleksiyonlar (Multi-City & Multi-Category):**
+
+Koleksiyonlar iki şekilde "Genel" olabilir:
+
+1. **Şehir Bazında "Genel":** `location_id = NULL`
+   - Koleksiyon birden fazla şehirden mekanlar içerebilir
+   - Örnek: "Türkiye'nin En İyi Kahvaltı Mekanları" (İstanbul, Ankara, İzmir karışık)
+   - UI'da "Genel (Tüm Şehirler)" olarak gösterilir
+
+2. **Kategori Bazında "Genel":** `category_id = 'genel'`
+   - Koleksiyon birden fazla kategoriden mekanlar içerebilir
+   - Örnek: "Kadıköy'ün En İyi Mekanları" (kebapçı, cafe, restoran karışık)
+   - UI'da "Genel (Tüm Kategoriler)" olarak gösterilir
+
+3. **Tam Genel:** `location_id = NULL` VE `category_id = 'genel'`
+   - En geniş kapsam: Her şehir ve her kategoriden mekanlar
+   - Örnek: "Türkiye'nin Mutlaka Gidilmesi Gereken 50 Mekanı"
+
+**Koleksiyon-Mekan İlişkisi:**
+- Bir koleksiyon `collection_places` tablosu üzerinden birden fazla mekana sahip olabilir
+- Her mekan kendi `location_id` ve `category_id`'sine sahiptir
+- Koleksiyonun location/category değerleri sadece "tavsiye edilen filtre" olarak çalışır
+- Kullanıcılar koleksiyona herhangi bir şehir/kategoriden mekan ekleyebilir
 
 ---
 

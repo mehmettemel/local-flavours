@@ -2,7 +2,7 @@
 
 ## 🎯 Proje Amacı
 
-LocalFlavors, kullanıcıların yerel restoranları, kafeleri ve gizli mücevherleri keşfetmelerini sağlayan topluluk destekli bir öneri platformudur. Platform, kişisel kürasyon ile topluluk bilgeliğini birleştirerek güvenilir mekan önerileri oluşturur.
+mekan.guru, kullanıcıların yerel restoranları, kafeleri ve gizli mücevherleri keşfetmelerini sağlayan topluluk destekli bir öneri platformudur. Platform, kişisel kürasyon ile topluluk bilgeliğini birleştirerek güvenilir mekan önerileri oluşturur.
 
 ## 🌟 Temel Konsept
 

@@ -2,7 +2,7 @@
 
 ## 🏗️ Genel Mimari
 
-LocalFlavors, modern bir full-stack Next.js uygulamasıdır. Supabase (PostgreSQL) backend'i ile monolitik bir yapıya sahiptir.
+mekan.guru, modern bir full-stack Next.js uygulamasıdır. Supabase (PostgreSQL) backend'i ile monolitik bir yapıya sahiptir.
 
 ```
 ┌─────────────────────────────────────────────────────┐

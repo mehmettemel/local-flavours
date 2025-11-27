@@ -45,10 +45,12 @@ export function CitySelect({
 }: CitySelectProps) {
   const [open, setOpen] = React.useState(false);
 
-  // Sort cities alphabetically by name for easy browsing
+  // Add "Genel" option at the top, then sort cities alphabetically
   const cities = React.useMemo(
-    () =>
-      [...TURKISH_CITIES].sort((a, b) => a.name.localeCompare(b.name, 'tr')),
+    () => [
+      { id: 'genel', name: '🌍 Genel (Tüm Şehirler)', slug: 'genel' },
+      ...[...TURKISH_CITIES].sort((a, b) => a.name.localeCompare(b.name, 'tr')),
+    ],
     []
   );
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Sparkles, Utensils, Coffee, Gem, Beer } from 'lucide-react';
@@ -32,7 +33,7 @@ const getCategoryIcon = (slug: string) => {
   );
 };
 
-export function CategoryFilter({ categories }: CategoryFilterProps) {
+function CategoryFilterContent({ categories }: CategoryFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,5 +129,19 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
         })}
       </div>
     </div>
+  );
+}
+
+export function CategoryFilter({ categories }: CategoryFilterProps) {
+  return (
+    <Suspense fallback={
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="h-12 w-20 animate-pulse rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+        <div className="h-12 w-20 animate-pulse rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+        <div className="h-12 w-20 animate-pulse rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+      </div>
+    }>
+      <CategoryFilterContent categories={categories} />
+    </Suspense>
   );
 }

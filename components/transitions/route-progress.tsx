@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export function RouteProgress() {
+function RouteProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isNavigating, setIsNavigating] = useState(false);
@@ -50,5 +50,13 @@ export function RouteProgress() {
         />
       )}
     </AnimatePresence>
+  );
+}
+
+export function RouteProgress() {
+  return (
+    <Suspense fallback={null}>
+      <RouteProgressBar />
+    </Suspense>
   );
 }

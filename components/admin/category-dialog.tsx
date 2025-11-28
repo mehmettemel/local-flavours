@@ -30,7 +30,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
     slug: '',
     nameEn: '',
     nameTr: '',
-    icon: '',
     displayOrder: '',
   });
 
@@ -41,7 +40,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
         slug: category.slug || '',
         nameEn: names?.en || '',
         nameTr: names?.tr || '',
-        icon: category.icon || '',
         displayOrder: category.display_order?.toString() || '',
       });
     } else {
@@ -49,7 +47,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
         slug: '',
         nameEn: '',
         nameTr: '',
-        icon: '',
         displayOrder: '',
       });
     }
@@ -63,7 +60,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
           en: data.nameEn,
           tr: data.nameTr,
         },
-        icon: data.icon,
         display_order: data.displayOrder ? parseInt(data.displayOrder) : 0,
       };
 
@@ -137,20 +133,6 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
                 placeholder="Restoranlar"
               />
             </div>
-          </div>
-
-          {/* Icon */}
-          <div className="space-y-2">
-            <Label htmlFor="icon">Icon (Lucide icon name)</Label>
-            <Input
-              id="icon"
-              value={formData.icon}
-              onChange={(e) => handleChange('icon', e.target.value)}
-              placeholder="utensils"
-            />
-            <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              Use Lucide icon names like: utensils, coffee, beer, shopping-bag
-            </p>
           </div>
 
           {/* Display Order */}

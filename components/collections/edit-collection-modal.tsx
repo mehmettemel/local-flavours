@@ -661,8 +661,8 @@ export function EditCollectionModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="h-[95vh] w-[95vw] max-w-5xl overflow-hidden p-0">
-        <div className="flex h-full flex-col">
+      <DialogContent className="h-[85vh] max-h-[900px] w-[95vw] max-w-5xl gap-0 overflow-hidden p-0 sm:h-[95vh]">
+        <div className="flex h-full max-h-full flex-col overflow-hidden">
           {/* Header */}
           <DialogHeader className="flex-shrink-0 border-b border-neutral-200 p-4 sm:p-6 dark:border-neutral-800">
             <DialogTitle className="text-xl sm:text-2xl">
@@ -673,9 +673,15 @@ export function EditCollectionModal({
           {/* Content - Scrollable */}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-1 flex-col overflow-hidden"
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
           >
-            <div className="flex-1 space-y-4 overflow-y-auto p-4 sm:space-y-6 sm:p-6">
+            <div
+              className="flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 sm:space-y-6 sm:p-6"
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'thin'
+              }}
+            >
               {/* Collection Info */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2 sm:col-span-2">

@@ -164,29 +164,6 @@ export function CollectionsLeaderboard({
     return `${rank}`;
   };
 
-  // Manual emoji mapping for categories
-  const getCategoryEmoji = (categorySlug?: string) => {
-    const emojiMap: { [key: string]: string } = {
-      yemek: '🍽️',
-      kafe: '☕',
-      bar: '🍺',
-      genel: '📍',
-      doner: '🥙',
-      hamburger: '🍔',
-      tatli: '🍰',
-      kebap: '🍖',
-      pizza: '🍕',
-      durum: '🌯',
-      balik: '🐟',
-      pide: '🥖',
-      corba: '🍜',
-      'ev-yemekleri': '🥘',
-      makarna: '🍝',
-      kahvalti: '🍳',
-    };
-    return emojiMap[categorySlug || ''] || '🍽️';
-  };
-
   return (
     <div className="space-y-6">
       {/* City Selector Section */}
@@ -214,10 +191,9 @@ export function CollectionsLeaderboard({
                 variant={selectedCategory === category.slug ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSelectedCategory(category.slug)}
-                className="h-9 gap-1.5"
+                className="h-9"
               >
-                <span>{getCategoryEmoji(category.slug)}</span>
-                <span>{category.names.tr}</span>
+                {category.names.tr}
                 {selectedCategory === category.slug && (
                   <X className="ml-1 h-3 w-3" onClick={(e) => {
                     e.stopPropagation();
@@ -232,7 +208,7 @@ export function CollectionsLeaderboard({
               <Combobox
                 options={restCategories.map((cat) => ({
                   value: cat.slug,
-                  label: `${getCategoryEmoji(cat.slug)} ${cat.names.tr}`,
+                  label: cat.names.tr,
                 }))}
                 value={selectedCategory && restCategories.find(c => c.slug === selectedCategory) ? selectedCategory : ''}
                 onValueChange={(value) => setSelectedCategory(value)}
@@ -324,12 +300,11 @@ export function CollectionsLeaderboard({
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px] text-center">Sıra</TableHead>
+                <TableHead className="w-[120px]">Oy</TableHead>
                 <TableHead>Koleksiyon</TableHead>
                 <TableHead>Küratör</TableHead>
                 <TableHead>Kategori</TableHead>
-                <TableHead className="text-center">Mekan Sayısı</TableHead>
                 <TableHead className="text-center">Puan</TableHead>
-                <TableHead className="text-right">Oy</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -362,51 +337,8 @@ export function CollectionsLeaderboard({
                       <TableCell className="text-center font-semibold">
                         <span className="text-lg">{getRankEmoji(rank)}</span>
                       </TableCell>
-                      <TableCell>
-                        <span className="block font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400">
-                          {collection.names?.tr}
-                        </span>
-                        <span className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1">
-                          {collection.descriptions?.tr}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <Link 
-                          href={`/profile/${collection.creator?.username}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 hover:text-orange-600 dark:hover:text-orange-400"
-                        >
-                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                              <User className="h-3 w-3 text-neutral-500" />
-                           </div>
-                           <span className="text-sm font-medium">
-                              {collection.creator?.username || 'Anonim'}
-                           </span>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">
-                            {getCategoryEmoji(collection.category?.slug)}
-                          </span>
-                          <span className="text-sm">
-                            {collection.category?.names?.tr || '-'}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                          {collection.places_count || 0}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
-                          <TrendingUp className="h-3 w-3" />
-                          {collection.vote_score || 0}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-1">
                           <Button
                             variant="ghost"
                             size="sm"
@@ -427,6 +359,36 @@ export function CollectionsLeaderboard({
                             <ThumbsDown className="h-4 w-4" />
                           </Button>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="block font-medium group-hover:text-orange-600 dark:group-hover:text-orange-400">
+                          {collection.names?.tr}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Link 
+                          href={`/profile/${collection.creator?.username}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 hover:text-orange-600 dark:hover:text-orange-400"
+                        >
+                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+                              <User className="h-3 w-3 text-neutral-500" />
+                           </div>
+                           <span className="text-sm font-medium">
+                              {collection.creator?.username || 'Anonim'}
+                           </span>
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm">
+                          {collection.category?.names?.tr || '-'}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-1 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                          <TrendingUp className="h-3 w-3" />
+                          {collection.vote_score || 0}
+                        </span>
                       </TableCell>
                     </TableRow>
                   );

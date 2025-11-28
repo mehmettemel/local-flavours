@@ -101,7 +101,6 @@ export default function AdminCategoriesPage() {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Slug</TableHead>
-                  <TableHead>Icon</TableHead>
                   <TableHead>Display Order</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -117,7 +116,6 @@ export default function AdminCategoriesPage() {
                       <TableCell className="font-mono text-sm">
                         {category.slug}
                       </TableCell>
-                      <TableCell>{category.icon}</TableCell>
                       <TableCell>{category.display_order}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

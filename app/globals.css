@@ -120,3 +120,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mobile Dialog Scroll Fix */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  
+  /* iOS Safari smooth scrolling */
+  @supports (-webkit-touch-callout: none) {
+    .overflow-y-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}

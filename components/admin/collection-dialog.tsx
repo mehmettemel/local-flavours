@@ -374,7 +374,7 @@ export function CollectionDialog({
                     const names = subcategory.names as { en: string; tr: string };
                     return (
                       <SelectItem key={subcategory.id} value={subcategory.id}>
-                        {subcategory.icon} {names.en}
+                        {names.en}
                       </SelectItem>
                     );
                   })}

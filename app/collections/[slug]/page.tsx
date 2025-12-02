@@ -12,16 +12,16 @@ interface CollectionPageProps {
 async function getCollection(slug: string) {
   const supabase = await createClient();
 
-  const { data: collection, error } = await supabase
-    .from('collections')
-    .select(`
-      *,
-      location:locations(id, names, slug),
-      category:categories!collections_category_id_fkey(id, names, slug, icon),
-      creator:users!collections_creator_id_fkey(id, username)
-    `)
-    .eq('slug', slug)
-    .single();
+ const { data: collection, error } = await supabase
+  .from('collections')
+  .select(`
+    *,
+    location:locations(id, names, slug),
+    category:categories!collections_category_id_fkey(id, names, slug),
+    creator:users(id, username)
+  `)
+  .eq('slug', slug)
+  .single();
 
   if (error || !collection) return null;
 
@@ -38,7 +38,7 @@ async function getCollection(slug: string) {
         address,
         vote_score,
         vote_count,
-        category:categories(id, names, icon)
+        category:categories(id, names)
       )
     `)
     .eq('collection_id', collection.id)

@@ -85,22 +85,22 @@ export function SiteHeader() {
 
             {/* FAQ */}
             <NavigationMenuItem>
-              <Link href="/faq" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-10")}>
+              <NavigationMenuLink asChild>
+                <Link href="/faq" className={cn(navigationMenuTriggerStyle(), "h-10")}>
                   <HelpCircle className="mr-2 h-4 w-4" />
                   SSS
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             {/* İletişim */}
             <NavigationMenuItem>
-              <Link href="/contact" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "h-10")}>
+              <NavigationMenuLink asChild>
+                <Link href="/contact" className={cn(navigationMenuTriggerStyle(), "h-10")}>
                   <Mail className="mr-2 h-4 w-4" />
                   İletişim
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

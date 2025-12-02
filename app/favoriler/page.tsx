@@ -256,7 +256,7 @@ export default function FavoritesPage() {
                   <p className="mt-2 text-center text-sm text-neutral-600 dark:text-neutral-400">
                     Beğendiğin koleksiyonlar burada görünecek
                   </p>
-                  <Link href="/collections">
+                  <Link href="/koleksiyonlar">
                     <button className="mt-6 rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700">
                       Koleksiyonları Keşfet
                     </button>

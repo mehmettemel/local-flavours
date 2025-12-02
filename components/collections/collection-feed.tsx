@@ -39,7 +39,7 @@ function CollectionCard({ collection }: { collection: CollectionFeedItem }) {
   const initials = creatorName.substring(0, 2).toUpperCase();
 
   return (
-    <Link href={`/collections/${collection.slug}`}>
+    <Link href={`/koleksiyonlar/${collection.slug}`}>
       <Card className="group h-full transition-all hover:shadow-lg hover:-translate-y-1">
         <CardContent className="p-4">
           {/* Category Badge */}

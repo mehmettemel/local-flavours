@@ -171,7 +171,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               {categories.map((category) => (
                 <Link
                   key={category.id}
-                  href={`/categories/${category.slug}`}
+                  href={`/kategoriler/${category.slug}`}
                   className="group"
                 >
                   <Badge

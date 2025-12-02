@@ -77,7 +77,7 @@ export function SortablePlaceItem({
             {/* Place Info */}
             <div className="flex-1 min-w-0">
               <Link
-                href={`/places/${place.slug}`}
+                href={`/mekanlar/${place.slug}`}
                 className="group-hover:text-primary transition-colors"
               >
                 <h3 className="font-semibold text-neutral-900 dark:text-neutral-50">

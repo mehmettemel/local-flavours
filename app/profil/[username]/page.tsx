@@ -269,7 +269,7 @@ export default function ProfilePage() {
             {/* Action Buttons */}
             <div className="flex gap-2">
               {isOwnProfile && (
-                <Link href="/settings">
+                <Link href="/ayarlar">
                   <Button variant="outline">
                     <Settings className="mr-2 h-4 w-4" />
                     Ayarlar
@@ -365,7 +365,7 @@ export default function ProfilePage() {
               </CardDescription>
             </div>
             {isOwnProfile && (
-              <Link href="/my-collections">
+              <Link href="/koleksiyonlarim">
                 <Button variant="outline" size="sm">
                   Tümünü Gör
                 </Button>

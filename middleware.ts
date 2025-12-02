@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Protected routes that require authentication
 const protectedRoutes = [
-  '/my-collections',
-  '/favorites',
-  '/settings',
-  '/profile/edit',
+  '/koleksiyonlarim',
+  '/favoriler',
+  '/ayarlar',
+  '/profil/duzenle',
 ];
 
 // Admin-only routes

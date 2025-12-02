@@ -91,7 +91,7 @@ export function HeroBanner({ collection }: HeroBannerProps) {
         </div>
 
         {/* CTA Button */}
-        <Link href={`/collections/${collection.slug}`}>
+        <Link href={`/koleksiyonlar/${collection.slug}`}>
           <Button size="lg" variant="secondary" className="bg-white text-orange-600 hover:bg-white/90">
             Koleksiyonu İncele
             <ArrowRight className="ml-2 h-4 w-4" />

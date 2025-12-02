@@ -393,7 +393,7 @@ export function PlacesLeaderboard({
                     <TableRow
                       key={place.id}
                       className="group cursor-pointer hover:bg-orange-50/50 dark:hover:bg-orange-950/20"
-                      onClick={() => router.push(`/places/${place.slug}`)}
+                      onClick={() => router.push(`/mekanlar/${place.slug}`)}
                     >
                       <TableCell className="text-center font-semibold">
                         <span className="text-lg">{getRankEmoji(rank)}</span>

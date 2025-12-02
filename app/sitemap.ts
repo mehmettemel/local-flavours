@@ -8,8 +8,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static routes
   const routes = [
     '',
-    '/favorites',
-    '/my-collections',
+    '/favoriler',
+    '/koleksiyonlarim',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(1000);
 
   const collectionRoutes = (collections || []).map((collection: any) => ({
-    url: `${baseUrl}/collections/${collection.slug}`,
+    url: `${baseUrl}/koleksiyonlar/${collection.slug}`,
     lastModified: collection.updated_at,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(1000);
 
   const placeRoutes = (places || []).map((place: any) => ({
-    url: `${baseUrl}/places/${place.slug}`,
+    url: `${baseUrl}/mekanlar/${place.slug}`,
     lastModified: place.updated_at,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .select('slug, created_at');
 
   const categoryRoutes = (categories || []).map((category: any) => ({
-    url: `${baseUrl}/categories/${category.slug}`,
+    url: `${baseUrl}/kategoriler/${category.slug}`,
     lastModified: category.created_at || new Date().toISOString(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .limit(500);
 
   const profileRoutes = (users || []).map((user: any) => ({
-    url: `${baseUrl}/profile/${user.username}`,
+    url: `${baseUrl}/profil/${user.username}`,
     lastModified: user.updated_at,
     changeFrequency: 'monthly' as const,
     priority: 0.5,

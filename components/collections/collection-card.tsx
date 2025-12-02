@@ -31,7 +31,7 @@ export function CollectionCard({ collection, onEdit, onDelete, showActions = tru
   const router = useRouter();
 
   const handleCardClick = () => {
-    router.push(`/collections/${collection.slug}`);
+    router.push(`/koleksiyonlar/${collection.slug}`);
   };
 
   return (

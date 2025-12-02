@@ -319,7 +319,7 @@ export function CollectionsLeaderboard({
                     <TableRow
                       key={collection.id}
                       className="group cursor-pointer hover:bg-orange-50/50 dark:hover:bg-orange-950/20"
-                      onClick={() => router.push(`/collections/${collection.slug}`)}
+                      onClick={() => router.push(`/koleksiyonlar/${collection.slug}`)}
                     >
                       <TableCell className="text-center font-semibold">
                         <span className="text-lg">{getRankEmoji(rank)}</span>

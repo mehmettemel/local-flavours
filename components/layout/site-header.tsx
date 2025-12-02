@@ -86,7 +86,7 @@ export function SiteHeader() {
             {/* FAQ */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href="/faq" className={cn(navigationMenuTriggerStyle(), "h-10")}>
+                <Link href="/sss" className={cn(navigationMenuTriggerStyle(), "h-10")}>
                   <HelpCircle className="mr-2 h-4 w-4" />
                   SSS
                 </Link>
@@ -96,7 +96,7 @@ export function SiteHeader() {
             {/* İletişim */}
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
-                <Link href="/contact" className={cn(navigationMenuTriggerStyle(), "h-10")}>
+                <Link href="/iletisim" className={cn(navigationMenuTriggerStyle(), "h-10")}>
                   <Mail className="mr-2 h-4 w-4" />
                   İletişim
                 </Link>
@@ -196,7 +196,7 @@ export function SiteHeader() {
                 {/* Main Navigation Items */}
 
                 <Link
-                  href="/faq"
+                  href="/sss"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-orange-50 dark:hover:bg-orange-950/30"
                 >
@@ -204,7 +204,7 @@ export function SiteHeader() {
                   SSS
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/iletisim"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center gap-3 rounded-lg px-3 py-3 font-medium transition-colors hover:bg-orange-50 dark:hover:bg-orange-950/30"
                 >

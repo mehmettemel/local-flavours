@@ -40,11 +40,11 @@ export async function generateMetadata({ params }: PlacePageProps): Promise<Meta
       description,
       type: 'website',
       locale: 'tr_TR',
-      url: `/places/${slug}`,
+      url: `/mekanlar/${slug}`,
       siteName: 'mekan.guru',
     },
     alternates: {
-      canonical: `/places/${slug}`,
+      canonical: `/mekanlar/${slug}`,
     },
   };
 }
@@ -96,7 +96,7 @@ export default async function PlacePage({ params }: PlacePageProps) {
         worstRating: 1,
         ratingCount: place.vote_count || 0,
       },
-      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/places/${place.slug}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/mekanlar/${place.slug}`,
     };
 
     return (

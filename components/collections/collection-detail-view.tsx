@@ -156,7 +156,7 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link
-                    href={`/places/${place.slug}?from=/collections/${collection.slug}`}
+                    href={`/mekanlar/${place.slug}?from=/koleksiyonlar/${collection.slug}`}
                     className="group block h-full"
                   >
                     <Card className="h-full overflow-hidden transition-all hover:border-orange-200 hover:shadow-md dark:hover:border-orange-900/50 dark:hover:shadow-orange-900/10">

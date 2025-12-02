@@ -18,7 +18,8 @@
     "seed:collections": "tsx scripts/seed-collections.ts",
     "seed:collections:prod": "tsx scripts/seed-collections.ts --prod",
     "seed:collections:clear": "tsx scripts/seed-collections.ts --clear",
-    "seed:collections:prod:clear": "tsx scripts/seed-collections.ts --prod --clear"
+    "seed:collections:prod:clear": "tsx scripts/seed-collections.ts --prod --clear",
+    "add-collection": "tsx scripts/add-collection.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

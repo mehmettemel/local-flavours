@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
-  const selectedCitySlug = params.city || 'adana'; // Default to Adana
+  const selectedCitySlug = params.city || 'all'; // Default to All Cities
 
   // Fetch data in parallel
   const [featuredCollection, topCollections, categories, leaderboardCollections, cities] = await Promise.all([

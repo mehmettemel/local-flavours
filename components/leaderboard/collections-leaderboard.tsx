@@ -54,10 +54,17 @@ export function CollectionsLeaderboard({
     .filter((city) => featuredCities.includes(city.slug))
     .sort((a, b) => featuredCities.indexOf(a.slug) - featuredCities.indexOf(b.slug));
 
+  // Sort categories to prioritize 'genel'
+  const sortedCategories = [...categories].sort((a, b) => {
+    if (a.slug === 'genel') return -1;
+    if (b.slug === 'genel') return 1;
+    return (a.display_order || 0) - (b.display_order || 0);
+  });
+
   // Top 6 categories to show as buttons
-  const topCategories = categories.slice(0, 6);
+  const topCategories = sortedCategories.slice(0, 6);
   // Rest of categories for combobox
-  const restCategories = categories.slice(6);
+  const restCategories = sortedCategories.slice(6);
 
   // Filter collections when category changes
   useEffect(() => {

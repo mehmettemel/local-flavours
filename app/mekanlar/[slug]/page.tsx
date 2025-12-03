@@ -62,15 +62,6 @@ export default async function PlacePage({ params }: PlacePageProps) {
     const place = placeData as any;
     const supabase = await createClient();
 
-    // Get vote statistics
-    const { data: voteStats } = await supabase
-      .from('votes')
-      .select('value')
-      .eq('place_id', place.id);
-
-    const upvotes = voteStats?.filter((v: any) => v.value === 1).length || 0;
-    const downvotes = voteStats?.filter((v: any) => v.value === -1).length || 0;
-
     // Get collections this place belongs to
     const { data: relatedCollections } = await supabase
       .from('collection_places')
@@ -109,13 +100,6 @@ export default async function PlacePage({ params }: PlacePageProps) {
         longitude: place.longitude,
       } : undefined,
       servesCuisine: place.category?.names?.tr,
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: place.vote_score > 0 ? Math.min((place.vote_score / 10) + 3, 5) : 3,
-        bestRating: 5,
-        worstRating: 1,
-        ratingCount: place.vote_count || 0,
-      },
       url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://mekan.guru'}/mekanlar/${place.slug}`,
     };
 
@@ -124,8 +108,6 @@ export default async function PlacePage({ params }: PlacePageProps) {
         <JsonLd data={jsonLd} />
         <PlaceDetailView 
           place={place} 
-          upvotes={upvotes} 
-          downvotes={downvotes} 
           collections={collections}
         />
       </>

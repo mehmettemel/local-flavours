@@ -41,12 +41,10 @@ interface Collection {
 
 interface PlaceDetailViewProps {
   place: Place;
-  upvotes: number;
-  downvotes: number;
   collections?: Collection[];
 }
 
-function PlaceDetailContent({ place, upvotes, downvotes, collections = [] }: PlaceDetailViewProps) {
+function PlaceDetailContent({ place, collections = [] }: PlaceDetailViewProps) {
   const searchParams = useSearchParams();
   const fromUrl = searchParams.get('from');
   const fromSlug = fromUrl?.split('/koleksiyonlar/')[1];
@@ -190,47 +188,7 @@ function PlaceDetailContent({ place, upvotes, downvotes, collections = [] }: Pla
         </Card>
       )}
 
-      {/* Voting Stats */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Topluluk Oyları</CardTitle>
-          <CardDescription>
-            Bu mekan hakkında topluluğun görüşleri
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
-                <ThumbsUp className="h-4 w-4 text-green-600 dark:text-green-400" />
-                <span>Olumlu</span>
-              </div>
-              <p className="mt-2 text-2xl font-bold text-neutral-900 dark:text-neutral-50">
-                {upvotes}
-              </p>
-            </div>
 
-            <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-              <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
-                <ThumbsDown className="h-4 w-4 text-red-600 dark:text-red-400" />
-                <span>Olumsuz</span>
-              </div>
-              <p className="mt-2 text-2xl font-bold text-neutral-900 dark:text-neutral-50">
-                {downvotes}
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-              <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                Toplam Puan
-              </div>
-              <p className="mt-2 text-2xl font-bold text-neutral-900 dark:text-neutral-50">
-                {place.vote_score || 0}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Status */}
       <div className="text-center text-sm text-neutral-500 dark:text-neutral-400">

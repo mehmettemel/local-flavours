@@ -1,20 +1,23 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { MapPin, User, Calendar, ThumbsUp, ArrowLeft, Navigation, Star } from 'lucide-react';
+import { MapPin, User, Calendar, ThumbsUp, ThumbsDown, ArrowLeft, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ScrollReveal } from '@/components/transitions/scroll-reveal';
+import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/lib/contexts/auth-context';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface Place {
   id: string;
   slug: string;
   names: { tr: string };
   address?: string;
-  vote_score: number;
-  vote_count: number;
   category?: {
     id: string;
     names: { tr: string };
@@ -74,6 +77,101 @@ const getRankBadgeColor = (rank: number) => {
 };
 
 export function CollectionDetailView({ collection }: CollectionDetailViewProps) {
+  const [userVote, setUserVote] = useState<number | null>(null);
+  const [voteCount, setVoteCount] = useState(collection.vote_count || 0);
+  const supabase = createClient();
+  const { user, session } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    async function fetchUserVote() {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('collection_votes')
+        .select('value')
+        .eq('user_id', user.id)
+        .eq('collection_id', collection.id)
+        .maybeSingle();
+
+      if (!error && data) {
+        setUserVote((data as any).value);
+      }
+    }
+
+    fetchUserVote();
+  }, [user, collection.id, supabase]);
+
+  const handleVote = async (voteType: 'up' | 'down') => {
+    if (!user) {
+      toast.error('Oy vermek için giriş yapmalısınız', {
+        action: {
+          label: 'Giriş Yap',
+          onClick: () => window.dispatchEvent(new CustomEvent('open-login-dialog')),
+        },
+      });
+      return;
+    }
+
+    if (!session) {
+      toast.error('Oturum bulunamadı, lütfen tekrar giriş yapın');
+      return;
+    }
+
+    try {
+      const voteValue = voteType === 'up' ? 1 : -1;
+      let newVoteCount = voteCount;
+
+      if (userVote === voteValue) {
+        // Remove vote
+        const { error } = await supabase
+          .from('collection_votes')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('collection_id', collection.id);
+
+        if (error) throw error;
+        
+        setUserVote(null);
+        newVoteCount -= voteValue;
+        toast.success('Oyunuz kaldırıldı');
+      } else {
+        // Update or Insert vote
+        if (userVote !== null) {
+           // Changing vote (e.g. from -1 to 1, diff is 2)
+           newVoteCount += (voteValue - userVote);
+           
+           const { error } = await (supabase
+            .from('collection_votes') as any)
+            .update({ value: voteValue })
+            .eq('user_id', user.id)
+            .eq('collection_id', collection.id);
+
+           if (error) throw error;
+        } else {
+           // New vote
+           newVoteCount += voteValue;
+
+           const { error } = await (supabase
+            .from('collection_votes') as any)
+            .insert([{ user_id: user.id, collection_id: collection.id, value: voteValue }]);
+
+           if (error) throw error;
+        }
+
+        setUserVote(voteValue);
+        toast.success(voteType === 'up' ? 'Beğendiniz!' : 'Beğenmediniz');
+      }
+      
+      setVoteCount(newVoteCount);
+      router.refresh();
+
+    } catch (error: any) {
+      console.error('Error voting:', error);
+      toast.error(`Oy kullanılırken bir hata oluştu: ${error.message || error}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       {/* Header */}
@@ -128,9 +226,36 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
                     <span>{formatDate(collection.created_at)}</span>
                   </div>
                   <div className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-700" />
-                  <div className="flex items-center gap-1.5">
-                    <ThumbsUp className="h-4 w-4" />
-                    <span>{collection.vote_count || 0} oy</span>
+                  
+                  {/* Voting Buttons */}
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`h-8 w-8 p-0 ${
+                        userVote === 1 
+                          ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' 
+                          : 'hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900/30 dark:hover:text-green-400'
+                      }`}
+                      onClick={() => handleVote('up')}
+                    >
+                      <ThumbsUp className={`h-4 w-4 ${userVote === 1 ? 'fill-current' : ''}`} />
+                    </Button>
+                    <span className="min-w-[2ch] text-center font-medium">
+                      {voteCount}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`h-8 w-8 p-0 ${
+                        userVote === -1 
+                          ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' 
+                          : 'hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400'
+                      }`}
+                      onClick={() => handleVote('down')}
+                    >
+                      <ThumbsDown className={`h-4 w-4 ${userVote === -1 ? 'fill-current' : ''}`} />
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -192,19 +317,6 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
                                 <span>•</span>
                                 <span className="truncate">{place.address}</span>
                               </div>
-                            </div>
-
-                            {/* Score Badge */}
-                            <div className="flex flex-col items-end gap-1">
-                              <div className="flex items-center gap-1.5 rounded-lg bg-orange-50 px-2.5 py-1.5 dark:bg-orange-900/20">
-                                <Star className="h-4 w-4 fill-orange-600 text-orange-600 dark:text-orange-400" />
-                                <span className="font-bold text-orange-700 dark:text-orange-400">
-                                  {place.vote_score}
-                                </span>
-                              </div>
-                              <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                                {place.vote_count} oy
-                              </span>
                             </div>
                           </div>
 

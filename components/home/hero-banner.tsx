@@ -15,9 +15,8 @@ interface HeroBannerProps {
     places_count: number;
     category?: { names: { tr: string } };
     creator?: {
-      email: string;
+      username: string;
       raw_user_meta_data?: {
-        name?: string;
         avatar_url?: string;
       };
     };
@@ -25,9 +24,7 @@ interface HeroBannerProps {
 }
 
 export function HeroBanner({ collection }: HeroBannerProps) {
-  const creatorName = collection.creator?.raw_user_meta_data?.name ||
-                     collection.creator?.email?.split('@')[0] ||
-                     'Anonim';
+  const creatorName = collection.creator?.username || 'Anonim';
   const creatorAvatar = collection.creator?.raw_user_meta_data?.avatar_url;
   const initials = creatorName.substring(0, 2).toUpperCase();
 

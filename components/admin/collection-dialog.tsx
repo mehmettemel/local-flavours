@@ -125,35 +125,39 @@ export function CollectionDialog({
         | { en: string; tr: string }
         | null;
 
-      setFormData({
-        slug: collection.slug || '',
-        nameEn: names?.en || '',
-        nameTr: names?.tr || '',
-        descriptionEn: descriptions?.en || '',
-        descriptionTr: descriptions?.tr || '',
-        locationId: collection.location_id || '',
-        categoryId: collection.category_id || '',
-        subcategoryId: collection.subcategory_id || '',
-        creatorId: collection.creator_id || '',
-        status: collection.status || 'active',
-        tags: collection.tags?.join(', ') || '',
-        isFeatured: collection.is_featured || false,
-      });
+      setTimeout(() => {
+        setFormData({
+          slug: collection.slug || '',
+          nameEn: names?.en || '',
+          nameTr: names?.tr || '',
+          descriptionEn: descriptions?.en || '',
+          descriptionTr: descriptions?.tr || '',
+          locationId: collection.location_id || '',
+          categoryId: collection.category_id || '',
+          subcategoryId: collection.subcategory_id || '',
+          creatorId: collection.creator_id || '',
+          status: collection.status || 'active',
+          tags: collection.tags?.join(', ') || '',
+          isFeatured: collection.is_featured || false,
+        });
+      }, 0);
     } else {
-      setFormData({
-        slug: '',
-        nameEn: '',
-        nameTr: '',
-        descriptionEn: '',
-        descriptionTr: '',
-        locationId: '',
-        categoryId: '',
-        subcategoryId: '',
-        creatorId: '',
-        status: 'active',
-        tags: '',
-        isFeatured: false,
-      });
+      setTimeout(() => {
+        setFormData({
+          slug: '',
+          nameEn: '',
+          nameTr: '',
+          descriptionEn: '',
+          descriptionTr: '',
+          locationId: '',
+          categoryId: '',
+          subcategoryId: '',
+          creatorId: '',
+          status: 'active',
+          tags: '',
+          isFeatured: false,
+        });
+      }, 0);
     }
   }, [collection]);
 

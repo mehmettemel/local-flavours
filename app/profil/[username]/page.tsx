@@ -210,7 +210,7 @@ export default function ProfilePage() {
           User not found
         </h1>
         <p className="text-neutral-600 dark:text-neutral-400">
-          The profile you're looking for doesn't exist.
+          The profile you&apos;re looking for doesn&apos;t exist.
         </p>
         <Link href="/">
           <Button>Ana Sayfaya Dön</Button>
@@ -360,7 +360,7 @@ export default function ProfilePage() {
             <div>
               <CardTitle>Collections</CardTitle>
               <CardDescription>
-                {isOwnProfile ? 'Your' : `${profile.username}'s`} curated
+                {isOwnProfile ? 'Your' : `${profile.username}&apos;s`} curated
                 collections
               </CardDescription>
             </div>

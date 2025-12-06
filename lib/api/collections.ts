@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database';
 
@@ -31,9 +32,6 @@ export interface CollectionWithDetails extends Collection {
   places_count?: number;
 }
 
-/**
- * Get all collections with optional filters
- */
 export async function getCollections(params?: {
   status?: string;
   creator_id?: string;
@@ -42,7 +40,7 @@ export async function getCollections(params?: {
   limit?: number;
   offset?: number;
 }): Promise<CollectionWithDetails[]> {
-  const supabase = await createClient();
+  const supabase = (await createClient()) as SupabaseClient<Database>;
 
   let query = supabase
     .from('collections')
@@ -415,7 +413,7 @@ export async function getTopCollections(
   const supabase = await createClient();
 
   try {
-    let query = supabase
+    const query = supabase
       .from('collections')
       .select(`
         *,
@@ -447,6 +445,7 @@ export async function getTopCollections(
         let filteredPlaces = places;
         if (citySlug && citySlug !== 'all') {
           filteredPlaces = places.filter(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (cp: any) => cp.place?.location?.slug === citySlug
           );
         }
@@ -461,6 +460,7 @@ export async function getTopCollections(
           places_count: filteredPlaces.length,
           preview_places: filteredPlaces
             .slice(0, 3)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .map((cp: any) => ({
               id: cp.place.id,
               names: cp.place.names,

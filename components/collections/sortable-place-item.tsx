@@ -95,7 +95,7 @@ export function SortablePlaceItem({
               )}
               {curatorNote && (
                 <div className="mt-2 rounded-lg bg-neutral-50 p-2 text-sm italic text-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
-                  "{curatorNote}"
+                  &quot;{curatorNote}&quot;
                 </div>
               )}
               {recommendedItems && recommendedItems.length > 0 && (

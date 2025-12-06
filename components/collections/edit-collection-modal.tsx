@@ -787,11 +787,11 @@ export function EditCollectionModal({
                   {loadingDetails && (
                     <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Google'dan bilgiler alınıyor...
+                      Google&apos;dan bilgiler alınıyor...
                     </div>
                   )}
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    💡 Google'da bulamazsan mekan adını yaz ve{' '}
+                    💡 Google&apos;da bulamazsan mekan adını yaz ve{' '}
                     <kbd className="rounded bg-neutral-100 px-1 py-0.5 text-xs dark:bg-neutral-800">
                       Enter
                     </kbd>{' '}

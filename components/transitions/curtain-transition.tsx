@@ -9,7 +9,7 @@ export function CurtainTransition() {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(true), 0);
     const timer = setTimeout(() => setIsAnimating(false), 800);
     return () => clearTimeout(timer);
   }, [pathname]);

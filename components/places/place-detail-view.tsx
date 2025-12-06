@@ -122,7 +122,7 @@ function PlaceDetailContent({ place, collections = [] }: PlaceDetailViewProps) {
               <Button variant="outline" size="sm" className="gap-2" asChild>
                 <Link href={place.google_maps_url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
-                  Google Maps'te Aç
+                  Google Maps&apos;te Aç
                 </Link>
               </Button>
             </div>

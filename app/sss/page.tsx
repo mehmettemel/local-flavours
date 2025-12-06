@@ -112,7 +112,7 @@ export default function FAQPage() {
                 <AccordionTrigger>mekan.guru nedir?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    mekan.guru, Türkiye'nin en iyi restoranlarını ve mekanlarını keşfetmenizi
+                    mekan.guru, Türkiye&apos;nin en iyi restoranlarını ve mekanlarını keşfetmenizi
                     sağlayan topluluk destekli bir platformdur. Kullanıcılar kendi koleksiyonlarını
                     oluşturabilir, mekanları oylayabilir ve şehir bazlı sıralamalarda en popüler
                     yerleri görebilir.
@@ -150,7 +150,7 @@ export default function FAQPage() {
                 <AccordionTrigger>Hangi şehirlerde aktifsiniz?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Şu anda İstanbul, Ankara, İzmir başta olmak üzere Türkiye'nin tüm şehirlerinde
+                    Şu anda İstanbul, Ankara, İzmir başta olmak üzere Türkiye&apos;nin tüm şehirlerinde
                     aktifiz. Kullanıcılarımız herhangi bir şehirden mekan ekleyebilir ve
                     koleksiyon oluşturabilir.
                   </p>
@@ -182,8 +182,8 @@ export default function FAQPage() {
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
                     Koleksiyon, belirli bir temaya göre oluşturduğunuz mekan listesidir. Örneğin,
-                    "İstanbul'daki En İyi Adana Kebapçıları" veya "Ankara'da Kahvaltı Yapılacak
-                    Yerler" gibi.
+                    &quot;İstanbul&apos;daki En İyi Adana Kebapçıları&quot; veya &quot;Ankara&apos;da Kahvaltı Yapılacak
+                    Yerler&quot; gibi.
                   </p>
                   <p className="mt-2 text-neutral-600 dark:text-neutral-400">
                     Her koleksiyon bir şehir, kategori ve alt kategoriye sahiptir. Mekanları
@@ -200,12 +200,12 @@ export default function FAQPage() {
                     <p className="font-medium">Adım adım koleksiyon oluşturma:</p>
                     <ol className="list-decimal space-y-2 pl-5">
                       <li>
-                        Giriş yapın (sağ üstteki "Giriş Yap" butonundan kayıt olun veya giriş
+                        Giriş yapın (sağ üstteki &quot;Giriş Yap&quot; butonundan kayıt olun veya giriş
                         yapın)
                       </li>
-                      <li>Ana sayfada veya "Koleksiyonlarım" sayfasında "Yeni Koleksiyon" butonuna tıklayın</li>
+                      <li>Ana sayfada veya &quot;Koleksiyonlarım&quot; sayfasında &quot;Yeni Koleksiyon&quot; butonuna tıklayın</li>
                       <li>
-                        Koleksiyonunuza bir başlık verin (örn: "İstanbul'daki En İyi Kebapçılar")
+                        Koleksiyonunuza bir başlık verin (örn: &quot;İstanbul&apos;daki En İyi Kebapçılar&quot;)
                       </li>
                       <li>Açıklama ekleyin (opsiyonel ama önerilir)</li>
                       <li>Şehir ve kategori seçin</li>
@@ -214,10 +214,10 @@ export default function FAQPage() {
                         mekanlardan seçebilirsiniz)
                       </li>
                       <li>
-                        Her mekan için ünlü ürünlerini belirtin (örn: "Adana Kebap", "Ayran")
+                        Her mekan için ünlü ürünlerini belirtin (örn: &quot;Adana Kebap&quot;, &quot;Ayran&quot;)
                       </li>
                       <li>Mekanları sürükle-bırak ile sıralayın</li>
-                      <li>"Koleksiyonu Kaydet" butonuna tıklayın</li>
+                      <li>&quot;Koleksiyonu Kaydet&quot; butonuna tıklayın</li>
                     </ol>
                   </div>
                 </AccordionContent>
@@ -250,7 +250,7 @@ export default function FAQPage() {
                     güncelleyebilirsiniz.
                   </p>
                   <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-                    Koleksiyon sayfasında sağ üstteki "Düzenle" butonunu kullanabilirsiniz.
+                    Koleksiyon sayfasında sağ üstteki &quot;Düzenle&quot; butonunu kullanabilirsiniz.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -344,7 +344,7 @@ export default function FAQPage() {
                 </AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Evet! Verdiğiniz oyu istediğiniz zaman değiştirebilirsiniz. Upvote'u downvote
+                    Evet! Verdiğiniz oyu istediğiniz zaman değiştirebilirsiniz. Upvote&apos;u downvote
                     yapabilir, oyunuzu geri çekebilir veya tekrar verebilirsiniz.
                   </p>
                 </AccordionContent>
@@ -357,7 +357,7 @@ export default function FAQPage() {
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
                     Evet, her mekan ve koleksiyon için bir kullanıcı sadece bir oy kullanabilir.
-                    Ancak oyunuzu upvote'tan downvote'a (veya tam tersi) değiştirebilirsiniz.
+                    Ancak oyunuzu upvote&apos;tan downvote&apos;a (veya tam tersi) değiştirebilirsiniz.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -417,7 +417,7 @@ export default function FAQPage() {
                   <p className="text-neutral-600 dark:text-neutral-400">
                     Şu anda mekan bilgilerini sadece admin kullanıcılar düzenleyebilir. Eğer bir
                     mekanın bilgilerinde hata görürseniz, lütfen bizimle iletişime geçin veya
-                    gelecekte eklenecek "Düzenleme Öner" özelliğini kullanabilirsiniz.
+                    gelecekte eklenecek &quot;Düzenleme Öner&quot; özelliğini kullanabilirsiniz.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -442,7 +442,7 @@ export default function FAQPage() {
                 <AccordionTrigger>Nasıl kayıt olabilirim?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Sağ üstteki "Giriş Yap" butonuna tıklayın ve "Kayıt Ol" sekmesine geçin.
+                    Sağ üstteki &quot;Giriş Yap&quot; butonuna tıklayın ve &quot;Kayıt Ol&quot; sekmesine geçin.
                     Email, kullanıcı adı ve şifre girmeniz yeterlidir. Email doğrulaması
                     opsiyoneldir.
                   </p>
@@ -453,7 +453,7 @@ export default function FAQPage() {
                 <AccordionTrigger>Şifremi unuttum, ne yapmalıyım?</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Giriş sayfasında "Şifremi Unuttum" linkine tıklayın. Email adresinizi
+                    Giriş sayfasında &quot;Şifremi Unuttum&quot; linkine tıklayın. Email adresinizi
                     girdikten sonra şifre sıfırlama linki gönderilecektir.
                   </p>
                 </AccordionContent>
@@ -477,7 +477,7 @@ export default function FAQPage() {
                 </AccordionTrigger>
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
-                    Evet, hesabınızı silmek için ayarlar sayfasından "Hesabı Sil" butonunu
+                    Evet, hesabınızı silmek için ayarlar sayfasından &quot;Hesabı Sil&quot; butonunu
                     kullanabilirsiniz. Bu işlem geri alınamaz ve tüm verileriniz silinir
                     (koleksiyonlar, oylar, vb.).
                   </p>
@@ -491,7 +491,7 @@ export default function FAQPage() {
                 <AccordionContent>
                   <p className="text-neutral-600 dark:text-neutral-400">
                     Evet! Verileriniz Supabase (PostgreSQL) veritabanında güvenli şekilde
-                    saklanmaktadır. Şifreleriniz hash'lenerek saklanır ve asla düz metin olarak
+                    saklanmaktadır. Şifreleriniz hash&apos;lenerek saklanır ve asla düz metin olarak
                     tutulmaz. HTTPS ile şifreli bağlantı kullanılmaktadır.
                   </p>
                   <p className="mt-2 text-neutral-600 dark:text-neutral-400">

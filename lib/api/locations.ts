@@ -1,11 +1,14 @@
 // @ts-nocheck
+import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '../supabase/server';
 import { Database } from '@/types/database';
 
 export type Location = Database['public']['Tables']['locations']['Row'];
+type LocationInsert = Database['public']['Tables']['locations']['Insert'];
+type LocationUpdate = Database['public']['Tables']['locations']['Update'];
 
 export async function getCountries() {
-  const supabase = await createClient();
+  const supabase = (await createClient()) as SupabaseClient<Database>;
   const { data, error } = await supabase
     .from('locations')
     .select('*')

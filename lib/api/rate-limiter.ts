@@ -43,7 +43,8 @@ export async function checkRateLimit(
     }
 
     // Check rate limit using Supabase function
-    const { data, error } = await supabase.rpc('check_api_rate_limit', {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any).rpc('check_api_rate_limit', {
       p_user_id: userId || null,
       p_ip_address: ipAddress,
       p_endpoint: endpoint,

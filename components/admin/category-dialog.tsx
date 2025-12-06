@@ -36,19 +36,23 @@ export function CategoryDialog({ isOpen, onClose, category }: CategoryDialogProp
   useEffect(() => {
     if (category) {
       const names = category.names as any;
-      setFormData({
-        slug: category.slug || '',
-        nameEn: names?.en || '',
-        nameTr: names?.tr || '',
-        displayOrder: category.display_order?.toString() || '',
-      });
+      setTimeout(() => {
+        setFormData({
+          slug: category.slug || '',
+          nameEn: names?.en || '',
+          nameTr: names?.tr || '',
+          displayOrder: category.display_order?.toString() || '',
+        });
+      }, 0);
     } else {
-      setFormData({
-        slug: '',
-        nameEn: '',
-        nameTr: '',
-        displayOrder: '',
-      });
+      setTimeout(() => {
+        setFormData({
+          slug: '',
+          nameEn: '',
+          nameTr: '',
+          displayOrder: '',
+        });
+      }, 0);
     }
   }, [category]);
 

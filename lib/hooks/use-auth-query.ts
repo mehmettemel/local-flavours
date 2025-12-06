@@ -2,10 +2,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import type { User, Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
 import type { Database } from '@/types/database';
 
 type UserProfile = Database['public']['Tables']['users']['Row'];
+type UserRole = Database['public']['Enums']['user_role'];
 
 const supabase = createClient();
 

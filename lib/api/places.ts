@@ -1,8 +1,53 @@
 // @ts-nocheck
+import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '../supabase/server';
 import { Database } from '@/types/database';
 
 export type Place = Database['public']['Tables']['places']['Row'];
+type PlaceInsert = Database['public']['Tables']['places']['Insert'];
+type PlaceUpdate = Database['public']['Tables']['places']['Update'];
+
+export async function getPlaces(params?: {
+  location_id?: string;
+  category_id?: string;
+  status?: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const supabase = (await createClient()) as SupabaseClient<Database>;
+
+  let query = supabase
+    .from('places')
+    .select(`
+      *,
+      category:categories(*),
+      location:locations(*)
+    `);
+
+  if (params?.location_id) {
+    query = query.eq('location_id', params.location_id);
+  }
+  if (params?.category_id) {
+    query = query.eq('category_id', params.category_id);
+  }
+  if (params?.status) {
+    query = query.eq('status', params.status);
+  }
+
+  // Default ordering, can be made dynamic if needed
+  query = query.order('created_at', { ascending: false });
+
+  if (params?.limit !== undefined && params?.offset !== undefined) {
+    query = query.range(params.offset, params.offset + params.limit - 1);
+  } else if (params?.limit !== undefined) {
+    query = query.limit(params.limit);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+  return data;
+}
 
 export async function getPlacesByLocation(locationId: string, limit = 20, categorySlug?: string) {
   const supabase = await createClient();

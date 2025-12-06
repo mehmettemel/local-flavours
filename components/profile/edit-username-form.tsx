@@ -1,3 +1,4 @@
+
 // @ts-nocheck
 'use client';
 
@@ -117,7 +118,7 @@ export function EditUsernameForm() {
       <CardHeader>
         <CardTitle>Kullanıcı Adını Değiştir</CardTitle>
         <CardDescription>
-          Profil URL'niz kullanıcı adınıza göre oluşturulur.
+          Profil URL&apos;niz kullanıcı adınıza göre oluşturulur.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -154,9 +155,9 @@ export function EditUsernameForm() {
               </p>
             )}
             {username.length >= 3 && !/^[a-zA-Z0-9_-]+$/.test(username) && (
-              <p className="text-sm text-red-500">
-                Sadece harf, rakam, _ ve - karakterleri kullanılabilir
-              </p>
+              <p className="text-sm text-muted-foreground">
+          Your username is your unique identity on mekan.guru. It can only contain letters, numbers, and underscores.
+        </p>
             )}
             {available === false && username.length >= 3 && (
               <p className="text-sm text-red-500">

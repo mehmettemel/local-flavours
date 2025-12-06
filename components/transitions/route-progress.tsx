@@ -12,8 +12,8 @@ function RouteProgressBar() {
 
   useEffect(() => {
     // Route değişimi başladı
-    setIsNavigating(true);
-    setProgress(0);
+    setTimeout(() => setIsNavigating(true), 0);
+    setTimeout(() => setProgress(0), 0);
 
     // Simulated progress (gerçek loading track etmek zor Next.js'te)
     const timer1 = setTimeout(() => setProgress(30), 100);

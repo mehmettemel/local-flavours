@@ -87,7 +87,7 @@ export function SignupDialog({
         <DialogHeader>
           <DialogTitle>Hesap Oluştur</DialogTitle>
           <DialogDescription>
-            Koleksiyon oluşturmak ve oy vermek için mekan.guru'a katıl
+            Koleksiyon oluşturmak ve oy vermek için mekan.guru&apos;a katıl
           </DialogDescription>
         </DialogHeader>
 

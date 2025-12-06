@@ -125,7 +125,7 @@ export function SiteHeader() {
                   <Logo />
                 </SheetTitle>
                 <SheetDescription className="text-left">
-                  Türkiye'nin en iyi mekanları
+                  Türkiye&apos;nin en iyi mekanları
                 </SheetDescription>
               </SheetHeader>
 

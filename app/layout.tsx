@@ -87,16 +87,12 @@ export const metadata: Metadata = {
     creator: '@mekanguru',
     images: ['/og-image.jpg'],
   },
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
-  },
+  // icons are handled automatically by file conventions (app/icon.png, app/apple-icon.png)
   alternates: {
     canonical: '/',
   },
   verification: {
-    google: 'google-site-verification-code', // Google Search Console'dan alınacak
+    google: 'google-site-verification=PLACEHOLDER', // TODO: Replace with actual Google Search Console verification code
   },
 };
 
@@ -107,6 +103,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" suppressHydrationWarning>
+      <head>
+        {/* Google Analytics 4 */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER" // TODO: Replace G-PLACEHOLDER with actual GA4 Measurement ID
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-PLACEHOLDER'); // TODO: Replace G-PLACEHOLDER with actual GA4 Measurement ID
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider
           attribute="class"

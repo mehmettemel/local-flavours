@@ -1,7 +1,9 @@
 'use client';
 
+
 import { useState } from 'react';
 import Link from 'next/link';
+import { Logo } from '@/components/ui/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AuthButton } from '@/components/auth/auth-button';
 import { Sparkles, HelpCircle, Map, TrendingUp, BookOpen, Mail, Menu, X } from 'lucide-react';
@@ -34,10 +36,7 @@ export function SiteHeader() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-orange-500 dark:text-orange-400" />
-          <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">
-            mekan.guru
-          </h1>
+          <Logo />
         </Link>
 
         {/* Desktop Navigation */}
@@ -123,8 +122,7 @@ export function SiteHeader() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
-                  <Sparkles className="h-5 w-5 text-orange-500" />
-                  mekan.guru
+                  <Logo />
                 </SheetTitle>
                 <SheetDescription className="text-left">
                   Türkiye'nin en iyi mekanları

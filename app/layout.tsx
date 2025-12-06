@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     siteName: 'mekan.guru',
     images: [
       {
-        url: '/og-image.jpg',
+        url: 'https://mekan.guru/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'mekan.guru - Türkiye Restoran Rehberi',
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     description:
       'Türkiye\'nin tüm şehirlerinden en iyi restoranları keşfedin. Kullanıcı önerileri ile güvenilir mekan rehberi.',
     creator: '@mekanguru',
-    images: ['/og-image.jpg'],
+    images: ['https://mekan.guru/og-image.jpg'],
   },
   // icons are handled automatically by file conventions (app/icon.png, app/apple-icon.png)
   alternates: {

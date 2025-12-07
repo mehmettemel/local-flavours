@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, useMemo } from 'react';
 import {
   Table,
   TableBody,
@@ -40,8 +40,15 @@ export function CollectionsLeaderboard({
   selectedCitySlug,
 }: CollectionsLeaderboardProps) {
   const [selectedCity, setSelectedCity] = useState(selectedCitySlug);
+  const [collections, setCollections] = useState(initialCollections);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [filteredCollections, setFilteredCollections] = useState(initialCollections);
+  
+  const filteredCollections = useMemo(() => {
+    if (!selectedCategory) return collections;
+    return collections.filter(
+      (collection) => collection.category?.slug === selectedCategory
+    );
+  }, [selectedCategory, collections]);
   const [userVotes, setUserVotes] = useState<Record<string, number>>({});
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -67,16 +74,38 @@ export function CollectionsLeaderboard({
   const restCategories = sortedCategories.slice(6);
 
   // Filter collections when category changes
+  // Sync with initialCollections prop
   useEffect(() => {
-    if (!selectedCategory) {
-      setFilteredCollections(initialCollections);
-    } else {
-      const filtered = initialCollections.filter(
-        (collection) => collection.category?.slug === selectedCategory
-      );
-      setFilteredCollections(filtered);
-    }
-  }, [selectedCategory, initialCollections]);
+    setCollections(initialCollections);
+  }, [initialCollections]);
+
+  // Real-time updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('collections-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'collections',
+        },
+        (payload) => {
+          setCollections((current) =>
+            current.map((c) =>
+              c.id === payload.new.id
+                ? { ...c, ...payload.new }
+                : c
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
 
   // Fetch user votes for visible collections
   useEffect(() => {

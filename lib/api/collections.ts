@@ -439,7 +439,9 @@ export async function getTopCollections(
     // Transform and filter
     const result: CollectionWithDetails[] = collections
       .map((collection) => {
-        const places = collection.collection_places || [];
+        const places = (collection.collection_places || []).filter(
+          (cp: any) => cp.place
+        );
 
         // Filter by city if needed
         let filteredPlaces = places;

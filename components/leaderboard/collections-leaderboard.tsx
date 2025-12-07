@@ -110,7 +110,12 @@ export function CollectionsLeaderboard({
   // Fetch user votes for visible collections
   useEffect(() => {
     async function fetchUserVotes() {
-      if (!user || filteredCollections.length === 0) return;
+      if (!user) {
+        setUserVotes({});
+        return;
+      }
+      
+      if (filteredCollections.length === 0) return;
 
       const collectionIds = filteredCollections.map(c => c.id);
       

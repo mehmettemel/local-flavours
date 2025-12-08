@@ -62,9 +62,9 @@ export default function AuthVerificationEmail({
             </Text>
             <Link
               href={confirmationLink}
-              className="text-[#f97316] no-underline"
+              className="text-[#f97316] no-underline break-all"
             >
-              {confirmationLink}
+              Bağlantıyı tarayıcıda aç
             </Link>
             <Hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full" />
             <Text className="text-[#666666] text-[12px] leading-[24px]">

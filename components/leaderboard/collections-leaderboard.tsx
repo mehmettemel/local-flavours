@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
-import { TrendingUp, MapPin, Loader2, X, User, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { TrendingUp, MapPin, Loader2, User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -280,12 +280,6 @@ export function CollectionsLeaderboard({
                 className="h-9"
               >
                 {category.names.tr}
-                {selectedCategory === category.slug && (
-                  <X className="ml-1 h-3 w-3" onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedCategory('');
-                  }} />
-                )}
               </Button>
             ))}
 

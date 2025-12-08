@@ -31,31 +31,41 @@ export function ContactForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    // In production, you would send this to your backend:
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // });
+      const data = await response.json();
 
-    toast({
-      title: 'Mesajınız gönderildi! ✅',
-      description: 'En kısa sürede size dönüş yapacağız.',
-    });
+      if (!response.ok) {
+        throw new Error(data.error || 'Bir hata oluştu');
+      }
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      category: '',
-      message: '',
-    });
+      toast({
+        title: 'Mesajınız gönderildi! ✅',
+        description: 'En kısa sürede size dönüş yapacağız.',
+      });
 
-    setIsSubmitting(false);
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        category: '',
+        message: '',
+      });
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Hata oluştu ❌',
+        description: error.message || 'Mesaj gönderilemedi. Lütfen tekrar deneyin.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (

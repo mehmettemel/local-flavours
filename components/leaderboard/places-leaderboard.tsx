@@ -252,12 +252,6 @@ export function PlacesLeaderboard({
               >
                 <span>{getCategoryEmoji(category.slug)}</span>
                 <span>{category.names.tr}</span>
-                {selectedCategory === category.slug && (
-                  <X className="ml-1 h-3 w-3" onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedCategory('');
-                  }} />
-                )}
               </Button>
             ))}
 

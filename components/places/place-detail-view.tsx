@@ -154,8 +154,8 @@ function PlaceDetailContent({ place, collections = [] }: PlaceDetailViewProps) {
                         : 'border-neutral-200 bg-white hover:border-orange-200 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-orange-900/50'
                     }`}
                   >
-                    <div className="flex items-start justify-between">
-                      <div>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
                         <h4 className={`font-semibold transition-colors ${
                           isFromThisCollection 
                             ? 'text-orange-700 dark:text-orange-400' 
@@ -175,7 +175,7 @@ function PlaceDetailContent({ place, collections = [] }: PlaceDetailViewProps) {
                         </div>
                       </div>
                       {isFromThisCollection && (
-                        <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+                        <span className="shrink-0 whitespace-nowrap rounded-full bg-orange-100 px-2.5 py-1 text-xs font-medium text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
                           Buradan Geldin
                         </span>
                       )}

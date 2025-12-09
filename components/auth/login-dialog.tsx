@@ -12,26 +12,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
-interface LoginDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSwitchToSignup: () => void;
-  onSwitchToReset: () => void;
-}
-
-export function LoginDialog({
-  isOpen,
-  onClose,
-  onSwitchToSignup,
-  onSwitchToReset,
-}: LoginDialogProps) {
-  const { signIn } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// ... imports
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,13 +24,27 @@ export function LoginDialog({
     const { error: signInError } = await signIn(email, password);
 
     if (signInError) {
-      setError(signInError.message);
+      let errorMessage = 'Giriş yapılırken bir hata oluştu.';
+      
+      if (signInError.message === 'Invalid login credentials') {
+        errorMessage = 'E-posta adresi veya şifre hatalı.';
+      } else if (signInError.message.includes('Email not confirmed')) {
+        errorMessage = 'E-posta adresiniz doğrulanmamış. Lütfen e-postanızı kontrol edin.';
+      }
+
+      setError(errorMessage);
+      toast.error('Giriş Başarısız', {
+        description: errorMessage,
+      });
       setLoading(false);
     } else {
       setEmail('');
       setPassword('');
       setLoading(false);
       onClose();
+      toast.success('Giriş Başarılı', {
+        description: 'Hoş geldiniz!',
+      });
     }
   };
 

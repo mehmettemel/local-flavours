@@ -4,6 +4,7 @@ import { useAuth } from '@/lib/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { EditUsernameForm } from '@/components/profile/edit-username-form';
+import { ChangePasswordForm } from '@/components/profile/change-password-form';
 import { Loader2 } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -40,6 +41,7 @@ export default function SettingsPage() {
       </div>
 
       <EditUsernameForm />
+      <ChangePasswordForm />
     </div>
   );
 }

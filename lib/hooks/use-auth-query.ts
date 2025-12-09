@@ -214,10 +214,11 @@ export function useUpdateProfile() {
 export function useResetPassword() {
   return useMutation({
     mutationFn: async (email: string) => {
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      const origin = process.env.NEXT_PUBLIC_SITE_URL || 
+        (typeof window !== 'undefined' ? window.location.origin : '');
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/auth/reset-password`,
+        redirectTo: `${origin}/auth/callback?next=/auth/reset-password&type=recovery`,
       });
 
       if (error) throw error;

@@ -4,12 +4,19 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const next = requestUrl.searchParams.get('next') || '/';
+  let next = requestUrl.searchParams.get('next') || '/';
+  const type = requestUrl.searchParams.get('type');
   const error = requestUrl.searchParams.get('error');
   const error_description = requestUrl.searchParams.get('error_description');
 
+  // If this is a password reset flow, force redirect to reset password page
+  if (type === 'recovery') {
+    next = '/auth/reset-password';
+  }
+
   console.log('Callback route hit. Params:', {
     code: code ? 'Present' : 'Missing',
+    type,
     error,
     error_description,
     next

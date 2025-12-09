@@ -16,10 +16,14 @@ function ConfirmContent() {
 
   useEffect(() => {
     const handleAuth = async () => {
+      // Get all possible parameters
+      const tokenHash = searchParams.get('token_hash');
       const code = searchParams.get('code');
-      const type = searchParams.get('type');
+      const type = searchParams.get('type') as 'recovery' | 'signup' | 'email' | 'magiclink' | null;
       const error = searchParams.get('error');
       const errorDescription = searchParams.get('error_description');
+
+      console.log('Auth confirm params:', { tokenHash: !!tokenHash, code: !!code, type, error });
 
       // Handle error from Supabase
       if (error) {
@@ -29,22 +33,42 @@ function ConfirmContent() {
         return;
       }
 
-      if (!code) {
-        setStatus('error');
-        setMessage('Doğrulama kodu bulunamadı.');
-        toast.error('Hata', { description: 'Doğrulama kodu bulunamadı.' });
-        return;
-      }
-
       try {
-        // Exchange code for session - this works client-side because PKCE verifier is in localStorage
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        let session = null;
 
-        if (exchangeError) {
-          throw exchangeError;
+        // Method 1: Token Hash (OTP flow - works across browsers)
+        if (tokenHash && type) {
+          console.log('Using OTP token_hash flow');
+          const { data, error: verifyError } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type as 'recovery' | 'signup' | 'email' | 'magiclink',
+          });
+
+          if (verifyError) throw verifyError;
+          session = data.session;
+        }
+        // Method 2: Authorization Code (PKCE flow - same browser only)
+        else if (code) {
+          console.log('Using PKCE code flow');
+          const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+          if (exchangeError) {
+            // PKCE failed - likely different browser
+            if (exchangeError.message.includes('code_verifier') || 
+                exchangeError.message.includes('invalid') ||
+                exchangeError.message.includes('expired')) {
+              throw new Error('Bu bağlantı farklı bir tarayıcıda açıldı veya süresi doldu. Lütfen şifre sıfırlama işlemini başlattığınız tarayıcıda açın veya yeni bir istek gönderin.');
+            }
+            throw exchangeError;
+          }
+          session = data.session;
+        }
+        // No valid parameters
+        else {
+          throw new Error('Doğrulama parametreleri bulunamadı.');
         }
 
-        if (data.session) {
+        if (session) {
           setStatus('success');
 
           // Handle different auth types
@@ -61,21 +85,14 @@ function ConfirmContent() {
             toast.success('Giriş Başarılı');
             setTimeout(() => router.push('/'), 1500);
           }
+        } else {
+          throw new Error('Oturum oluşturulamadı.');
         }
       } catch (err: any) {
-        console.error('Auth exchange error:', err);
+        console.error('Auth verification error:', err);
         setStatus('error');
-        
-        // Provide user-friendly error messages
-        if (err.message?.includes('expired')) {
-          setMessage('Bağlantının süresi dolmuş. Lütfen yeni bir bağlantı talep edin.');
-        } else if (err.message?.includes('invalid')) {
-          setMessage('Bağlantı geçersiz. Lütfen yeni bir bağlantı talep edin.');
-        } else {
-          setMessage(err.message || 'Doğrulama sırasında bir hata oluştu.');
-        }
-        
-        toast.error('Doğrulama Hatası', { description: message });
+        setMessage(err.message || 'Doğrulama sırasında bir hata oluştu.');
+        toast.error('Doğrulama Hatası', { description: err.message });
       }
     };
 

@@ -211,15 +211,13 @@ export function useUpdateProfile() {
 }
 
 // Password reset mutation
+// Note: We don't use redirectTo here because it triggers PKCE flow which requires
+// the code_verifier to be in the same browser. Instead, we let Supabase use its
+// default email template with token_hash, which works across browsers/devices.
 export function useResetPassword() {
   return useMutation({
     mutationFn: async (email: string) => {
-      const origin = process.env.NEXT_PUBLIC_SITE_URL || 
-        (typeof window !== 'undefined' ? window.location.origin : '');
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${origin}/auth/callback?next=/auth/reset-password&type=recovery`,
-      });
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
 
       if (error) throw error;
     },

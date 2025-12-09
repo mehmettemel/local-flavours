@@ -10,9 +10,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import { Loader2, Lock } from 'lucide-react';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -116,52 +117,64 @@ export default function ResetPasswordPage() {
   }
 
   return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Lock className="h-5 w-5" />
+          Yeni Şifre Belirle
+        </CardTitle>
+        <CardDescription>
+          Lütfen hesabınız için yeni bir şifre belirleyin.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="newPassword">Yeni Şifre</Label>
+            <Input
+              id="newPassword"
+              name="newPassword"
+              type="password"
+              placeholder="******"
+              value={passwords.newPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Yeni Şifre (Tekrar)</Label>
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="******"
+              value={passwords.confirmPassword}
+              onChange={handleChange}
+              required
+              minLength={6}
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Şifreyi Güncelle
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
     <div className="container mx-auto flex min-h-screen max-w-md items-center justify-center px-4 py-12">
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="h-5 w-5" />
-            Yeni Şifre Belirle
-          </CardTitle>
-          <CardDescription>
-            Lütfen hesabınız için yeni bir şifre belirleyin.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">Yeni Şifre</Label>
-              <Input
-                id="newPassword"
-                name="newPassword"
-                type="password"
-                placeholder="******"
-                value={passwords.newPassword}
-                onChange={handleChange}
-                required
-                minLength={6}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Yeni Şifre (Tekrar)</Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                placeholder="******"
-                value={passwords.confirmPassword}
-                onChange={handleChange}
-                required
-                minLength={6}
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Şifreyi Güncelle
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <Suspense fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      }>
+        <ResetPasswordForm />
+      </Suspense>
     </div>
   );
 }

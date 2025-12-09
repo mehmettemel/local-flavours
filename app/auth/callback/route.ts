@@ -9,27 +9,15 @@ export async function GET(request: Request) {
   const error = requestUrl.searchParams.get('error');
   const error_description = requestUrl.searchParams.get('error_description');
 
-  // If this is a password reset flow, force redirect to reset password page
+  // If this is a password reset flow, redirect to reset password page with the code
+  // The exchange will happen on the client side because the PKCE verifier is stored there
   if (type === 'recovery') {
-    next = '/auth/reset-password';
-  }
-
-  console.log('Callback route hit. Params:', {
-    code: code ? 'Present' : 'Missing',
-    type,
-    error,
-    error_description,
-    next
-  });
-
-  if (error) {
-    console.error('❌ Supabase returned error:', error, error_description);
-    return NextResponse.redirect(
-      new URL(
-        `/auth/error?message=${encodeURIComponent(error_description || error)}`,
-        request.url
-      )
-    );
+    const nextUrl = new URL('/auth/reset-password', request.url);
+    // Preserve all params (code, type, etc.)
+    requestUrl.searchParams.forEach((value, key) => {
+      nextUrl.searchParams.set(key, value);
+    });
+    return NextResponse.redirect(nextUrl);
   }
 
   if (code) {

@@ -10,8 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import { Loader2, Lock } from 'lucide-react';
 
+import { useSearchParams } from 'next/navigation';
+
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [passwords, setPasswords] = useState({
     newPassword: '',
@@ -22,22 +25,36 @@ export default function ResetPasswordPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Check if we have a session (user should be logged in via the magic link)
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        // If no session, redirect to login or show error
-        toast.error('Oturum bulunamadı', {
-          description: 'Lütfen şifre sıfırlama bağlantısına tekrar tıklayın.',
-        });
-        router.push('/');
+    const handleSession = async () => {
+      const code = searchParams.get('code');
+      
+      if (code) {
+        // Exchange code for session (PKCE flow)
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) {
+          toast.error('Bağlantı Hatası', {
+            description: 'Şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş.',
+          });
+          router.push('/');
+        } else if (data.session) {
+          setUser(data.session.user);
+        }
       } else {
-        setUser(session.user);
+        // Check if we already have a session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          toast.error('Oturum bulunamadı', {
+            description: 'Lütfen şifre sıfırlama bağlantısına tekrar tıklayın.',
+          });
+          router.push('/');
+        } else {
+          setUser(session.user);
+        }
       }
     };
 
-    checkSession();
-  }, [router, supabase.auth]);
+    handleSession();
+  }, [router, supabase.auth, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

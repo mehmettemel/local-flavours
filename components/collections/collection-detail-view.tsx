@@ -27,7 +27,7 @@ interface Place {
 interface CollectionPlace {
   id: string;
   display_order: number;
-  curator_note?: string;
+
   famous_items?: string[];
   place: Place;
 }
@@ -340,13 +340,7 @@ export function CollectionDetailView({ collection }: CollectionDetailViewProps) 
                             </div>
                           )}
 
-                          {/* Curator Note */}
-                          {item.curator_note && (
-                            <div className="rounded-xl bg-orange-50/50 p-3 text-sm text-neutral-600 dark:bg-orange-900/10 dark:text-neutral-400">
-                              <span className="mr-1 font-semibold text-orange-700 dark:text-orange-400">Küratör Notu:</span>
-                              {item.curator_note}
-                            </div>
-                          )}
+
                         </div>
 
                         {/* Actions */}

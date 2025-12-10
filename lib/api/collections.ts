@@ -283,8 +283,7 @@ export async function getCollectionPlaces(collectionId: string) {
 export async function addPlaceToCollection(
   collectionId: string,
   placeId: string,
-  displayOrder?: number,
-  curatorNote?: string
+  displayOrder?: number
 ): Promise<CollectionPlace> {
   const supabase = await createClient();
 
@@ -294,7 +293,6 @@ export async function addPlaceToCollection(
       collection_id: collectionId,
       place_id: placeId,
       display_order: displayOrder || 0,
-      curator_note: curatorNote,
     })
     .select()
     .single();

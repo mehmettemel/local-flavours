@@ -187,8 +187,7 @@ export default function FAQPage() {
                   </p>
                   <p className="mt-2 text-neutral-600 dark:text-neutral-400">
                     Her koleksiyon bir şehir, kategori ve alt kategoriye sahiptir. Mekanları
-                    istediğiniz sıraya koyabilir, her biri için ünlü ürünler belirtebilir ve
-                    küratör notu ekleyebilirsiniz.
+                    istediğiniz sıraya koyabilir ve her biri için ünlü ürünler belirtebilirsiniz.
                   </p>
                 </AccordionContent>
               </AccordionItem>
@@ -266,8 +265,7 @@ export default function FAQPage() {
                     koleksiyonlar öne çıkarılma şansına sahiptir.
                   </p>
                   <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-                    Koleksiyonunuzun öne çıkarılması için kaliteli içerik oluşturun, mekanlar için
-                    detaylı notlar ekleyin ve topluluğa değer katın.
+                    Koleksiyonunuzun öne çıkarılması için kaliteli içerik oluşturun ve topluluğa değer katın.
                   </p>
                 </AccordionContent>
               </AccordionItem>

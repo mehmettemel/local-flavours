@@ -2,7 +2,7 @@ import { getTopCollections, getFeaturedCollection, getRandomTopCollections } fro
 import { getCategories } from '@/lib/api/categories';
 import { getCities } from '@/lib/api/locations';
 import { HeroBanner } from '@/components/home/hero-banner';
-import { CompactHero } from '@/components/home/compact-hero';
+import { ModernHero } from '@/components/home/modern-hero';
 import { CollectionFeed } from '@/components/collections/collection-feed';
 import { CollectionsLeaderboard } from '@/components/leaderboard/collections-leaderboard';
 import { Badge } from '@/components/ui/badge';
@@ -106,8 +106,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         />
       </div>
 
-      {/* Compact Hero Section */}
-      <CompactHero />
+      {/* Modern Hero Section */}
+      <ModernHero />
 
       {/* Best Collections Leaderboard */}
       <section className="container mx-auto px-4 py-12">

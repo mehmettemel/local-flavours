@@ -24,17 +24,25 @@ function AnimatedBorder() {
 }
 
 // Animated Sparkle Dots
+const SPARKLE_POSITIONS = [
+  { top: '20%', left: '15%' },
+  { top: '75%', left: '10%' },
+  { top: '40%', left: '85%' },
+  { top: '80%', left: '75%' },
+  { top: '15%', left: '65%' },
+  { top: '60%', left: '25%' },
+  { top: '30%', left: '45%' },
+  { top: '50%', left: '90%' },
+];
+
 function SparklingDots() {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-3xl">
-      {[...Array(8)].map((_, i) => (
+      {SPARKLE_POSITIONS.map((pos, i) => (
         <motion.div
           key={i}
           className="absolute h-1.5 w-1.5 rounded-full bg-orange-400/60"
-          style={{
-            top: `${15 + Math.random() * 70}%`,
-            left: `${10 + Math.random() * 80}%`,
-          }}
+          style={pos}
           animate={{
             scale: [0, 1.5, 0],
             opacity: [0, 1, 0],

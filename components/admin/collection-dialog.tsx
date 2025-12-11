@@ -30,7 +30,7 @@ interface CollectionDialogProps {
   isOpen: boolean;
   onClose: () => void;
   collection?: Collection & {
-    creator?: { id: string; username: string };
+    creator?: { subcategoryId: string; };
   };
 }
 
@@ -54,7 +54,6 @@ export function CollectionDialog({
     subcategoryId: '',
     creatorId: '',
     status: 'active' as 'active' | 'archived' | 'flagged',
-    tags: '',
     isFeatured: false,
   });
 
@@ -137,7 +136,6 @@ export function CollectionDialog({
           subcategoryId: collection.subcategory_id || '',
           creatorId: collection.creator_id || '',
           status: collection.status || 'active',
-          tags: collection.tags?.join(', ') || '',
           isFeatured: collection.is_featured || false,
         });
       }, 0);
@@ -154,7 +152,6 @@ export function CollectionDialog({
           subcategoryId: '',
           creatorId: '',
           status: 'active',
-          tags: '',
           isFeatured: false,
         });
       }, 0);
@@ -178,9 +175,6 @@ export function CollectionDialog({
         subcategory_id: formData.subcategoryId || null,
         creator_id: formData.creatorId,
         status: formData.status,
-        tags: formData.tags
-          ? formData.tags.split(',').map((tag) => tag.trim())
-          : null,
         is_featured: formData.isFeatured,
       };
 
@@ -441,23 +435,6 @@ export function CollectionDialog({
                 <span className="text-sm font-medium">Featured Collection</span>
               </label>
             </div>
-          </div>
-
-          <div>
-            <Label htmlFor="tags">
-              Tags (comma-separated)
-              <span className="text-xs text-muted-foreground ml-2">
-                e.g., budget-friendly, romantic, late-night
-              </span>
-            </Label>
-            <Input
-              id="tags"
-              value={formData.tags}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value })
-              }
-              placeholder="budget-friendly, romantic, late-night"
-            />
           </div>
 
           <DialogFooter>

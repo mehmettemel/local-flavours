@@ -31,7 +31,6 @@ import Link from 'next/link';
 interface Profile {
   id: string;
   username: string;
-  trust_score: number;
   role: string;
   email_verified: boolean;
   followers_count: number;
@@ -257,12 +256,7 @@ export default function ProfilePage() {
                   <Calendar className="h-4 w-4" />
                   <span>Joined {joinDate}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Star className="h-4 w-4 text-orange-500" />
-                  <span className="font-medium text-neutral-900 dark:text-neutral-50">
-                    {profile.trust_score} Trust Score
-                  </span>
-                </div>
+
               </div>
             </div>
 

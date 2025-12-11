@@ -24,7 +24,6 @@ export interface Database {
         Row: {
           id: string;
           username: string;
-          trust_score: number;
           role: UserRole;
           email_verified: boolean;
           followers_count: number;
@@ -37,7 +36,6 @@ export interface Database {
         Insert: {
           id: string;
           username: string;
-          trust_score?: number;
           role?: UserRole;
           email_verified?: boolean;
           followers_count?: number;
@@ -50,7 +48,6 @@ export interface Database {
         Update: {
           id?: string;
           username?: string;
-          trust_score?: number;
           role?: UserRole;
           email_verified?: boolean;
           followers_count?: number;
@@ -276,7 +273,6 @@ export interface Database {
           status: CollectionStatus;
           vote_count: number;
           vote_score: number;
-          tags: string[] | null;
           is_featured: boolean;
           created_at: string;
           updated_at: string;
@@ -293,7 +289,6 @@ export interface Database {
           status?: CollectionStatus;
           vote_count?: number;
           vote_score?: number;
-          tags?: string[] | null;
           is_featured?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -310,7 +305,6 @@ export interface Database {
           status?: CollectionStatus;
           vote_count?: number;
           vote_score?: number;
-          tags?: string[] | null;
           is_featured?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -322,7 +316,6 @@ export interface Database {
           collection_id: string;
           place_id: string;
           display_order: number;
-          curator_note: string | null;
           famous_items: string[] | null;
           created_at: string;
         };
@@ -331,7 +324,6 @@ export interface Database {
           collection_id: string;
           place_id: string;
           display_order?: number;
-          curator_note?: string | null;
           famous_items?: string[] | null;
           created_at?: string;
         };
@@ -340,7 +332,6 @@ export interface Database {
           collection_id?: string;
           place_id?: string;
           display_order?: number;
-          curator_note?: string | null;
           famous_items?: string[] | null;
           created_at?: string;
         };

@@ -26,28 +26,7 @@ export const collectionFormSchema = z.object({
     .optional()
     .or(z.literal('')),
 
-  tags: z
-    .string()
-    .optional()
-    .or(z.literal('')),
+  subcategory_id: z.string().optional().nullable(),
 });
 
 export type CollectionFormValues = z.infer<typeof collectionFormSchema>;
-
-/**
- * Parse tags from comma-separated string
- */
-export function parseTags(tagsString: string): string[] {
-  if (!tagsString) return [];
-  return tagsString
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean);
-}
-
-/**
- * Format tags array to comma-separated string
- */
-export function formatTags(tags: string[]): string {
-  return tags.join(', ');
-}

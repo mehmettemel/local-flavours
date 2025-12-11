@@ -1,7 +1,8 @@
+
 // @ts-nocheck
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
@@ -43,7 +44,7 @@ interface Collection {
 
 const ITEMS_PER_PAGE = 9;
 
-export default function MyCollectionsPage() {
+function MyCollectionsContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -342,5 +343,17 @@ export default function MyCollectionsPage() {
           collection={editingCollection}
         />
     </div>
+  );
+}
+
+export default function MyCollectionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <MyCollectionsContent />
+    </Suspense>
   );
 }

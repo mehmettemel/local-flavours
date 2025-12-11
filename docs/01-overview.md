@@ -24,7 +24,7 @@ mekan.guru, kullanıcıların yerel restoranları, kafeleri ve gizli mücevherle
 ### 2. Koleksiyon Sistemi
 - Koleksiyon oluşturma ve düzenleme
 - Sürükle-bırak ile mekan sıralama
-- Her mekan için küratör notu ekleme
+
 - Mekan başına ünlü ürün önerileri (örn: "Adana Kebap", "Ayran")
 - Kategori ve alt kategori bazlı organizasyon
 - Öne çıkan koleksiyon özelliği
@@ -77,7 +77,7 @@ mekan.guru, kullanıcıların yerel restoranları, kafeleri ve gizli mücevherle
 1. Kullanıcı "Yeni Koleksiyon" butonuna tıklar
 2. Başlık, açıklama, şehir, kategori seçer
 3. Google Places API ile mekan arar veya mevcut mekanlardan seçer
-4. Her mekan için ünlü ürünler ve notlar ekler
+4. Her mekan için ünlü ürünler ekler
 5. Sürükle-bırak ile mekan sırasını düzenler
 6. Koleksiyonu yayınlar
 
@@ -106,7 +106,7 @@ mekan.guru, kullanıcıların yerel restoranları, kafeleri ve gizli mücevherle
 - **Locations:** Konum hiyerarşisi (ülke > şehir > ilçe)
 
 **İlişki Tabloları:**
-- **Collection_Places:** Koleksiyonlardaki mekanlar (sıra, not, ünlü ürünler)
+- **Collection_Places:** Koleksiyonlardaki mekanlar (sıra, ünlü ürünler)
 - **Votes:** Mekan oyları
 - **Collection_Votes:** Koleksiyon oyları
 

@@ -12,6 +12,15 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { TrendingUp, MapPin, Loader2, User, ThumbsUp, ThumbsDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -33,6 +42,8 @@ interface CollectionsLeaderboardProps {
   selectedCitySlug: string;
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export function CollectionsLeaderboard({
   initialCollections,
   cities,
@@ -42,21 +53,27 @@ export function CollectionsLeaderboard({
   const [selectedCity, setSelectedCity] = useState(selectedCitySlug);
   const [collections, setCollections] = useState(initialCollections);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
   
   const filteredCollections = useMemo(() => {
-    console.log('Category filter debug:', {
-      selectedCategory: selectedCategory || 'NONE (Tümü)',
-      totalCollections: collections.length,
-      collectionCategories: collections.map(c => ({ id: c.id, name: c.names?.tr, categorySlug: c.category?.slug }))
-    });
-    
     if (!selectedCategory) return collections;
-    const filtered = collections.filter(
+    return collections.filter(
       (collection) => collection.category?.slug === selectedCategory
     );
-    console.log('After filter:', filtered.length, 'collections');
-    return filtered;
   }, [selectedCategory, collections]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedCity]);
+
+  const paginatedCollections = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredCollections.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredCollections, currentPage]);
+
+  const totalPages = Math.ceil(filteredCollections.length / ITEMS_PER_PAGE);
+
   const [userVotes, setUserVotes] = useState<Record<string, number>>({});
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -123,9 +140,9 @@ export function CollectionsLeaderboard({
         return;
       }
       
-      if (filteredCollections.length === 0) return;
+      if (paginatedCollections.length === 0) return;
 
-      const collectionIds = filteredCollections.map(c => c.id);
+      const collectionIds = paginatedCollections.map(c => c.id);
       
       const { data, error } = await supabase
         .from('collection_votes')
@@ -143,7 +160,7 @@ export function CollectionsLeaderboard({
     }
 
     fetchUserVotes();
-  }, [user, filteredCollections, supabase]);
+  }, [user, paginatedCollections, supabase]);
 
   const handleCityChange = (citySlug: string) => {
     setSelectedCity(citySlug);
@@ -397,7 +414,7 @@ export function CollectionsLeaderboard({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredCollections.length === 0 ? (
+              {paginatedCollections.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="h-32 text-center">
                     <div className="flex flex-col items-center gap-2">
@@ -411,8 +428,8 @@ export function CollectionsLeaderboard({
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredCollections.map((collection, index) => {
-                  const rank = index + 1;
+                paginatedCollections.map((collection, index) => {
+                  const rank = (currentPage - 1) * ITEMS_PER_PAGE + index + 1;
                   const categoryNames = collection.category?.names as
                     | { en: string; tr: string }
                     | undefined;
@@ -495,9 +512,71 @@ export function CollectionsLeaderboard({
           </Table>
         </div>
 
-        {/* Footer with additional info */}
+        {/* Footer with Pagination */}
         <div className="border-t border-neutral-200 px-6 py-4 dark:border-neutral-800">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          {totalPages > 1 && (
+            <Pagination className="mb-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                
+                {Array.from({ length: totalPages }).map((_, i) => {
+                  const page = i + 1;
+                  // Show first, last, current, and surrounding pages
+                  if (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  ) {
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          isActive={page === currentPage}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(page);
+                          }}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  } else if (
+                    page === currentPage - 2 ||
+                    page === currentPage + 2
+                  ) {
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                  }
+                  return null;
+                })}
+
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                    className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center">
             Sıralama, koleksiyonların aldığı oylara ve küratör güvenilirliğine göre belirlenir.
           </p>
         </div>

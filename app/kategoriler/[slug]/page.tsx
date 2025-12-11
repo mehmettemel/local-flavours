@@ -36,7 +36,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   const category = categoryData as any;
 
-  const collectionsData = await getCollections({
+  const { data: collectionsData } = await getCollections({
     category_id: category.id,
     status: 'active',
   });

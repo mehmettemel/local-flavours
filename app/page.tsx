@@ -56,7 +56,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     getFeaturedCollection(selectedCitySlug),
     getTopCollections(selectedCitySlug, 12),
     getCategories({ parent_id: null, limit: 30 }), // Get main categories
-    getTopCollections(selectedCitySlug, 20), // Get top 20 for leaderboard
+    getTopCollections(selectedCitySlug, 50), // Get top 50 for leaderboard
     getCities(),
     getRandomTopCollections(selectedCitySlug, 4), // Get 4 random high-scoring collections
   ]);

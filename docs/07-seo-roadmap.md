@@ -292,7 +292,7 @@ npm run seed  # Hızlı test verisi için
 
 **Her Koleksiyon:**
 - 5-10 mekan içermeli
-- Her mekana küratör notu ekle
+
 - Famous items belirt (örn: "Adana Kebap", "Ayran")
 - Açıklama 2-3 cümle olsun
 

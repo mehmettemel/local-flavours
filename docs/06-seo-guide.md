@@ -473,7 +473,7 @@ Google bu metrikleri izler:
 Google'ın E-A-T (Expertise, Authoritativeness, Trustworthiness) faktörleri:
 - ✅ Kullanıcı profilleri (authorship)
 - ✅ User reviews (voting system)
-- ✅ Transparent about source (curator notes)
+- ✅ Transparent about source
 
 ---
 

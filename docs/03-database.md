@@ -283,7 +283,7 @@ CREATE TABLE collection_places (
   collection_id UUID NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
   place_id UUID NOT NULL REFERENCES places(id) ON DELETE CASCADE,
   display_order INTEGER NOT NULL,
-  curator_note TEXT,  -- Küratör notu
+
   famous_items TEXT[] DEFAULT '{}',  -- Ünlü ürünler
   created_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(collection_id, place_id),
@@ -299,7 +299,7 @@ CREATE INDEX idx_collection_places_order ON collection_places(collection_id, dis
 **Önemli Alanlar:**
 - `display_order`: Sürükle-bırak ile değişir
 - `famous_items`: Örnek: ["Adana Kebap", "Ayran", "Mercimek Çorbası"]
-- `curator_note`: Küratörün özel notu
+
 
 ---
 

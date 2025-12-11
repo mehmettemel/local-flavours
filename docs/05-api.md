@@ -317,7 +317,7 @@ type CollectionPlace[] = {
   collection_id: string;
   place_id: string;
   display_order: number;
-  curator_note?: string;
+
   famous_items: string[];  // ["Adana Kebap", "Ayran"]
   created_at: string;
   place: {
@@ -342,7 +342,7 @@ await addPlaceToCollection({
   collection_id: 'collection-uuid',
   place_id: 'place-uuid',
   display_order: 1,
-  curator_note: 'Harika bir yer!',
+
   famous_items: ['Adana Kebap', 'Ayran', 'Mercimek Çorbası']
 });
 ```

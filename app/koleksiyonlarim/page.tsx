@@ -3,16 +3,24 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { Plus, Loader2, MapPin, FolderTree, Star } from 'lucide-react';
 import { EditCollectionModal } from '@/components/collections/edit-collection-modal';
 import { CollectionCard } from '@/components/collections/collection-card';
@@ -25,6 +33,7 @@ interface Collection {
   descriptions: { en: string; tr: string };
   status: string;
   vote_count: number;
+  vote_score: number;
   is_featured: boolean;
   created_at: string;
   location?: { id: string; names: { en: string; tr: string } };
@@ -32,18 +41,25 @@ interface Collection {
   places_count?: number;
 }
 
+const ITEMS_PER_PAGE = 9;
+
 export default function MyCollectionsPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
   const { alert, confirm } = useAlertDialog();
 
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCollection, setEditingCollection] = useState<Collection | null>(
     null
   );
+
+  // Get page from URL or default to 1
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -57,7 +73,7 @@ export default function MyCollectionsPage() {
     if (user) {
       fetchCollections();
     }
-  }, [user]);
+  }, [user, currentPage]);
 
   const fetchCollections = async () => {
     if (!user) return;
@@ -65,7 +81,16 @@ export default function MyCollectionsPage() {
     try {
       setLoading(true);
 
-      // Fetch collections with related data
+      // Get total count
+      const { count: totalCount, error: countError } = await supabase
+        .from('collections')
+        .select('*', { count: 'exact', head: true })
+        .eq('creator_id', user.id);
+
+      if (countError) throw countError;
+      setTotalCount(totalCount || 0);
+
+      // Fetch collections with pagination
       const { data: collectionsData, error } = await supabase
         .from('collections')
         .select(
@@ -76,7 +101,8 @@ export default function MyCollectionsPage() {
         `
         )
         .eq('creator_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
 
       if (error) throw error;
 
@@ -95,7 +121,7 @@ export default function MyCollectionsPage() {
         })
       );
 
-      setCollections(collectionsWithCounts);
+      setCollections(collectionsWithCounts as Collection[]);
     } catch (error) {
       console.error('Error fetching collections:', error);
     } finally {
@@ -123,7 +149,15 @@ export default function MyCollectionsPage() {
     }
   };
 
-  if (authLoading || loading) {
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', page.toString());
+    router.push(`/koleksiyonlarim?${params.toString()}`);
+  };
+
+  if (authLoading || (loading && collections.length === 0)) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="text-primary h-8 w-8 animate-spin" />
@@ -163,7 +197,7 @@ export default function MyCollectionsPage() {
               <FolderTree className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{collections.length}</div>
+              <div className="text-2xl font-bold">{totalCount}</div>
             </CardContent>
           </Card>
 
@@ -212,19 +246,85 @@ export default function MyCollectionsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {collections.map((collection) => (
-              <CollectionCard
-                key={collection.id}
-                collection={collection}
-                onDelete={handleDelete}
-                onEdit={() => {
-                  setEditingCollection(collection);
-                  setDialogOpen(true);
-                }}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {collections.map((collection) => (
+                <CollectionCard
+                  key={collection.id}
+                  collection={collection}
+                  onDelete={handleDelete}
+                  onEdit={() => {
+                    setEditingCollection(collection);
+                    setDialogOpen(true);
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination className="mt-8">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage > 1) handlePageChange(currentPage - 1);
+                      }}
+                      className={currentPage <= 1 ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                  
+                  {Array.from({ length: totalPages }).map((_, i) => {
+                    const page = i + 1;
+                    // Show first, last, current, and surrounding pages
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationLink
+                            href="#"
+                            isActive={page === currentPage}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handlePageChange(page);
+                            }}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      );
+                    } else if (
+                      page === currentPage - 2 ||
+                      page === currentPage + 2
+                    ) {
+                      return (
+                        <PaginationItem key={page}>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      );
+                    }
+                    return null;
+                  })}
+
+                  <PaginationItem>
+                    <PaginationNext 
+                      href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                      }}
+                      className={currentPage >= totalPages ? "pointer-events-none opacity-50" : ""}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </>
         )}
 
         {/* Create/Edit Modal */}

@@ -39,7 +39,7 @@ export async function getCollections(params?: {
   category_id?: string;
   limit?: number;
   offset?: number;
-}): Promise<CollectionWithDetails[]> {
+}): Promise<{ data: CollectionWithDetails[]; count: number }> {
   const supabase = (await createClient()) as SupabaseClient<Database>;
 
   let query = supabase
@@ -79,6 +79,19 @@ export async function getCollections(params?: {
     query = query.range(params.offset, params.offset + (params.limit || 10) - 1);
   }
 
+  // Get total count for pagination
+  const { count: totalCount, error: countError } = await supabase
+    .from('collections')
+    .select('*', { count: 'exact', head: true })
+    .match(params?.status ? { status: params.status } : {})
+    .match(params?.creator_id ? { creator_id: params.creator_id } : {})
+    .match(params?.location_id ? { location_id: params.location_id } : {})
+    .match(params?.category_id ? { category_id: params.category_id } : {});
+
+  if (countError) {
+    console.error('Error counting collections:', countError);
+  }
+
   const { data, error } = await query;
 
   if (error) {
@@ -101,7 +114,10 @@ export async function getCollections(params?: {
     })
   );
 
-  return collectionsWithCounts as CollectionWithDetails[];
+  return {
+    data: collectionsWithCounts as CollectionWithDetails[],
+    count: totalCount || 0
+  };
 }
 
 /**

@@ -235,7 +235,7 @@ export async function updateCollection(
 ): Promise<Collection> {
   const supabase = await createClient();
 
-  // @ts-expect-error - Supabase type inference issue
+  // @ts-ignore - Supabase generated types have inference issues with update()
   const { data, error } = await supabase
     .from('collections')
     .update(updates)
@@ -244,8 +244,7 @@ export async function updateCollection(
     .single();
 
   if (error) {
-    console.error('Error updating collection:', error);
-    throw error;
+    handleDbError(error, 'updateCollection');
   }
 
   return data;

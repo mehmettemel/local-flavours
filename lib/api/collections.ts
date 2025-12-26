@@ -153,7 +153,7 @@ export async function getCollectionById(
   const { count } = await supabase
     .from('collection_places')
     .select('*', { count: 'exact', head: true })
-    .eq('collection_id', data.id);
+    .eq('collection_id', id);
 
   return {
     ...(data as any),
@@ -191,11 +191,12 @@ export async function getCollectionBySlug(
     return null;
   }
 
-  // Get places count
+  // Get places count (using data.id is safe here after null check)
+  const collectionId = (data as any).id;
   const { count } = await supabase
     .from('collection_places')
     .select('*', { count: 'exact', head: true })
-    .eq('collection_id', data.id);
+    .eq('collection_id', collectionId);
 
   return {
     ...(data as any),
@@ -213,7 +214,7 @@ export async function createCollection(
 
   const { data, error } = await supabase
     .from('collections')
-    .insert(collection)
+    .insert(collection as any)
     .select()
     .single();
 
@@ -234,6 +235,7 @@ export async function updateCollection(
 ): Promise<Collection> {
   const supabase = await createClient();
 
+  // @ts-expect-error - Supabase type inference issue
   const { data, error } = await supabase
     .from('collections')
     .update(updates)

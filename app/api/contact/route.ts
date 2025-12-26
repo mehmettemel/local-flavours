@@ -2,10 +2,18 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import ContactSubmissionEmail from '@/components/emails/contact-submission';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY is not configured');
+      return NextResponse.json(
+        { error: 'E-posta servisi şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.' },
+        { status: 503 }
+      );
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const body = await request.json();
     const { name, email, subject, category, message, website } = body;
 

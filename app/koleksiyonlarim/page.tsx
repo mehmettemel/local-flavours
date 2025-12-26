@@ -62,12 +62,8 @@ function MyCollectionsContent() {
   // Get page from URL or default to 1
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/?auth=login');
-    }
-  }, [authLoading, user, router]);
+  // Middleware handles authentication redirect
+  // This page is already protected by middleware
 
   // Fetch user's collections
   useEffect(() => {

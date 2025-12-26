@@ -51,8 +51,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;
   const selectedCitySlug = params.city || 'all'; // Default to All Cities
 
-  // Fetch data in parallel
-  const [featuredCollection, topCollections, categories, leaderboardCollections, cities, randomFeaturedCollections] = await Promise.all([
+  // Fetch data in parallel with partial failure support
+  const results = await Promise.allSettled([
     getFeaturedCollection(selectedCitySlug),
     getTopCollections(selectedCitySlug, 12),
     getCategories({ parent_id: null, limit: 30 }), // Get main categories
@@ -60,6 +60,23 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     getCities(),
     getRandomTopCollections(selectedCitySlug, 4), // Get 4 random high-scoring collections
   ]);
+
+  // Extract results with fallbacks
+  const featuredCollection = results[0].status === 'fulfilled' ? results[0].value : null;
+  const topCollections = results[1].status === 'fulfilled' ? results[1].value : { data: [], count: 0 };
+  const categories = results[2].status === 'fulfilled' ? results[2].value : [];
+  const leaderboardCollections = results[3].status === 'fulfilled' ? results[3].value : { data: [], count: 0 };
+  const cities = results[4].status === 'fulfilled' ? results[4].value : [];
+  const randomFeaturedCollections = results[5].status === 'fulfilled' ? results[5].value : { data: [], count: 0 };
+
+  // Log errors in development
+  if (process.env.NODE_ENV === 'development') {
+    results.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        console.error(`Homepage data fetch error [${index}]:`, result.reason);
+      }
+    });
+  }
 
   // JSON-LD structured data for homepage
   const jsonLd = {

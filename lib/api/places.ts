@@ -1,7 +1,7 @@
-// @ts-nocheck
 import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '../supabase/server';
 import { Database } from '@/types/database';
+import { handleDbError } from '@/lib/utils/db-error';
 
 export type Place = Database['public']['Tables']['places']['Row'];
 type PlaceInsert = Database['public']['Tables']['places']['Insert'];
@@ -45,7 +45,9 @@ export async function getPlaces(params?: {
 
   const { data, error } = await query;
 
-  if (error) throw error;
+  if (error) {
+    handleDbError(error, 'getPlaces');
+  }
   return data;
 }
 
@@ -79,7 +81,9 @@ export async function getPlacesByLocation(locationId: string, limit = 20, catego
     .order('vote_score', { ascending: false })
     .limit(limit);
 
-  if (error) throw error;
+  if (error) {
+    handleDbError(error, 'getPlacesByLocation');
+  }
   return data;
 }
 

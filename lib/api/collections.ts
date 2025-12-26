@@ -1,8 +1,7 @@
-
-// @ts-nocheck
 import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database';
+import { handleDbError } from '@/lib/utils/db-error';
 
 type Collection = Database['public']['Tables']['collections']['Row'];
 type CollectionInsert = Database['public']['Tables']['collections']['Insert'];
@@ -96,8 +95,7 @@ export async function getCollections(params?: {
   const { data, error } = await query;
 
   if (error) {
-    console.error('Error fetching collections:', error);
-    throw error;
+    handleDbError(error, 'getCollections');
   }
 
   // Get places count for each collection
@@ -141,11 +139,10 @@ export async function getCollectionById(
     `
     )
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   if (error) {
-    console.error('Error fetching collection:', error);
-    return null;
+    handleDbError(error, 'getCollectionById');
   }
 
   // Get places count

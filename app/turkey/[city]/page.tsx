@@ -73,11 +73,14 @@ export default async function CityPage({
     notFound();
   }
 
-  // Fetch places and categories
-  const [places, categories] = await Promise.all([
+  // Fetch places and categories with fallback
+  const results = await Promise.allSettled([
     getPlacesByLocation(city.id, 20, category),
     getAllCategories(),
   ]);
+
+  const places = results[0].status === 'fulfilled' ? results[0].value : [];
+  const categories = results[1].status === 'fulfilled' ? results[1].value : [];
 
   const cityNames = city.names as Record<string, string>;
   const cityName = cityNames.tr || cityNames.en || city.slug;

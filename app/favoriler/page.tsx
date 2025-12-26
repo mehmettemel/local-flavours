@@ -56,12 +56,8 @@ export default function FavoritesPage() {
   >([]);
   const [loading, setLoading] = useState(true);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/?auth=login');
-    }
-  }, [authLoading, user, router]);
+  // Middleware handles authentication redirect
+  // This page is already protected by middleware
 
   // Fetch user's voted collections
   useEffect(() => {

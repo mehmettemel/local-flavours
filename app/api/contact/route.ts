@@ -53,7 +53,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true, data });
-  } catch (error) {
+  } catch (err) {
+    console.error('Contact form error:', err);
     return NextResponse.json(
       { error: 'Bir hata oluştu. Lütfen daha sonra tekrar deneyin.' },
       { status: 500 }

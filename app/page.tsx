@@ -54,7 +54,6 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   // Fetch data in parallel with partial failure support
   const results = await Promise.allSettled([
     getFeaturedCollection(selectedCitySlug),
-    getTopCollections(selectedCitySlug, 12),
     getCategories({ parent_id: null, limit: 30 }), // Get main categories
     getTopCollections(selectedCitySlug, 50), // Get top 50 for leaderboard
     getCities(),
@@ -63,11 +62,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   // Extract results with fallbacks
   const featuredCollection = results[0].status === 'fulfilled' ? results[0].value : null;
-  const topCollections = results[1].status === 'fulfilled' ? results[1].value : { data: [], count: 0 };
-  const categories = results[2].status === 'fulfilled' ? results[2].value : [];
-  const leaderboardCollections = results[3].status === 'fulfilled' ? results[3].value : { data: [], count: 0 };
-  const cities = results[4].status === 'fulfilled' ? results[4].value : [];
-  const randomFeaturedCollections = results[5].status === 'fulfilled' ? results[5].value : { data: [], count: 0 };
+  const categories = results[1].status === 'fulfilled' ? results[1].value : [];
+  const leaderboardCollections = results[2].status === 'fulfilled' ? results[2].value : [];
+  const cities = results[3].status === 'fulfilled' ? results[3].value : [];
+  const randomFeaturedCollections = results[4].status === 'fulfilled' ? results[4].value : [];
 
   // Log errors in development
   if (process.env.NODE_ENV === 'development') {

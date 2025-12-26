@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/contexts/auth-context';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -17,8 +15,6 @@ import {
   ThumbsUp,
   ThumbsDown,
   Heart,
-  MapPin,
-  FolderTree,
 } from 'lucide-react';
 import { CollectionCard } from '@/components/collections/collection-card';
 import Link from 'next/link';
@@ -45,7 +41,6 @@ interface VotedCollection {
 
 export default function FavoritesPage() {
   const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
   const supabase = createClient();
 
   const [upvotedCollections, setUpvotedCollections] = useState<
@@ -64,6 +59,7 @@ export default function FavoritesPage() {
     if (user) {
       fetchVotedCollections();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchVotedCollections = async () => {

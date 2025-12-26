@@ -100,7 +100,7 @@ export async function getCollections(params?: {
 
   // Get places count for each collection
   const collectionsWithCounts = await Promise.all(
-    (data || []).map(async (collection) => {
+    (data || []).map(async (collection: any) => {
       const { count } = await supabase
         .from('collection_places')
         .select('*', { count: 'exact', head: true })
@@ -145,14 +145,18 @@ export async function getCollectionById(
     handleDbError(error, 'getCollectionById');
   }
 
+  if (!data) {
+    return null;
+  }
+
   // Get places count
   const { count } = await supabase
     .from('collection_places')
     .select('*', { count: 'exact', head: true })
-    .eq('collection_id', id);
+    .eq('collection_id', data.id);
 
   return {
-    ...data,
+    ...(data as any),
     places_count: count || 0,
   } as CollectionWithDetails;
 }
@@ -177,10 +181,13 @@ export async function getCollectionBySlug(
     `
     )
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   if (error) {
-    console.error('Error fetching collection:', error);
+    handleDbError(error, 'getCollectionBySlug');
+  }
+
+  if (!data) {
     return null;
   }
 
@@ -191,7 +198,7 @@ export async function getCollectionBySlug(
     .eq('collection_id', data.id);
 
   return {
-    ...data,
+    ...(data as any),
     places_count: count || 0,
   } as CollectionWithDetails;
 }
